@@ -16,6 +16,6 @@ public class EdtBot {
         token = arguments[0];
         JDA api = JDABuilder.create(token, GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.DIRECT_MESSAGES).enableCache(CacheFlag.ACTIVITY).build();
         api.addEventListener(new Controller());
-        api.getPresence().setPresence(OnlineStatus.ONLINE, Activity.listening("r!help"));
+        api.getPresence().setPresence(OnlineStatus.ONLINE, Activity.listening("edt!help"));
     }
 }
