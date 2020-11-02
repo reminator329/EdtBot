@@ -9,10 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import reminator.EdtBot.Categories.AutresCategorie;
 import reminator.EdtBot.Categories.Categorie;
 import reminator.EdtBot.Categories.EdtCategorie;
-import reminator.EdtBot.Commands.Command;
-import reminator.EdtBot.Commands.EcouteEdtCommand;
-import reminator.EdtBot.Commands.PingCommand;
-import reminator.EdtBot.Commands.ProchainCoursCommand;
+import reminator.EdtBot.Commands.*;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -24,6 +21,7 @@ public class Controller extends ListenerAdapter {
     private final ProchainCoursCommand prochainCoursCommand;
     private final EcouteEdtCommand ecouteEdtCommand;
     private final PingCommand pingCommand;
+    private final HelpCommand helpCommand;
 
     private final ArrayList<Categorie> categories = new ArrayList<>();
     private final EdtCategorie edtCategorie = new EdtCategorie();
@@ -40,17 +38,20 @@ public class Controller extends ListenerAdapter {
         prochainCoursCommand = new ProchainCoursCommand();
         ecouteEdtCommand = new EcouteEdtCommand();
         pingCommand = new PingCommand();
+        helpCommand = new HelpCommand(this);
 
         // Ajout de la commande dans la liste
         commands.add(pingCommand);
         commands.add(prochainCoursCommand);
         commands.add(ecouteEdtCommand);
+        commands.add(helpCommand);
 
         // Ajout de la commande dans la catégorie
         edtCategorie.addCommand(prochainCoursCommand);
         edtCategorie.addCommand(ecouteEdtCommand);
 
         autresCategorie.addCommand(pingCommand);
+        autresCategorie.addCommand(helpCommand);
     }
 
     @Override
