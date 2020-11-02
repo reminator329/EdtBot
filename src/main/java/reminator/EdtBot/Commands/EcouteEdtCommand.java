@@ -9,7 +9,6 @@ import reminator.EdtBot.edt.Edt;
 
 import java.awt.*;
 import java.util.*;
-import java.util.List;
 
 public class EcouteEdtCommand extends Command {
 
@@ -27,8 +26,8 @@ public class EcouteEdtCommand extends Command {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setColor(Color.RED);
         builder.setTitle("Commande ecoute-edt");
-        builder.appendDescription("Permet d'envoyer les détails du prochain cours automatiquement'\n\nQuand la commande est exécuté, elle active ou désactive l'envoi des messages.\nLes messages seront envoyés dans le salon où la commande a été exécutée.");
-        builder.addField("Signature", "`r!ecoute-bilal`", false);
+        builder.appendDescription("Permet d'envoyer les détails du prochain cours automatiquement.\n\nQuand la commande est exécuté, elle active ou désactive l'envoi des messages.\nLes messages seront envoyés dans le salon où la commande a été exécutée.");
+        builder.addField("Signature", "`r!ecoute-edt`", false);
         return builder.build();
     }
 
@@ -44,7 +43,6 @@ public class EcouteEdtCommand extends Command {
         } else {
             channel.sendMessage("Début de la commande").queue();
             execute = true;
-            List<Member> members = event.getGuild().getMembers();
 
             timer = new Timer();
             final ArrayList<Cours>[] cours = new ArrayList[]{new ArrayList<Cours>()};
