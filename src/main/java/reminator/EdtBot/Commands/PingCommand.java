@@ -22,7 +22,7 @@ public class PingCommand extends Command {
         builder.setColor(Color.RED);
         builder.setTitle("Commande ping");
         builder.appendDescription("Répond pong !");
-        builder.addField("Signature", "`r!ping`", false);
+        builder.addField("Signature", "`edt!ping`", false);
         return builder.build();
     }
 

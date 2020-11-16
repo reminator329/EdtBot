@@ -3,12 +3,14 @@ package reminator.EdtBot.Commands;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public abstract class Command {
 
     private String prefix;
     private String label;
+    private ArrayList<String> aliass = new ArrayList<>();
     private MessageEmbed help;
 
     public String getPrefix() {
@@ -38,6 +40,14 @@ public abstract class Command {
     public abstract MessageEmbed setHelp();
 
     public abstract void executerCommande(GuildMessageReceivedEvent event);
+
+    public boolean isAlias(String alias) {
+        return this.aliass.contains(alias);
+    }
+
+    protected void addAlias (String alias) {
+        aliass.add(alias);
+    }
 
     @Override
     public boolean equals(Object o) {

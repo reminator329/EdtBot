@@ -81,7 +81,8 @@ public class Controller extends ListenerAdapter {
 
         for (Command c : commands) {
             String prefixLabel = c.getPrefix() + c.getLabel();
-            if (prefixLabel.equalsIgnoreCase(args[0])) {
+            String[] test = event.getMessage().getContentRaw().split(c.getPrefix());
+            if (prefixLabel.equalsIgnoreCase(args[0]) || test.length > 1 && c.isAlias(test[1])) {
                 c.executerCommande(event);
             }
         }

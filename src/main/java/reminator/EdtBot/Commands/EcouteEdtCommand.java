@@ -27,7 +27,7 @@ public class EcouteEdtCommand extends Command {
         builder.setColor(Color.RED);
         builder.setTitle("Commande ecoute-edt");
         builder.appendDescription("Permet d'envoyer les détails du prochain cours automatiquement.\n\nQuand la commande est exécuté, elle active ou désactive l'envoi des messages.\nLes messages seront envoyés dans le salon où la commande a été exécutée.");
-        builder.addField("Signature", "`r!ecoute-edt`", false);
+        builder.addField("Signature", "`edt!ecoute-edt`", false);
         return builder.build();
     }
 

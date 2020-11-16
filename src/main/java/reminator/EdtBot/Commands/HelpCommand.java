@@ -34,7 +34,7 @@ public class HelpCommand extends Command {
         builder.setThumbnail(imageI);
         builder.setColor(Color.RED);
         builder.setTitle(titre, "https://www.remontees-mecaniques.net/");
-        builder.appendDescription("Utilise `r!help <commande>` pour plus d'informations sur une commande.");
+        builder.appendDescription("Utilise `edt!help <commande>` pour plus d'informations sur une commande.");
         return builder.build();
     }
 
