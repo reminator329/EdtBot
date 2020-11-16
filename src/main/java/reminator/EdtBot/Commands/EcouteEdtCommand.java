@@ -1,6 +1,7 @@
 package reminator.EdtBot.Commands;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import reminator.EdtBot.bot.EdtBot;
@@ -34,6 +35,11 @@ public class EcouteEdtCommand extends Command {
     @Override
     public void executerCommande(GuildMessageReceivedEvent event) {
         MessageChannel channel = event.getChannel();
+        if (event.getMember() == null) return;
+        if (!event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
+            channel.sendMessage("Tu n'as pas la permission pour faire cette commande.").queue();
+            return;
+        }
 
         if (execute) {
             channel.sendMessage("Arrêt de la commande").queue();
