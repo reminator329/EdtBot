@@ -8,9 +8,12 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import reminator.EdtBot.edt.enums.Liens;
 
+import java.awt.*;
+
 public class EdtBot {
 
-    public static String prefix = "edt!";
+    public static final String prefix = "edt!";
+    public static final Color color = Color.RED;
     public static String token;
 
     public static void main(String[] arguments) throws Exception {

@@ -2,65 +2,37 @@ package reminator.EdtBot.Commands;
 
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import reminator.EdtBot.bot.EdtBot;
 
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
-public abstract class Command {
+public interface Command {
 
-    private String prefix;
-    private String label;
-    private ArrayList<String> aliass = new ArrayList<>();
-    private MessageEmbed help;
-
-    public String getPrefix() {
-        return prefix;
+    default String getPrefix() {
+        return EdtBot.prefix;
     }
 
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
+    String getLabel();
+
+    String[] getAlliass();
+
+    String getDescription();
+
+    default String getSignature() {
+        return getPrefix() + getLabel();
     }
 
-    public String getLabel() {
-        return label;
+    default Color getColor() {
+        return EdtBot.color;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
-    }
+    void execute(GuildMessageReceivedEvent event);
 
-    public MessageEmbed getHelp() {
-        return help;
-    }
-
-    public void setHelp(MessageEmbed help) {
-        this.help = help;
-    }
-
-    public abstract MessageEmbed setHelp();
-
-    public abstract void executerCommande(GuildMessageReceivedEvent event);
-
-    public boolean isAlias(String alias) {
-        return this.aliass.contains(alias);
-    }
-
-    protected void addAlias (String alias) {
-        aliass.add(alias);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Command command = (Command) o;
-        return prefix.equals(command.prefix) &&
-                label.equals(command.label) &&
-                Objects.equals(help, command.help);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(prefix, label, help);
+    default boolean isAlias(String alias) {
+        return Arrays.stream(getAlliass()).collect(Collectors.toList()).contains(alias);
     }
 }

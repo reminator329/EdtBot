@@ -11,17 +11,26 @@ import reminator.EdtBot.edt.GestionEdt;
 import java.awt.*;
 import java.util.*;
 
-public class EcouteEdtCommand extends Command {
+public class EcouteEdtCommand implements Command {
 
     private static boolean execute = false;
     Timer timer;
 
-    public EcouteEdtCommand() {
-        this.setPrefix(EdtBot.prefix);
-        this.setLabel("ecoute-edt");
-        this.setHelp(setHelp());
+    @Override
+    public String getLabel() {
+        return "ecoute-edt";
     }
 
+    @Override
+    public String[] getAlliass() {
+        return new String[]{"ecoute", "ee", "e-e", "edt-auto", "e-a", "auto"};
+    }
+
+    @Override
+    public String getDescription() {
+        return "Permet d'envoyer les détails du prochain cours automatiquement.\n\nQuand la commande est exécuté, elle active ou désactive l'envoi des messages.\nLes messages seront envoyés dans le salon où la commande a été exécutée.";
+    }
+/*
     @Override
     public MessageEmbed setHelp() {
         EmbedBuilder builder = new EmbedBuilder();
@@ -31,9 +40,9 @@ public class EcouteEdtCommand extends Command {
         builder.addField("Signature", "`edt!ecoute-edt`", false);
         return builder.build();
     }
-
+*/
     @Override
-    public void executerCommande(GuildMessageReceivedEvent event) {
+    public void execute(GuildMessageReceivedEvent event) {
         MessageChannel channel = event.getChannel();
         if (event.getMember() == null) return;
         if (!event.getMember().hasPermission(Permission.ADMINISTRATOR)) {

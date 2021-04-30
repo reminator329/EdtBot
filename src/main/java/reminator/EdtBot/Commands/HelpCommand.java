@@ -5,64 +5,64 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import reminator.EdtBot.Categories.Categorie;
-import reminator.EdtBot.bot.Controller;
+import reminator.EdtBot.Categories.Category;
+import reminator.EdtBot.Categories.enums.Categories;
+import reminator.EdtBot.Commands.enums.Commands;
 import reminator.EdtBot.bot.EdtBot;
 
 import java.awt.*;
 import java.util.ArrayList;
 
-public class HelpCommand extends Command {
+public class HelpCommand implements Command {
 
-    private final Controller controller;
-
-    public HelpCommand(Controller controller) {
-        this.controller = controller;
-
-        this.setPrefix(EdtBot.prefix);
-        this.setLabel("help");
-        this.setHelp(setHelp());
+    @Override
+    public String getLabel() {
+        return "help";
     }
 
     @Override
-    public MessageEmbed setHelp() {
-        EmbedBuilder builder = new EmbedBuilder();
+    public String[] getAlliass() {
+        return new String[]{"h", "aide", "a", "commandes", "commands", "c"};
+    }
 
-        final String titre = "Liste des commandes du RémiBot";
-        final String imageI = "https://image.flaticon.com/icons/png/512/1301/1301429.png";
+    @Override
+    public String getDescription() {
+        return "Permet de savoir comment utiliser les commandes.";
+    }
 
-        builder.setThumbnail(imageI);
-        builder.setColor(Color.RED);
-        builder.setTitle(titre, "https://www.remontees-mecaniques.net/");
-        builder.appendDescription("Utilise `edt!help <commande>` pour plus d'informations sur une commande.");
-        return builder.build();
+    @Override
+    public String getSignature() {
+        return Command.super.getSignature() + " [commande]";
     }
 
     private MessageEmbed help() {
 
         EmbedBuilder builder = new EmbedBuilder();
-        ArrayList<Categorie> categories = controller.getCategories();
+        Categories[] categories = Categories.values();
 
-        final String titre = "Liste des commandes du RémiBot";
+        final String titre = "Liste des commandes de l'EdtBot";
         final String imageI = "https://image.flaticon.com/icons/png/512/1301/1301429.png";
 
         builder.setThumbnail(imageI);
         builder.setColor(Color.RED);
         builder.setTitle(titre, "https://www.remontees-mecaniques.net/");
         builder.appendDescription("Utilise `r!help <commande>` pour plus d'informations sur une commande.");
-        for (Categorie cat : categories) {
-            String titreField = cat.getNom();
-            StringBuilder descriptionField = new StringBuilder(cat.getDescription() + "\n");
-            for (Command c : cat.getCommands()) {
+        for (Categories cat : categories) {
+            String titreField = cat.getCategory().getName();
+            StringBuilder descriptionField = new StringBuilder(cat.getCategory().getDescription() + "\n");
+
+            // TODO à changer le for
+            /*
+                for (Command c : cat.getCategory().getCommands()) {
                 descriptionField.append("`").append(c.getLabel()).append("` ");
-            }
+            }*/
             builder.addField(titreField, descriptionField.toString(), false);
         }
         return builder.build();
     }
 
     @Override
-    public void executerCommande(GuildMessageReceivedEvent event) {
+    public void execute(GuildMessageReceivedEvent event) {
         MessageChannel channel = event.getChannel();
 
         String[] args = event.getMessage().getContentRaw().split("\\s+");
@@ -79,19 +79,25 @@ public class HelpCommand extends Command {
             }
             channel.sendMessage(message).queue();
         } else {
-            ArrayList<Command> commands = this.controller.getCommands();
+            Commands[] commands = Commands.values();
 
-            for (Command c : commands) {
-                if (c.getLabel().equalsIgnoreCase(args[1])) {
+
+            for (Commands c : commands) {
+                //TODO
+                /*
+                if (c.getCommand().getLabel().equalsIgnoreCase(args[1])) {
                     if (member != null) {
-                        EmbedBuilder preMessage = new EmbedBuilder(c.getHelp());
+
+                        EmbedBuilder preMessage = new EmbedBuilder(c.getCommand().getHelp());
                         preMessage.setFooter(member.getUser().getName(), member.getUser().getAvatarUrl());
                         message = preMessage.build();
                     } else {
-                        message = c.getHelp();
+                        message = c.getCommand().getHelp();
                     }
                     channel.sendMessage(message).queue();
                 }
+
+                 */
             }
             if (message == null) {
                 channel.sendMessage("La commande `" + args[1] + "` n'existe pas").queue();

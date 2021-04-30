@@ -11,15 +11,8 @@ import reminator.EdtBot.edt.GestionEdt;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class ProchainCoursCommand extends Command {
-
-    public ProchainCoursCommand() {
-        this.setPrefix(EdtBot.prefix);
-        this.setLabel("prochain-cours");
-        this.addAlias("next");
-        this.setHelp(setHelp());
-    }
-
+public class ProchainCoursCommand implements Command {
+/*
     @Override
     public MessageEmbed setHelp() {
         EmbedBuilder builder = new EmbedBuilder();
@@ -32,9 +25,25 @@ public class ProchainCoursCommand extends Command {
 
         return builder.build();
     }
+*/
 
     @Override
-    public void executerCommande(GuildMessageReceivedEvent event) {
+    public String getLabel() {
+        return "prochain-cours";
+    }
+
+    @Override
+    public String[] getAlliass() {
+        return new String[]{"next", "pc", "n", "p-c"};
+    }
+
+    @Override
+    public String getDescription() {
+        return "Donne les détails du prochain cours.";
+    }
+
+    @Override
+    public void execute(GuildMessageReceivedEvent event) {
         MessageChannel channel = event.getChannel();
 
             GestionEdt gestionEdt = new GestionEdt();

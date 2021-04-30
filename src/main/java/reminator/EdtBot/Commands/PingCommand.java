@@ -8,14 +8,9 @@ import reminator.EdtBot.bot.EdtBot;
 import java.awt.*;
 import java.util.List;
 
-public class PingCommand extends Command {
+public class PingCommand implements Command {
 
-    public PingCommand() {
-        this.setPrefix(EdtBot.prefix);
-        this.setLabel("ping");
-        this.setHelp(setHelp());
-    }
-
+/*
     @Override
     public MessageEmbed setHelp() {
         EmbedBuilder builder = new EmbedBuilder();
@@ -25,9 +20,24 @@ public class PingCommand extends Command {
         builder.addField("Signature", "`edt!ping`", false);
         return builder.build();
     }
+*/
+    @Override
+    public String getLabel() {
+        return "ping";
+    }
 
     @Override
-    public void executerCommande(GuildMessageReceivedEvent event) {
+    public String[] getAlliass() {
+        return new String[]{"p"};
+    }
+
+    @Override
+    public String getDescription() {
+        return "Répond pong et affiche la musique écoutée actuellement sur spotify.";
+    }
+
+    @Override
+    public void execute(GuildMessageReceivedEvent event) {
         MessageChannel channel = event.getChannel();
         Member member = event.getMember();
 
