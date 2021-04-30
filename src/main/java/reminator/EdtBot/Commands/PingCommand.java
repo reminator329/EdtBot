@@ -3,6 +3,8 @@ package reminator.EdtBot.Commands;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import reminator.EdtBot.Categories.Category;
+import reminator.EdtBot.Categories.enums.Categories;
 import reminator.EdtBot.bot.EdtBot;
 
 import java.awt.*;
@@ -10,17 +12,11 @@ import java.util.List;
 
 public class PingCommand implements Command {
 
-/*
     @Override
-    public MessageEmbed setHelp() {
-        EmbedBuilder builder = new EmbedBuilder();
-        builder.setColor(Color.RED);
-        builder.setTitle("Commande ping");
-        builder.appendDescription("Répond pong !");
-        builder.addField("Signature", "`edt!ping`", false);
-        return builder.build();
+    public Category getCategory() {
+        return Categories.OTHER.getCategory();
     }
-*/
+
     @Override
     public String getLabel() {
         return "ping";

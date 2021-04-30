@@ -1,10 +1,8 @@
 package reminator.EdtBot.Commands;
 
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import reminator.EdtBot.Categories.Category;
 import reminator.EdtBot.bot.EdtBot;
 
 import java.awt.*;
@@ -15,6 +13,12 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public interface Command {
+
+    default String getName() {
+        return getLabel().replace('-', ' ');
+    }
+
+    Category getCategory();
 
     default String getPrefix() {
         return EdtBot.prefix;

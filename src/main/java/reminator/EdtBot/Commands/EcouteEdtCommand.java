@@ -4,6 +4,8 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import reminator.EdtBot.Categories.Category;
+import reminator.EdtBot.Categories.enums.Categories;
 import reminator.EdtBot.bot.EdtBot;
 import reminator.EdtBot.edt.Cours;
 import reminator.EdtBot.edt.GestionEdt;
@@ -16,6 +18,16 @@ public class EcouteEdtCommand implements Command {
 
     private static boolean execute = false;
     Timer timer;
+
+    @Override
+    public String getName() {
+        return "écoute edt";
+    }
+
+    @Override
+    public Category getCategory() {
+        return Categories.EDT.getCategory();
+    }
 
     @Override
     public String getLabel() {
