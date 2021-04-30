@@ -8,8 +8,7 @@ public class Cours {
     private final String summary;
     private String start;
     private String end;
-    private String type;
-    private String lien;
+    private TypeCourse typeCourse;
     private String groupe;
 
     public Cours(JSONObject jCours, String groupe) {
@@ -24,14 +23,6 @@ public class Cours {
         this.groupe = groupe;
     }
 
-    public void setType (String type) {
-        this.type = type;
-    }
-
-    public void setLien (String lien) {
-        this.lien = lien;
-    }
-
     public String getSummary() {
         return summary;
     }
@@ -44,19 +35,19 @@ public class Cours {
         return end;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public String getLien() {
-        return lien;
-    }
-
     public String getGroupe() {
         return groupe;
     }
 
     public void setGroupe(String groupe) {
         this.groupe = groupe;
+    }
+
+    public void setType(TypeCourse type) {
+        this.typeCourse = type;
+    }
+
+    public TypeCourse getTypeCourse() {
+        return typeCourse;
     }
 }

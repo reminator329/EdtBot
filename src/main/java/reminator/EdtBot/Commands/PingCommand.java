@@ -5,10 +5,10 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import reminator.EdtBot.Categories.Category;
 import reminator.EdtBot.Categories.enums.Categories;
-import reminator.EdtBot.bot.EdtBot;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Objects;
 
 public class PingCommand implements Command {
 
@@ -47,7 +47,7 @@ public class PingCommand implements Command {
                     RichPresence rp = a.asRichPresence();
                     if (rp != null) {
                         try {
-                            builder.setImage(rp.getLargeImage().getUrl());
+                            builder.setImage(Objects.requireNonNull(rp.getLargeImage()).getUrl());
                         } catch (NullPointerException ignored) {}
                         System.out.println(rp.getDetails());
                         String message = member.getUser().getName() + " écoute " + rp.getDetails() + " de " + rp.getState();

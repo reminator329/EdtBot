@@ -1,16 +1,13 @@
 package reminator.EdtBot.Commands;
 
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import reminator.EdtBot.Categories.Category;
 import reminator.EdtBot.Categories.enums.Categories;
-import reminator.EdtBot.bot.EdtBot;
 import reminator.EdtBot.edt.Cours;
 import reminator.EdtBot.edt.GestionEdt;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -43,17 +40,7 @@ public class EcouteEdtCommand implements Command {
     public String getDescription() {
         return "Permet d'envoyer les détails du prochain cours automatiquement.\n\nQuand la commande est exécuté, elle active ou désactive l'envoi des messages.\nLes messages seront envoyés dans le salon où la commande a été exécutée.";
     }
-/*
-    @Override
-    public MessageEmbed setHelp() {
-        EmbedBuilder builder = new EmbedBuilder();
-        builder.setColor(Color.RED);
-        builder.setTitle("Commande ecoute-edt");
-        builder.appendDescription("Permet d'envoyer les détails du prochain cours automatiquement.\n\nQuand la commande est exécuté, elle active ou désactive l'envoi des messages.\nLes messages seront envoyés dans le salon où la commande a été exécutée.");
-        builder.addField("Signature", "`edt!ecoute-edt`", false);
-        return builder.build();
-    }
-*/
+
     @Override
     public void execute(GuildMessageReceivedEvent event, User author, MessageChannel channel, List<String> args) {
         if (event.getMember() == null) return;

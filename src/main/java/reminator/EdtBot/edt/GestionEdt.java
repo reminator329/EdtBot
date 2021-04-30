@@ -17,14 +17,13 @@ import java.util.Date;
 
 public class GestionEdt {
 
+    ArrayList<Cours> prochainCours = new ArrayList<>();
+    ArrayList<Cours> courses;
+    String csv;
     private String edt01;
     private String edt02;
     private String edt1;
     private String edt2;
-
-    ArrayList<Cours> prochainCours = new ArrayList<>();
-    ArrayList<Cours> courses;
-    String csv;
 
     public GestionEdt() {
         courses = new ArrayList<>();
@@ -47,7 +46,7 @@ public class GestionEdt {
                         Date pCours = dateFormat.parse(prochainCours.get(0).getStart());
                         if (nouveauPCours.compareTo(pCours) == 0) {
                             prochainCours.add(c);
-                        } else if ((new Date (date.getTime() - 500 * 3600)).compareTo(nouveauPCours) < 0 && nouveauPCours.compareTo(pCours) < 0) {
+                        } else if ((new Date(date.getTime() - 500 * 3600)).compareTo(nouveauPCours) < 0 && nouveauPCours.compareTo(pCours) < 0) {
                             prochainCours.clear();
                             prochainCours.add(c);
                         }
@@ -60,8 +59,11 @@ public class GestionEdt {
         return prochainCours;
     }
 
-    public String[] getTypeCours(Cours cours) {
-        String[] type = new String[2];
+    public TypeCourse getTypeCours(Cours cours) {
+
+        String modality = null;
+        String lien = null;
+
         try {
 
             SimpleDateFormat formatJour = new SimpleDateFormat("dd/MM/yyyy");
@@ -84,18 +86,14 @@ public class GestionEdt {
 
             if (jour != null) {
                 String[] jourList = jour.split(",");
-                for (int i=2; i<jourList.length; i+=3) {
+                for (int i = 2; i < jourList.length; i += 3) {
                     String heure = jourList[i];
                     if (heure.equals(formatHeure.format(date))) {
-                        if (jourList.length > i+1) {
-                            type[0] = jourList[i+1];
-                        } else {
-                            type[0] = null;
+                        if (jourList.length > i + 1) {
+                            modality = jourList[i + 1];
                         }
-                        if (jourList.length > i+2) {
-                            type[1] = jourList[i + 2];
-                        } else {
-                            type[1] = null;
+                        if (jourList.length > i + 2) {
+                            lien = jourList[i + 2];
                         }
                         break;
                     }
@@ -104,7 +102,7 @@ public class GestionEdt {
 
         } catch (ParseException | NullPointerException ignored) {
         }
-        return type;
+        return new TypeCourse(modality, lien);
     }
 
     private void updateEdt() {
@@ -151,11 +149,10 @@ public class GestionEdt {
 
     private void ajoutCourss(JSONArray courss, String groupe) {
 
-        for (int i=0; i<courss.length(); i++) {
+        for (int i = 0; i < courss.length(); i++) {
             Cours c = new Cours(courss.getJSONObject(i), groupe);
-            String[] type = getTypeCours(c);
-            c.setType(type[0]);
-            c.setLien(type[1]);
+            TypeCourse type = getTypeCours(c);
+            c.setType(type);
             courses.add(c);
         }
     }
@@ -180,11 +177,12 @@ public class GestionEdt {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        String type = cours.getType();
-        if (type != null) {
-            builder.addField("Type", cours.getType(), false);
+        TypeCourse type = cours.getTypeCourse();
+        String modality = type.getModality();
+        if (modality != null) {
+            builder.addField("Type", modality, false);
         }
-        String lien = cours.getLien();
+        String lien = type.getLien();
         System.out.println(lien);
         if (lien != null && !lien.equals("")) {
             if (lien.contains("discord")) {

@@ -59,9 +59,10 @@ public class Controller extends ListenerAdapter {
 
             String[] separation = command.split(prefix);
 
-            if (prefixLabel.equalsIgnoreCase(args.get(0)) || separation.length > 1 && cmd.isAlias(separation[1])) {
+            if (prefixLabel.equalsIgnoreCase(command) || separation.length > 1 && cmd.isAlias(separation[1])) {
                 args.remove(0);
                 c.getCommand().execute(event, event.getAuthor(), event.getChannel(), args);
+                return;
             }
         }
     }

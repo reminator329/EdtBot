@@ -88,7 +88,7 @@ public class HelpCommand implements Command {
     @Override
     public void execute(GuildMessageReceivedEvent event, User author, MessageChannel channel, List<String> args) {
 
-        EmbedBuilder message = null;
+        EmbedBuilder message;
 
         if (args.size() == 0) {
             message = this.help();
