@@ -1,15 +1,28 @@
 package reminator.EdtBot.utils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import reminator.EdtBot.edt.Cours;
 import reminator.EdtBot.edt.TypeCourse;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class CSVParser {
+public class CoursParser {
 
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+    private final String groupe;
 
-    public static String getJour(String csv, Date date, Cours cours) {
+    public CoursParser() {
+        this.groupe = "0";
+    }
+
+    public CoursParser(String groupe) {
+        this.groupe = groupe;
+    }
+
+    public String getJour(String csv, Date date, Cours cours) {
 
         SimpleDateFormat formatJour = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -26,7 +39,7 @@ public class CSVParser {
         return null;
     }
 
-    public static TypeCourse getTypeCours(String jour, Date date) {
+    public TypeCourse getTypeCours(String jour, Date date) {
 
         SimpleDateFormat formatHeure = new SimpleDateFormat("HH:mm:ss");
         String modality = null;
@@ -46,5 +59,18 @@ public class CSVParser {
             }
         }
         return new TypeCourse(modality, lien);
+    }
+
+    public Cours parse(JSONObject jCours) {
+
+        String summary = jCours.getString("summary");
+        Date start = null;
+        Date end = null;
+        try {
+            start = dateFormat.parse(jCours.getJSONObject("start").getString("dateTime"));
+            end = dateFormat.parse(jCours.getJSONObject("end").getString("dateTime"));
+        } catch (JSONException | ParseException ignored) {
+        }
+        return new Cours(summary, start, end, groupe);
     }
 }

@@ -3,23 +3,22 @@ package reminator.EdtBot.edt;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Cours {
 
     private final String summary;
-    private String start;
-    private String end;
+    private Date start;
+    private Date end;
     private TypeCourse typeCourse;
     private String groupe;
 
-    public Cours(JSONObject jCours, String groupe) {
-        this.summary = jCours.getString("summary");
-        try {
-            this.start = jCours.getJSONObject("start").getString("dateTime");
-            this.end = jCours.getJSONObject("end").getString("dateTime");
-        } catch (JSONException ignored) {
-            this.start = null;
-            this.end = null;
-        }
+    public Cours(String summary, Date start, Date end, String groupe) {
+        this.summary = summary;
+        this.start = start;
+        this.end = end;
         this.groupe = groupe;
     }
 
@@ -27,11 +26,11 @@ public class Cours {
         return summary;
     }
 
-    public String getStart() {
+    public Date getStart() {
         return start;
     }
 
-    public String getEnd() {
+    public Date getEnd() {
         return end;
     }
 

@@ -6,19 +6,18 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import reminator.EdtBot.edt.enums.Edt;
 import reminator.EdtBot.edt.enums.Liens;
-import reminator.EdtBot.utils.CSVParser;
+import reminator.EdtBot.utils.CoursParser;
 import reminator.EdtBot.utils.HTTPRequest;
 
 import java.awt.*;
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class GestionEdt {
 
-    ArrayList<Cours> prochainCours = new ArrayList<>();
+    ArrayList<Cours> nextCourses = new ArrayList<>();
     ArrayList<Cours> courses;
     String csv;
     private String edt01;
@@ -32,36 +31,32 @@ public class GestionEdt {
 
     public ArrayList<Cours> getNextCourse() {
         updateEdt();
-        prochainCours.clear();
+        nextCourses.clear();
         return getNextCourses();
     }
 
     private ArrayList<Cours> getNextCourses() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
         Date date = new Date();
 
         for (Cours c : courses) {
             String summary = c.getSummary();
             if (summary.contains("ELU")) {
-                if (prochainCours.size() == 0) {
-                    prochainCours.add(c);
+                if (nextCourses.size() == 0) {
+                    nextCourses.add(c);
                 } else {
-                    try {
-                        Date nouveauPCours = dateFormat.parse(c.getStart());
-                        Date pCours = dateFormat.parse(prochainCours.get(0).getStart());
-                        if (nouveauPCours.compareTo(pCours) == 0) {
-                            prochainCours.add(c);
-                        } else if ((new Date(date.getTime() - 500 * 3600)).compareTo(nouveauPCours) < 0 && nouveauPCours.compareTo(pCours) < 0) {
-                            prochainCours.clear();
-                            prochainCours.add(c);
-                        }
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+                    Date nouveauPCours = c.getStart();
+                    Date pCours = nextCourses.get(0).getStart();
+
+                    if (nouveauPCours.compareTo(pCours) == 0) {
+                        nextCourses.add(c);
+                    } else if ((new Date(date.getTime() - 500 * 3600)).compareTo(nouveauPCours) < 0 && nouveauPCours.compareTo(pCours) < 0) {
+                        nextCourses.clear();
+                        nextCourses.add(c);
                     }
                 }
             }
         }
-        return prochainCours;
+        return nextCourses;
     }
 
     public TypeCourse getTypeCours(Cours cours) {
@@ -69,15 +64,14 @@ public class GestionEdt {
         TypeCourse type = null;
 
         try {
-            SimpleDateFormat formatCours = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
-            Date date = formatCours.parse(cours.getStart());
+            Date date = cours.getStart();
 
-            String jour = CSVParser.getJour(csv, date, cours);
+            String jour = new CoursParser().getJour(csv, date, cours);
             if (jour != null) {
-                type = CSVParser.getTypeCours(jour, date);
+                type = new CoursParser().getTypeCours(jour, date);
             }
 
-        } catch (ParseException | NullPointerException ignored) {
+        } catch (NullPointerException ignored) {
         }
         return type;
     }
@@ -127,7 +121,7 @@ public class GestionEdt {
     private void ajoutCourss(JSONArray courss, String groupe) {
 
         for (int i = 0; i < courss.length(); i++) {
-            Cours c = new Cours(courss.getJSONObject(i), groupe);
+            Cours c = new CoursParser(groupe).parse(courss.getJSONObject(i));
             TypeCourse type = getTypeCours(c);
             c.setType(type);
             courses.add(c);
@@ -136,7 +130,6 @@ public class GestionEdt {
 
     public void printCourse(Cours cours, MessageChannel channel) {
         EmbedBuilder builder = new EmbedBuilder();
-        SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
         SimpleDateFormat dateFormat2 = new SimpleDateFormat("'Le 'dd/MM' à 'HH:mm");
 
         builder.setColor(Color.RED);
@@ -149,11 +142,7 @@ public class GestionEdt {
         }
         builder.appendDescription(cours.getSummary());
 
-        try {
-            builder.addField("Date", dateFormat2.format(new Date(dateFormat1.parse(cours.getStart()).getTime())), false);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        builder.addField("Date", dateFormat2.format(new Date(cours.getStart().getTime())), false);
         TypeCourse type = cours.getTypeCourse();
         String modality = type.getModality();
         if (modality != null) {
