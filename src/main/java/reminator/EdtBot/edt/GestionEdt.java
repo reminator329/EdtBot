@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import reminator.EdtBot.edt.enums.Edt;
 import reminator.EdtBot.edt.enums.Liens;
+import reminator.EdtBot.utils.CSVParser;
 import reminator.EdtBot.utils.HTTPRequest;
 
 import java.awt.*;
@@ -61,48 +62,23 @@ public class GestionEdt {
 
     public TypeCourse getTypeCours(Cours cours) {
 
-        String modality = null;
-        String lien = null;
+        TypeCourse type = null;
 
         try {
 
-            SimpleDateFormat formatJour = new SimpleDateFormat("dd/MM/yyyy");
-            SimpleDateFormat formatHeure = new SimpleDateFormat("HH:mm:ss");
             SimpleDateFormat formatCours = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
 
             Date date = formatCours.parse(cours.getStart());
 
-            String[] joursListe = csv.split("\n");
-            String jour = null;
-            for (String s : joursListe) {
-                String[] jourList = s.split(",");
-                if (jourList.length == 0) continue;
-                if (formatJour.format(date).equals(jourList[0])) {
-                    if (cours.getGroupe().equals(jourList[1])) {
-                        jour = s;
-                    }
-                }
-            }
+            String jour = CSVParser.getJour(csv, date, cours);
 
             if (jour != null) {
-                String[] jourList = jour.split(",");
-                for (int i = 2; i < jourList.length; i += 3) {
-                    String heure = jourList[i];
-                    if (heure.equals(formatHeure.format(date))) {
-                        if (jourList.length > i + 1) {
-                            modality = jourList[i + 1];
-                        }
-                        if (jourList.length > i + 2) {
-                            lien = jourList[i + 2];
-                        }
-                        break;
-                    }
-                }
+                type = CSVParser.getTypeCours(jour, date);
             }
 
         } catch (ParseException | NullPointerException ignored) {
         }
-        return new TypeCourse(modality, lien);
+        return type;
     }
 
     private void updateEdt() {
