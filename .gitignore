@@ -1,0 +1,17 @@
+Kamaka/.gradle
+Kamaka/.idea
+Kamaka/.settings
+Kamaka/bin/
+Kamaka/build/
+.vscode/
+.classpath
+.project
+
+
+
+**/build/
+!src/**/build/
+gradle-app.setting
+!gradle-wrapper.jar
+.gradletasknamecache
+*/workspace.xml
