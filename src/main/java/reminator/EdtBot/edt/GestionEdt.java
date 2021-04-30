@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import reminator.EdtBot.edt.enums.Liens;
 import reminator.EdtBot.utils.HTTPRequest;
 
 import java.awt.*;
@@ -13,21 +14,19 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Edt {
+public class GestionEdt {
 
     private String edt01;
     private String edt02;
     private String edt1;
     private String edt2;
-    private String groupe;
 
     ArrayList<Cours> prochainCours = new ArrayList<>();
     ArrayList<Cours> courses;
     String csv;
 
-    public Edt() {
+    public GestionEdt() {
         courses = new ArrayList<>();
-        groupe = "1";
     }
 
     public ArrayList<Cours> getNextCourse() {
@@ -163,7 +162,7 @@ public class Edt {
 
     private void updateCsv() {
         try {
-            csv = new HTTPRequest("https://docs.google.com/spreadsheets/u/1/d/13SY9w4EKKCH4v5Sbi6z0qF3-hpl9XE5_cv3xC4tn67M/export?format=csv&id=13SY9w4EKKCH4v5Sbi6z0qF3-hpl9XE5_cv3xC4tn67M&gid=0").GET();
+            csv = new HTTPRequest(Liens.CSV.getUrl()).GET();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -205,6 +204,7 @@ public class Edt {
             builder.addField("Type", cours.getType(), false);
         }
         String lien = cours.getLien();
+        System.out.println(lien);
         if (lien != null && !lien.equals("")) {
             if (lien.contains("discord")) {
                 builder.addField("Discord", lien, false);

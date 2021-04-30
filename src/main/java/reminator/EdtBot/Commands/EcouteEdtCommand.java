@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import reminator.EdtBot.bot.EdtBot;
 import reminator.EdtBot.edt.Cours;
-import reminator.EdtBot.edt.Edt;
+import reminator.EdtBot.edt.GestionEdt;
 
 import java.awt.*;
 import java.util.*;
@@ -53,17 +53,17 @@ public class EcouteEdtCommand extends Command {
             timer = new Timer();
             final ArrayList<Cours>[] cours = new ArrayList[]{new ArrayList<Cours>()};
             final ArrayList<Cours>[] pCours = new ArrayList[]{new ArrayList<Cours>()};
-            Edt edt = new Edt();
+            GestionEdt gestionEdt = new GestionEdt();
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     pCours[0].clear();
-                    pCours[0].addAll(edt.getNextCourse());
+                    pCours[0].addAll(gestionEdt.getNextCourse());
                     if (cours[0].size() == 0 || !cours[0].get(0).getSummary().equals(pCours[0].get(0).getSummary())) {
                         cours[0].clear();
                         cours[0].addAll(pCours[0]);
                         for (Cours c : cours[0]) {
-                            edt.printCourse(c, channel);
+                            gestionEdt.printCourse(c, channel);
                         }
                     }
                 }
