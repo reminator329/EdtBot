@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import reminator.EdtBot.Categories.Category;
 import reminator.EdtBot.Categories.enums.Categories;
@@ -12,6 +13,7 @@ import reminator.EdtBot.bot.EdtBot;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class HelpCommand implements Command {
 
@@ -62,17 +64,14 @@ public class HelpCommand implements Command {
     }
 
     @Override
-    public void execute(GuildMessageReceivedEvent event) {
-        MessageChannel channel = event.getChannel();
-
-        String[] args = event.getMessage().getContentRaw().split("\\s+");
-        Member member = event.getMember();
+    public void execute(GuildMessageReceivedEvent event, User author, MessageChannel channel, List<String> args) {
 
         MessageEmbed message = null;
-        if (args.length == 1) {
-            if (member != null) {
+
+        if (args.size() == 0) {
+            if (author != null) {
                 EmbedBuilder preMessage = new EmbedBuilder(this.help());
-                preMessage.setFooter(member.getUser().getName(), member.getUser().getAvatarUrl());
+                preMessage.setFooter(author.getName(), author.getAvatarUrl());
                 message = preMessage.build();
             } else {
                 message = this.help();
@@ -100,7 +99,7 @@ public class HelpCommand implements Command {
                  */
             }
             if (message == null) {
-                channel.sendMessage("La commande `" + args[1] + "` n'existe pas").queue();
+                channel.sendMessage("La commande `" + args.get(0) + "` n'existe pas").queue();
             }
         }
     }

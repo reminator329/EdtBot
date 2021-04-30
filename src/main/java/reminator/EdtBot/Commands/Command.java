@@ -1,12 +1,16 @@
 package reminator.EdtBot.Commands;
 
+import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import reminator.EdtBot.bot.EdtBot;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -30,7 +34,7 @@ public interface Command {
         return EdtBot.color;
     }
 
-    void execute(GuildMessageReceivedEvent event);
+    void execute(GuildMessageReceivedEvent event, User author, MessageChannel channel, List<String> args);
 
     default boolean isAlias(String alias) {
         return Arrays.stream(getAlliass()).collect(Collectors.toList()).contains(alias);

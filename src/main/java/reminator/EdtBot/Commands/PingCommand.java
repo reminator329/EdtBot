@@ -37,8 +37,7 @@ public class PingCommand implements Command {
     }
 
     @Override
-    public void execute(GuildMessageReceivedEvent event) {
-        MessageChannel channel = event.getChannel();
+    public void execute(GuildMessageReceivedEvent event, User author, MessageChannel channel, List<String> args) {
         Member member = event.getMember();
 
         EmbedBuilder builder = new EmbedBuilder();

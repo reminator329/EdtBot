@@ -10,6 +10,7 @@ import reminator.EdtBot.edt.GestionEdt;
 
 import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 public class EcouteEdtCommand implements Command {
 
@@ -42,8 +43,7 @@ public class EcouteEdtCommand implements Command {
     }
 */
     @Override
-    public void execute(GuildMessageReceivedEvent event) {
-        MessageChannel channel = event.getChannel();
+    public void execute(GuildMessageReceivedEvent event, User author, MessageChannel channel, List<String> args) {
         if (event.getMember() == null) return;
         if (!event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
             channel.sendMessage("Tu n'as pas la permission pour faire cette commande.").queue();

@@ -14,6 +14,8 @@ import reminator.EdtBot.Commands.enums.Commands;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.TimeZone;
 
 public class Controller extends ListenerAdapter {
@@ -45,13 +47,21 @@ public class Controller extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         if (event.getAuthor().isBot()) return;
-        String[] args = event.getMessage().getContentRaw().split("\\s+");
+        List<String> args = new ArrayList<>(Arrays.asList(event.getMessage().getContentRaw().split("\\s+")));
+
+        String command = args.get(0);
 
         for (Commands c : Commands.values()) {
-            String prefixLabel = c.getCommand().getPrefix() + c.getCommand().getLabel();
-            String[] test = event.getMessage().getContentRaw().split(c.getCommand().getPrefix());
-            if (prefixLabel.equalsIgnoreCase(args[0]) || test.length > 1 && c.getCommand().isAlias(test[1])) {
-                c.getCommand().execute(event);
+            Command cmd = c.getCommand();
+            String prefix = cmd.getPrefix();
+            String label = cmd.getLabel();
+            String prefixLabel = prefix + label;
+
+            String[] separation = command.split(prefix);
+
+            if (prefixLabel.equalsIgnoreCase(args.get(0)) || separation.length > 1 && cmd.isAlias(separation[1])) {
+                args.remove(0);
+                c.getCommand().execute(event, event.getAuthor(), event.getChannel(), args);
             }
         }
     }

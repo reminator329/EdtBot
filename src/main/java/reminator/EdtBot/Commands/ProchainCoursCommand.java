@@ -3,6 +3,7 @@ package reminator.EdtBot.Commands;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import reminator.EdtBot.bot.EdtBot;
 import reminator.EdtBot.edt.Cours;
@@ -10,6 +11,7 @@ import reminator.EdtBot.edt.GestionEdt;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProchainCoursCommand implements Command {
 /*
@@ -43,9 +45,7 @@ public class ProchainCoursCommand implements Command {
     }
 
     @Override
-    public void execute(GuildMessageReceivedEvent event) {
-        MessageChannel channel = event.getChannel();
-
+    public void execute(GuildMessageReceivedEvent event, User author, MessageChannel channel, List<String> args) {
             GestionEdt gestionEdt = new GestionEdt();
             ArrayList<Cours> courss = gestionEdt.getNextCourse();
             for (Cours cours : courss) {
