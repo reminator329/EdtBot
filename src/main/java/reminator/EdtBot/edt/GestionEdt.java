@@ -32,10 +32,14 @@ public class GestionEdt {
 
     public ArrayList<Cours> getNextCourse() {
         updateEdt();
+        prochainCours.clear();
+        return getNextCourses();
+    }
+
+    private ArrayList<Cours> getNextCourses() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
         Date date = new Date();
 
-        prochainCours.clear();
         for (Cours c : courses) {
             String summary = c.getSummary();
             if (summary.contains("ELU")) {
@@ -65,13 +69,10 @@ public class GestionEdt {
         TypeCourse type = null;
 
         try {
-
             SimpleDateFormat formatCours = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
-
             Date date = formatCours.parse(cours.getStart());
 
             String jour = CSVParser.getJour(csv, date, cours);
-
             if (jour != null) {
                 type = CSVParser.getTypeCours(jour, date);
             }
