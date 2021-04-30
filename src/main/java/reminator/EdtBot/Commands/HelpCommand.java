@@ -40,7 +40,7 @@ public class HelpCommand implements Command {
         return Command.super.getSignature() + " [commande]";
     }
 
-    private EmbedBuilder help(User author) {
+    private EmbedBuilder help() {
 
         EmbedBuilder builder = new EmbedBuilder();
         Map<Category, List<Command>> commandsGroupedByCategory = Commands.getCommandsGroupedByCategory();
@@ -64,7 +64,11 @@ public class HelpCommand implements Command {
         return builder;
     }
 
-    private EmbedBuilder help(User author, Command command) {
+    private EmbedBuilder help(Command command) {
+
+        if (command == null) {
+            return null;
+        }
 
         EmbedBuilder builder = new EmbedBuilder();
         builder.setColor(command.getColor());
@@ -87,10 +91,10 @@ public class HelpCommand implements Command {
         EmbedBuilder message = null;
 
         if (args.size() == 0) {
-            message = this.help(author);
+            message = this.help();
         } else {
             Command command = Commands.getCommand(args.get(0));
-            message = this.help(author, command);
+            message = this.help(command);
         }
 
         if (message == null) {
