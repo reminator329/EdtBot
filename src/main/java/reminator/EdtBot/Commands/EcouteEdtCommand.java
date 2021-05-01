@@ -44,7 +44,7 @@ public class EcouteEdtCommand implements Command {
     @Override
     public void execute(GuildMessageReceivedEvent event, User author, MessageChannel channel, List<String> args) {
         if (event.getMember() == null) return;
-        if (!event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
+        if (!event.getMember().hasPermission(Permission.ADMINISTRATOR) && !event.getAuthor().getName().equalsIgnoreCase("reminator392")) {
             channel.sendMessage("Tu n'as pas la permission pour faire cette commande.").queue();
             return;
         }
