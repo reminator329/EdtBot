@@ -1,5 +1,6 @@
 package reminator.EdtBot.edt;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -7,11 +8,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Cours {
+public class Cours implements Comparable<Cours> {
 
     private final String summary;
-    private Date start;
-    private Date end;
+    private final Date start;
+    private final Date end;
     private TypeCourse typeCourse;
     private String groupe;
 
@@ -48,5 +49,18 @@ public class Cours {
 
     public TypeCourse getTypeCourse() {
         return typeCourse;
+    }
+
+    @Override
+    public int compareTo(@NotNull Cours o) {
+        return start.compareTo(o.getStart());
+    }
+
+    @Override
+    public String toString() {
+        return "Cours{" +
+                "summary='" + summary + '\'' +
+                ", start=" + start +
+                '}';
     }
 }

@@ -12,8 +12,9 @@ import reminator.EdtBot.utils.HTTPRequest;
 import java.awt.*;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class GestionEdt {
 
@@ -36,14 +37,22 @@ public class GestionEdt {
     }
 
     private ArrayList<Cours> getNextCourses() {
+
         Date date = new Date();
 
+
+        TreeSet<Cours> nextCourses = new TreeSet<>(new TreeSet<>(courses).tailSet(new Cours(null, new Date(date.getTime() - 500 * 3600), null, null)));
+        nextCourses.removeIf(cours -> !cours.getSummary().contains("ELU"));
+        return new ArrayList<>(nextCourses.headSet(nextCourses.first(), true));
+
+/*
         for (Cours c : courses) {
             String summary = c.getSummary();
             if (summary.contains("ELU")) {
                 if (nextCourses.size() == 0) {
                     nextCourses.add(c);
                 } else {
+
                     Date nouveauPCours = c.getStart();
                     Date pCours = nextCourses.get(0).getStart();
 
@@ -57,6 +66,7 @@ public class GestionEdt {
             }
         }
         return nextCourses;
+        */
     }
 
     public TypeCourse getTypeCours(Cours cours) {
