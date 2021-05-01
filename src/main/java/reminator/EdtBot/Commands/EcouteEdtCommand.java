@@ -13,8 +13,8 @@ import java.util.List;
 
 public class EcouteEdtCommand implements Command {
 
-    private static boolean execute = false;
-    Timer timer;
+    private final List<MessageChannel> ecoutes = new ArrayList<>();
+    private Timer timer;
 
     @Override
     public String getName() {
@@ -49,33 +49,37 @@ public class EcouteEdtCommand implements Command {
             return;
         }
 
-        if (execute) {
+        if (ecoutes.contains(channel)) {
             channel.sendMessage("Arrêt de la commande").queue();
+            ecoutes.remove(channel);
             timer.cancel();
             timer.purge();
-            execute = false;
         } else {
             channel.sendMessage("Début de la commande").queue();
-            execute = true;
+            ecoutes.add(channel);
+            lancerTimer(channel);
+        }
+    }
 
-            timer = new Timer();
-            final ArrayList<Cours>[] cours = new ArrayList[]{new ArrayList<Cours>()};
-            final ArrayList<Cours>[] pCours = new ArrayList[]{new ArrayList<Cours>()};
-            GestionEdt gestionEdt = new GestionEdt();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    pCours[0].clear();
-                    pCours[0].addAll(gestionEdt.getNextCourse());
-                    if (cours[0].size() == 0 || !cours[0].get(0).getSummary().equals(pCours[0].get(0).getSummary())) {
-                        cours[0].clear();
-                        cours[0].addAll(pCours[0]);
-                        for (Cours c : cours[0]) {
-                            gestionEdt.printCourse(c, channel);
-                        }
+    private void lancerTimer(MessageChannel channel) {
+
+        timer = new Timer();
+        final ArrayList<Cours>[] cours = new ArrayList[]{new ArrayList<Cours>()};
+        final ArrayList<Cours>[] pCours = new ArrayList[]{new ArrayList<Cours>()};
+        GestionEdt gestionEdt = new GestionEdt();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                pCours[0].clear();
+                pCours[0].addAll(gestionEdt.getNextCourse());
+                if (cours[0].size() == 0 || !cours[0].get(0).getSummary().equals(pCours[0].get(0).getSummary())) {
+                    cours[0].clear();
+                    cours[0].addAll(pCours[0]);
+                    for (Cours c : cours[0]) {
+                        gestionEdt.printCourse(c, channel);
                     }
                 }
-            }, 0, 1000 * 60/*500 * 3600*/);
-        }
+            }
+        }, 0, 1000 * 60/*500 * 3600*/);
     }
 }
