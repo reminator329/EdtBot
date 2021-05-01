@@ -44,19 +44,22 @@ public class PingCommand implements Command {
             List<Activity> activities = member.getActivities();
             for (Activity a : activities) {
                 if (a.getName().equalsIgnoreCase("Spotify")) {
-                    RichPresence rp = a.asRichPresence();
-                    if (rp != null) {
-                        try {
-                            builder.setImage(Objects.requireNonNull(rp.getLargeImage()).getUrl());
-                        } catch (NullPointerException ignored) {}
-                        System.out.println(rp.getDetails());
-                        String message = member.getUser().getName() + " écoute " + rp.getDetails() + " de " + rp.getState();
-                        builder.setFooter(message, member.getUser().getAvatarUrl());
-                    }
+                    addActivitySpotify(builder, a, member);
                 }
             }
         }
 
         channel.sendMessage(builder.build()).queue();
+    }
+
+    private void addActivitySpotify(EmbedBuilder builder, Activity a, Member member) {
+        RichPresence rp = a.asRichPresence();
+        if (rp != null) {
+            try {
+                builder.setImage(Objects.requireNonNull(rp.getLargeImage()).getUrl());
+            } catch (NullPointerException ignored) {}
+            String message = member.getUser().getName() + " écoute " + rp.getDetails() + " de " + rp.getState();
+            builder.setFooter(message, member.getUser().getAvatarUrl());
+        }
     }
 }
