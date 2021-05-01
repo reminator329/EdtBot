@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import reminator.EdtBot.Categories.Category;
 import reminator.EdtBot.Categories.enums.Categories;
+import reminator.EdtBot.bot.BotEmbed;
 
 import java.awt.*;
 import java.util.List;
@@ -34,32 +35,10 @@ public class PingCommand implements Command {
 
     @Override
     public void execute(GuildMessageReceivedEvent event, User author, MessageChannel channel, List<String> args) {
-        Member member = event.getMember();
 
-        EmbedBuilder builder = new EmbedBuilder();
-        builder.setColor(Color.RED);
+        EmbedBuilder builder = BotEmbed.SPOTIFY.getBuilder(event.getMember());
         builder.setTitle("Pong !");
 
-        if (member != null) {
-            List<Activity> activities = member.getActivities();
-            for (Activity a : activities) {
-                if (a.getName().equalsIgnoreCase("Spotify")) {
-                    addActivitySpotify(builder, a, member);
-                }
-            }
-        }
-
         channel.sendMessage(builder.build()).queue();
-    }
-
-    private void addActivitySpotify(EmbedBuilder builder, Activity a, Member member) {
-        RichPresence rp = a.asRichPresence();
-        if (rp != null) {
-            try {
-                builder.setImage(Objects.requireNonNull(rp.getLargeImage()).getUrl());
-            } catch (NullPointerException ignored) {}
-            String message = member.getUser().getName() + " écoute " + rp.getDetails() + " de " + rp.getState();
-            builder.setFooter(message, member.getUser().getAvatarUrl());
-        }
     }
 }

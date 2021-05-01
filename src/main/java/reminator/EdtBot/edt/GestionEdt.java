@@ -4,6 +4,8 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import reminator.EdtBot.bot.BotEmbed;
+import reminator.EdtBot.bot.EdtBot;
 import reminator.EdtBot.edt.enums.Edt;
 import reminator.EdtBot.edt.enums.Liens;
 import reminator.EdtBot.utils.CoursParser;
@@ -44,29 +46,6 @@ public class GestionEdt {
         TreeSet<Cours> nextCourses = new TreeSet<>(new TreeSet<>(courses).tailSet(new Cours(null, new Date(date.getTime() - 500 * 3600), null, null)));
         nextCourses.removeIf(cours -> !cours.getSummary().contains("ELU"));
         return new ArrayList<>(nextCourses.headSet(nextCourses.first(), true));
-
-/*
-        for (Cours c : courses) {
-            String summary = c.getSummary();
-            if (summary.contains("ELU")) {
-                if (nextCourses.size() == 0) {
-                    nextCourses.add(c);
-                } else {
-
-                    Date nouveauPCours = c.getStart();
-                    Date pCours = nextCourses.get(0).getStart();
-
-                    if (nouveauPCours.compareTo(pCours) == 0) {
-                        nextCourses.add(c);
-                    } else if ((new Date(date.getTime() - 500 * 3600)).compareTo(nouveauPCours) < 0 && nouveauPCours.compareTo(pCours) < 0) {
-                        nextCourses.clear();
-                        nextCourses.add(c);
-                    }
-                }
-            }
-        }
-        return nextCourses;
-        */
     }
 
     public TypeCourse getTypeCours(Cours cours) {
@@ -139,10 +118,8 @@ public class GestionEdt {
     }
 
     public void printCourse(Cours cours, MessageChannel channel) {
-        EmbedBuilder builder = new EmbedBuilder();
-        SimpleDateFormat dateFormat2 = new SimpleDateFormat("'Le 'dd/MM' à 'HH:mm");
 
-        builder.setColor(Color.RED);
+        EmbedBuilder builder = BotEmbed.COURSE.getBuilder(cours);
 
         String groupe = cours.getGroupe();
         if ("0".equals(groupe)) {
@@ -152,23 +129,6 @@ public class GestionEdt {
         }
         builder.appendDescription(cours.getSummary());
 
-        builder.addField("Date", dateFormat2.format(new Date(cours.getStart().getTime())), false);
-        TypeCourse type = cours.getTypeCourse();
-        String modality = type.getModality();
-        if (modality != null) {
-            builder.addField("Type", modality, false);
-        }
-        String lien = type.getLien();
-        System.out.println(lien);
-        if (lien != null && !lien.equals("")) {
-            if (lien.contains("discord")) {
-                builder.addField("Discord", lien, false);
-            } else if (lien.contains("zoom")) {
-                builder.addField("Zoom", lien, false);
-            } else {
-                builder.addField("Lien", lien, false);
-            }
-        }
         channel.sendMessage(builder.build()).queue();
     }
 }
