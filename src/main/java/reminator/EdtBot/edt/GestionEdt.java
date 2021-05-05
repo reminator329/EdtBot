@@ -50,7 +50,7 @@ public class GestionEdt {
 
     public TypeCourse getTypeCours(Cours cours) {
 
-        TypeCourse type = null;
+        TypeCourse type = new TypeCourse();
 
         try {
             Date date = cours.getStart();

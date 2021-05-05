@@ -10,6 +10,10 @@ public class TypeCourse {
         this.lien = lien;
     }
 
+    public TypeCourse() {
+        this(null, null);
+    }
+
     public void setLien(String lien) {
         this.lien = lien;
     }

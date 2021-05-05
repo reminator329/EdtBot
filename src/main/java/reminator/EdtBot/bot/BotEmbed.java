@@ -80,7 +80,6 @@ public enum BotEmbed {
             builder.addField("Type", modality, false);
         }
         String lien = type.getLien();
-        System.out.println(lien);
         if (lien != null && !lien.equals("")) {
             if (lien.contains("discord")) {
                 builder.addField("Discord", lien, false);
