@@ -6,9 +6,7 @@ import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
-import org.json.JSONObject;
 import reminator.EdtBot.edt.enums.Liens;
-import reminator.EdtBot.utils.HTTPRequest;
 
 import java.awt.*;
 
