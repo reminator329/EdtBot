@@ -6,7 +6,9 @@ import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import org.json.JSONObject;
 import reminator.EdtBot.edt.enums.Liens;
+import reminator.EdtBot.utils.HTTPRequest;
 
 import java.awt.*;
 
@@ -22,5 +24,6 @@ public class EdtBot {
         JDA api = JDABuilder.create(token, GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.DIRECT_MESSAGES).enableCache(CacheFlag.ACTIVITY).build();
         api.addEventListener(new Controller());
         api.getPresence().setPresence(OnlineStatus.ONLINE, Activity.listening("edt!help"));
+
     }
 }

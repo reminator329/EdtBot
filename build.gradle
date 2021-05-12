@@ -17,6 +17,7 @@ repositories {
 dependencies {
     compile "net.dv8tion:JDA:$jdaVersion"
     compile "org.json:json:20200518"
+    compile group: 'org.twitter4j', name: 'twitter4j-core', version: '4.0.7'
 }
 
 compileJava.options.encoding = 'UTF-8'
