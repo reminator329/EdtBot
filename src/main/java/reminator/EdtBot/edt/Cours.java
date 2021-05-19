@@ -63,4 +63,12 @@ public class Cours implements Comparable<Cours> {
                 ", start=" + start +
                 '}';
     }
+
+    public boolean isAccepted() {
+        return getSummary().contains("ELU") || getSummary().contains("**EXAMEN**") || getSummary().contains("PRESENTIEL") || getSummary().contains("DISTANCIEL") || getSummary().contains("PRESENTTIEL");
+    }
+
+    public boolean isNotAccepted() {
+        return !isAccepted();
+    }
 }

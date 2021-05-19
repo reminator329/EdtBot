@@ -44,7 +44,7 @@ public class GestionEdt {
 
 
         TreeSet<Cours> nextCourses = new TreeSet<>(new TreeSet<>(courses).tailSet(new Cours(null, new Date(date.getTime() - 500 * 3600), null, null)));
-        nextCourses.removeIf(cours -> !cours.getSummary().contains("ELU") && !cours.getSummary().contains("**EXAMEN**"));
+        nextCourses.removeIf(Cours::isNotAccepted);
         return new ArrayList<>(nextCourses.headSet(nextCourses.first(), true));
     }
 
