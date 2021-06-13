@@ -15,7 +15,7 @@ public enum Edt {
     }
 
     private String getUrl() {
-        return "https://clients6.google.com/calendar/v3/calendars/8nam511995lbsisujjcq80h964@group.calendar.google.com/events?calendarId=" + id + "@group.calendar.google.com&singleEvents=true&timeZone=Europe/Paris&maxAttendees=1&maxResults=250&sanitizeHtml=true";
+        return "https://clients6.google.com/calendar/v3/calendars/" + id + "@group.calendar.google.com/events?calendarId=" + id + "@group.calendar.google.com&singleEvents=true&timeZone=Europe/Paris&maxAttendees=1&maxResults=250&sanitizeHtml=true";
     }
 
     private String getUrl(String timeMin, String timeMax) {

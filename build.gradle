@@ -15,8 +15,8 @@ repositories {
 }
 
 dependencies {
-    compile "net.dv8tion:JDA:$jdaVersion"
-    compile "org.json:json:20200518"
+    implementation "net.dv8tion:JDA:$jdaVersion"
+    implementation "org.json:json:20200518"
 }
 
 compileJava.options.encoding = 'UTF-8'

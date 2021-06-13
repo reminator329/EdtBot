@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public enum Commands {
+
     PING(new PingCommand()),
     HELP(new HelpCommand()),
     NEXT_COURSE(new ProchainCoursCommand()),

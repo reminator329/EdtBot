@@ -19,7 +19,7 @@ public enum BotEmbed {
     BASE(o -> new EmbedBuilder().setColor(EdtBot.color)),
 
     BASE_USER(o -> {
-        if (o == null || !(o instanceof User))
+        if (!(o instanceof User))
             return BotEmbed.BASE.getBuilder(null);
         User user = (User) o;
         return BotEmbed.BASE.getBuilder(null).setFooter(user.getName(), user.getAvatarUrl());
