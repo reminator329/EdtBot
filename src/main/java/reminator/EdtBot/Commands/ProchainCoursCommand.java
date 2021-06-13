@@ -51,8 +51,8 @@ public class ProchainCoursCommand implements Command {
     @Override
     public void execute(GuildMessageReceivedEvent event, User author, MessageChannel channel, List<String> args) {
         GestionEdt gestionEdt;
-        if (args.size() < 2) {
-            channel.sendMessage("Command mal utilisé, voir `edt!help prochain-cours`.").queue();
+        if (args.size() == 0) {
+            channel.sendMessage("Commande mal utilisée, voir `edt!help prochain-cours`.").queue();
             return;
         }
         switch (args.get(1)) {
