@@ -2,7 +2,7 @@ package reminator.EdtBot.edt.enums;
 
 public enum Liens {
 
-    CSV("");
+    CSV_1A("");
 
     private String url;
 

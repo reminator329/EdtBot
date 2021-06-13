@@ -2,6 +2,7 @@ package reminator.EdtBot.Commands;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import reminator.EdtBot.Categories.Category;
@@ -80,6 +81,11 @@ public class HelpCommand implements Command {
         String[] alliass = command.getAlliass();
         if (alliass.length != 0) {
             builder.addField("Alias", Arrays.stream(alliass).map(al -> String.format("`%s`", al)).collect(Collectors.joining(" ")), false);
+        }
+
+        MessageEmbed.Field[] extras = command.getExtraFields();
+        if (extras.length != 0) {
+            Arrays.stream(extras).forEach(builder::addField);
         }
 
         return builder;

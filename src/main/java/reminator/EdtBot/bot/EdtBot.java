@@ -18,7 +18,7 @@ public class EdtBot {
 
     public static void main(String[] arguments) throws Exception {
         token = arguments[0];
-        Liens.CSV.setUrl(arguments[1]);
+        Liens.CSV_1A.setUrl(arguments[1]);
         JDA api = JDABuilder.create(token, GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.DIRECT_MESSAGES).enableCache(CacheFlag.ACTIVITY).build();
         api.addEventListener(new Controller());
         api.getPresence().setPresence(OnlineStatus.ONLINE, Activity.listening("edt!help"));

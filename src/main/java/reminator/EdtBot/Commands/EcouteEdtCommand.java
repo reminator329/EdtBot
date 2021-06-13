@@ -7,6 +7,7 @@ import reminator.EdtBot.Categories.Category;
 import reminator.EdtBot.Categories.enums.Categories;
 import reminator.EdtBot.edt.Cours;
 import reminator.EdtBot.edt.GestionEdt;
+import reminator.EdtBot.edt.GestionEdt1A;
 
 import java.util.*;
 import java.util.List;
@@ -66,7 +67,7 @@ public class EcouteEdtCommand implements Command {
         timer = new Timer();
         final ArrayList<Cours>[] cours = new ArrayList[]{new ArrayList<Cours>()};
         final ArrayList<Cours>[] pCours = new ArrayList[]{new ArrayList<Cours>()};
-        GestionEdt gestionEdt = new GestionEdt();
+        GestionEdt gestionEdt = new GestionEdt1A();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {

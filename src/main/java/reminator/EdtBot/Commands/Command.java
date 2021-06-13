@@ -30,6 +30,10 @@ public interface Command {
 
     String getDescription();
 
+    default MessageEmbed.Field[] getExtraFields() {
+        return new MessageEmbed.Field[0];
+    }
+
     default String getSignature() {
         return getPrefix() + getLabel();
     }

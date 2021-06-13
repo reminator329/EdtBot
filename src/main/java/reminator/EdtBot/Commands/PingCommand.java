@@ -7,9 +7,7 @@ import reminator.EdtBot.Categories.Category;
 import reminator.EdtBot.Categories.enums.Categories;
 import reminator.EdtBot.bot.BotEmbed;
 
-import java.awt.*;
 import java.util.List;
-import java.util.Objects;
 
 public class PingCommand implements Command {
 
