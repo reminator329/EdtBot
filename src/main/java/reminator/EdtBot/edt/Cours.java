@@ -64,11 +64,21 @@ public class Cours implements Comparable<Cours> {
                 '}';
     }
 
-    public boolean isAccepted() {
-        return getSummary().contains("ELU") || getSummary().contains("**EXAMEN**") || getSummary().contains("PRESENTIEL") || getSummary().contains("DISTANCIEL") || getSummary().contains("PRESENTTIEL");
+    public boolean isAccepted(int annee) {
+        switch (annee) {
+            case 1 -> {
+                return getSummary().contains("ELU") || getSummary().contains("**EXAMEN**") || getSummary().contains("PRESENTIEL") || getSummary().contains("DISTANCIEL") || getSummary().contains("PRESENTTIEL");
+            }
+            case 2 -> {
+                return getSummary().contains("EMU") || getSummary().contains("**EXAMEN**") || getSummary().contains("PRESENTIEL") || getSummary().contains("DISTANCIEL") || getSummary().contains("PRESENTTIEL");
+            }
+            default -> {
+                return false;
+            }
+        }
     }
 
-    public boolean isNotAccepted() {
-        return !isAccepted();
+    public boolean isNotAccepted(int annee) {
+        return !isAccepted(annee);
     }
 }

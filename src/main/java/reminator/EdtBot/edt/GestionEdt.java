@@ -25,14 +25,7 @@ public abstract class GestionEdt {
         return getNextCourses();
     }
 
-    private ArrayList<Cours> getNextCourses() {
-
-        Date date = new Date();
-
-        TreeSet<Cours> nextCourses = new TreeSet<>(new TreeSet<>(courses).tailSet(new Cours(null, new Date(date.getTime() - 500 * 3600), null, null)));
-        nextCourses.removeIf(Cours::isNotAccepted);
-        return new ArrayList<>(nextCourses.headSet(nextCourses.first(), true));
-    }
+    protected abstract ArrayList<Cours> getNextCourses();
 
     public TypeCourse getTypeCours(Cours cours) {
 

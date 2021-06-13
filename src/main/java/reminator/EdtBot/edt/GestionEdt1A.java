@@ -8,7 +8,9 @@ import reminator.EdtBot.utils.HTTPRequest;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.TreeSet;
 
 public class GestionEdt1A extends GestionEdt {
 
@@ -17,6 +19,16 @@ public class GestionEdt1A extends GestionEdt {
     private String edt1;
     private String edt2;
 
+
+    @Override
+    protected ArrayList<Cours> getNextCourses() {
+
+        Date date = new Date();
+
+        TreeSet<Cours> nextCourses = new TreeSet<>(new TreeSet<>(courses).tailSet(new Cours(null, new Date(date.getTime() - 500 * 3600), null, null)));
+        nextCourses.removeIf(c -> c.isNotAccepted(1));
+        return new ArrayList<>(nextCourses.headSet(nextCourses.first(), true));
+    }
 
     @Override
     protected void updateEdt() {
