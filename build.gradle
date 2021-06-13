@@ -8,8 +8,6 @@ mainClassName = 'reminator.EdtBot.bot.EdtBot'
 version '1.0'
 def jdaVersion = '4.2.0_214'
 
-sourceCompatibility = targetCompatibility = 1.8
-
 repositories {
     jcenter()
 }
