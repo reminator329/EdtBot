@@ -55,7 +55,7 @@ public class ProchainCoursCommand implements Command {
             channel.sendMessage("Commande mal utilisée, voir `edt!help prochain-cours`.").queue();
             return;
         }
-        switch (args.get(1)) {
+        switch (args.get(0)) {
             case "1A" -> gestionEdt = new GestionEdt1A();
             case "2A" -> gestionEdt = new GestionEdt2A();
             default -> {
