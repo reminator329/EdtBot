@@ -56,8 +56,8 @@ public class ProchainCoursCommand implements Command {
             return;
         }
         switch (args.get(0)) {
-            case "1A" -> gestionEdt = new GestionEdt1A();
-            case "2A" -> gestionEdt = new GestionEdt2A();
+            case "1A", "1" -> gestionEdt = new GestionEdt1A();
+            case "2A", "2" -> gestionEdt = new GestionEdt2A();
             default -> {
                 channel.sendMessage(args.get(1) + " n'est pas un paramètre valide.").queue();
                 return;
