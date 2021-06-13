@@ -46,8 +46,7 @@ jobs:
       run: ssh azure "sudo pkill -f 'java -jar'"
     - name: Upload jar on Azure VM
       run: |
-        ssh azure 'sudo su ; echo "/usr/lib/jvm/java-16-openjdk-amd64/bin/java -jar /EdtBot/EdtBot-1.0-all.jar ${{ secrets.BOT_TOKEN }} >> /EdtBot/log.txt 2>> /EdtBot/log.txt" > /EdtBot/run.sh'
-        ssh azure 'chmod 700 /EdtBot/run.sh'
+        ssh azure 'echo "/usr/lib/jvm/java-16-openjdk-amd64/bin/java -jar /EdtBot/EdtBot-1.0-all.jar ${{ secrets.BOT_TOKEN }} >> /EdtBot/log.txt 2>> /EdtBot/log.txt" > /EdtBot/run.sh'
         scp build/libs/EdtBot-1.0-all.jar azure:/EdtBot
     - name: Start the bot
       run: ssh azure 'cd /EdtBot ; sudo ./run.sh > /dev/null' &
