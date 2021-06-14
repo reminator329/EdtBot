@@ -53,7 +53,6 @@ public class EcouteursEdt {
             bw.close();
         } catch (IOException e) {
             e.printStackTrace();
-            return;
         }
     }
 
@@ -72,7 +71,8 @@ public class EcouteursEdt {
                     cours[0].clear();
                     cours[0].addAll(pCours[0]);
                     for (Cours c : cours[0]) {
-                            gestionEdt.printCourse(c, channel);
+                        if (s[0]) s[0] = false;
+                        else gestionEdt.printCourse(c, channel);
                     }
                 }
             }
