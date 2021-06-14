@@ -8,9 +8,7 @@ import reminator.EdtBot.utils.HTTPRequest;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.TreeSet;
+import java.util.*;
 
 public class GestionEdt1A extends GestionEdt {
 
@@ -25,18 +23,20 @@ public class GestionEdt1A extends GestionEdt {
 
         Date date = new Date();
 
-        TreeSet<Cours> nextCourses = new TreeSet<>(new TreeSet<>(courses).tailSet(new Cours(null, new Date(date.getTime() - 500 * 3600), null, null)));
+        TreeSet<Cours> nextCourses = new TreeSet<>(courses);
         nextCourses.removeIf(c -> c.isNotAccepted(1));
+
+        new TreeSet<>(new TreeSet<>(nextCourses.tailSet(new Cours(null, new Date(date.getTime() - 500 * 3600), null, null))));
         return new ArrayList<>(nextCourses.headSet(nextCourses.first(), true));
     }
 
     @Override
-    protected void updateEdt() {
+    protected void updateEdt(long min, long max) {
+        super.updateEdt(min, max);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
-        Date date = new Date();
 
-        String timeMin = dateFormat.format(date).replace(":", "%3A").replace("+", "%2B");
-        String timeMax = dateFormat.format(new Date(date.getTime() + 1000 * 3600 * 24 * 14)).replace(":", "%3A").replace("+", "%2B");
+        String timeMin = dateFormat.format(new Date(min)).replace(":", "%3A").replace("+", "%2B");
+        String timeMax = dateFormat.format(new Date(max)).replace(":", "%3A").replace("+", "%2B");
 
         try {
             this.edt01 = Edt.EDT01.getHTTPRequest(timeMin, timeMax).GET();

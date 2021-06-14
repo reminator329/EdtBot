@@ -13,7 +13,9 @@ public enum Commands {
     PING(new PingCommand()),
     HELP(new HelpCommand()),
     NEXT_COURSE(new ProchainCoursCommand()),
-    LISTEN_EDT(new EcouteEdtCommand());
+    WEEK(new WeekCommand()),
+    LISTEN_EDT(new EcouteEdtCommand()),
+    ;
 
     private final Command command;
 

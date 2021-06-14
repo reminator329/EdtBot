@@ -1,7 +1,6 @@
 package reminator.EdtBot.Commands;
 
 import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent;
 import reminator.EdtBot.Categories.Category;
@@ -9,9 +8,11 @@ import reminator.EdtBot.Categories.enums.Categories;
 import reminator.EdtBot.edt.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
-public class ProchainCoursCommand implements Command {
+public class WeekCommand implements Command {
 
     @Override
     public Category getCategory() {
@@ -20,29 +21,17 @@ public class ProchainCoursCommand implements Command {
 
     @Override
     public String getLabel() {
-        return "prochain-cours";
+        return "week";
     }
 
     @Override
     public String[] getAlliass() {
-        return new String[]{"next", "pc", "n", "p-c"};
+        return new String[]{"w", "nw", "n-w", "next-week"};
     }
 
     @Override
     public String getDescription() {
-        return "Donne les détails du prochain cours.";
-    }
-
-    @Override
-    public String getSignature() {
-        return Command.super.getSignature() + " <(1|2|3)A>";
-    }
-
-    @Override
-    public MessageEmbed.Field[] getExtraFields() {
-        return new MessageEmbed.Field[]{
-                new MessageEmbed.Field("Exemple", "edt!prochain-cours 2A", false),
-        };
+        return "Donne les cours de la semaine en cours ou suivante en fonction du prochain cours.";
     }
 
     @Override
@@ -61,9 +50,7 @@ public class ProchainCoursCommand implements Command {
                 return;
             }
         }
-        ArrayList<Cours> courss = gestionEdt.getNextCourse();
-        for (Cours cours : courss) {
-            gestionEdt.printCourse(cours, channel);
-        }
+        Map<Integer, ArrayList<Cours>> week = gestionEdt.getNextWeek();
+        gestionEdt.printWeek(week, channel);
     }
 }

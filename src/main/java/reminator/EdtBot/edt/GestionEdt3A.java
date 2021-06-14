@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Map;
 import java.util.TreeSet;
 
 public class GestionEdt3A extends GestionEdt {
@@ -31,12 +32,12 @@ public class GestionEdt3A extends GestionEdt {
     }
 
     @Override
-    protected void updateEdt() {
+    protected void updateEdt(long min, long max) {
+        super.updateEdt(min, max);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
-        Date date = new Date();
 
-        String timeMin = dateFormat.format(date).replace(":", "%3A").replace("+", "%2B");
-        String timeMax = dateFormat.format(new Date(date.getTime() + 1000L * 3600 * 24 * 7 * 20 )).replace(":", "%3A").replace("+", "%2B");
+        String timeMin = dateFormat.format(new Date(min)).replace(":", "%3A").replace("+", "%2B");
+        String timeMax = dateFormat.format(new Date(max)).replace(":", "%3A").replace("+", "%2B");
 
         try {
             this.edt3A = Edt.EDT_3A_C.getHTTPRequest(timeMin, timeMax).GET();
