@@ -62,6 +62,10 @@ public class EcouteursEdt {
         final ArrayList<Cours>[] cours = new ArrayList[]{new ArrayList<Cours>()};
         final ArrayList<Cours>[] pCours = new ArrayList[]{new ArrayList<Cours>()};
         final boolean[] s = {start};
+
+        Calendar cal = Calendar.getInstance();
+        final int[] currentWeek = {-1};
+
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -70,10 +74,17 @@ public class EcouteursEdt {
                 if (cours[0].size() == 0 || !cours[0].get(0).getSummary().equals(pCours[0].get(0).getSummary())) {
                     cours[0].clear();
                     cours[0].addAll(pCours[0]);
-                    for (Cours c : cours[0]) {
-                        if (s[0]) s[0] = false;
-                        else gestionEdt.printCourse(c, channel);
+
+                    cal.setTime(cours[0].get(0).getStart());
+                    if (!s[0] && currentWeek[0] != cal.get(Calendar.WEEK_OF_MONTH)) {
+                        gestionEdt.printWeek(gestionEdt.getNextWeek(), channel);
+                        currentWeek[0] = cal.get(Calendar.WEEK_OF_MONTH);
                     }
+
+                    for (Cours c : cours[0]) {
+                        if (!s[0]) gestionEdt.printCourse(c, channel);
+                    }
+                    s[0] = false;
                 }
             }
         }, 0, 1000 * 60/*500 * 3600*/);

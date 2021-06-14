@@ -58,7 +58,7 @@ public abstract class GestionEdt {
                 Calendar cal2 = Calendar.getInstance();
                 cal2.setTime(c.getStart());
                 return i == cal2.get(Calendar.DAY_OF_WEEK);
-            }).forEach(day::add);
+            }).sorted().forEach(day::add);
 
             if (this instanceof GestionEdt1A)
                 day.removeIf(c -> c.isNotAccepted(1));
