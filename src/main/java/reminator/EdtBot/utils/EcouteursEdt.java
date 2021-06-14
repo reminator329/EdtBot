@@ -72,10 +72,7 @@ public class EcouteursEdt {
                     cours[0].clear();
                     cours[0].addAll(pCours[0]);
                     for (Cours c : cours[0]) {
-                        if (s[0]) {
                             gestionEdt.printCourse(c, channel);
-                            s[0] = false;
-                        }
                     }
                 }
             }
