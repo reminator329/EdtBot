@@ -42,7 +42,7 @@ public class Controller extends ListenerAdapter {
 
     @Override
     public void onGuildMessageUpdate(@NotNull GuildMessageUpdateEvent event) {
-        event.getChannel().sendMessage("!p test").queue();
+        //event.getChannel().sendMessage("!p test").queue();
     }
 
     @Override
