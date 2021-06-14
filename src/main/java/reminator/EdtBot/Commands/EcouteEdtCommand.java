@@ -8,14 +8,13 @@ import reminator.EdtBot.Categories.enums.Categories;
 import reminator.EdtBot.edt.Cours;
 import reminator.EdtBot.edt.GestionEdt;
 import reminator.EdtBot.edt.GestionEdt1A;
+import reminator.EdtBot.edt.GestionEdt2A;
+import reminator.EdtBot.utils.EcouteursEdt;
 
 import java.util.*;
 import java.util.List;
 
 public class EcouteEdtCommand implements Command {
-
-    private final List<MessageChannel> ecoutes = new ArrayList<>();
-    private Timer timer;
 
     @Override
     public String getName() {
@@ -50,37 +49,27 @@ public class EcouteEdtCommand implements Command {
             return;
         }
 
-        if (ecoutes.contains(channel)) {
-            channel.sendMessage("Arrêt de la commande").queue();
-            ecoutes.remove(channel);
-            timer.cancel();
-            timer.purge();
-        } else {
-            channel.sendMessage("Début de la commande").queue();
-            ecoutes.add(channel);
-            lancerTimer(channel);
+        if (args.size() == 0) {
+            channel.sendMessage("Commande mal utilisée, voir `edt!help ecoute-edt`.").queue();
+            return;
         }
-    }
-
-    private void lancerTimer(MessageChannel channel) {
-
-        timer = new Timer();
-        final ArrayList<Cours>[] cours = new ArrayList[]{new ArrayList<Cours>()};
-        final ArrayList<Cours>[] pCours = new ArrayList[]{new ArrayList<Cours>()};
-        GestionEdt gestionEdt = new GestionEdt1A();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                pCours[0].clear();
-                pCours[0].addAll(gestionEdt.getNextCourse());
-                if (cours[0].size() == 0 || !cours[0].get(0).getSummary().equals(pCours[0].get(0).getSummary())) {
-                    cours[0].clear();
-                    cours[0].addAll(pCours[0]);
-                    for (Cours c : cours[0]) {
-                        gestionEdt.printCourse(c, channel);
-                    }
-                }
+        int annee;
+        switch (args.get(0)) {
+            case "1A", "1" -> annee = 1;
+            case "2A", "2" -> annee = 2;
+            case "3A", "3" -> annee = 3;
+            case "stop" -> {
+                channel.sendMessage("Arrêt de la commande").queue();
+                new EcouteursEdt().supprimerEcouteur(channel.getId());
+                return;
             }
-        }, 0, 1000 * 60/*500 * 3600*/);
+            default -> {
+                channel.sendMessage(args.get(0) + " n'est pas un paramètre valide.").queue();
+                return;
+            }
+        }
+
+        channel.sendMessage("Début de la commande").queue();
+        new EcouteursEdt().ajoutEcouteur(channel.getId(), annee);
     }
 }

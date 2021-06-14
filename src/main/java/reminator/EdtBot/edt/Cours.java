@@ -1,11 +1,7 @@
 package reminator.EdtBot.edt;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Cours implements Comparable<Cours> {
@@ -67,10 +63,24 @@ public class Cours implements Comparable<Cours> {
     public boolean isAccepted(int annee) {
         switch (annee) {
             case 1 -> {
-                return getSummary().contains("ELU") || getSummary().contains("**EXAMEN**") || getSummary().contains("PRESENTIEL") || getSummary().contains("DISTANCIEL") || getSummary().contains("PRESENTTIEL");
+                return getSummary().contains("ELU") ||
+                        getSummary().contains("**EXAMEN**") ||
+                        getSummary().contains("ACCUEIL") ||
+                        getSummary().contains("Réunion Information") ||
+                        getSummary().contains("UPSSITECH");
             }
             case 2 -> {
-                return getSummary().contains("EMU") || getSummary().contains("**EXAMEN**") || getSummary().contains("PRESENTIEL") || getSummary().contains("DISTANCIEL") || getSummary().contains("PRESENTTIEL");
+                return getSummary().contains("EMU") ||
+                        getSummary().contains("Réunion de rentrée") ||
+                        getSummary().contains("Jeu d'accueil Ecole") ||
+                        getSummary().contains("TER");
+            }
+            case 3 -> {
+                return getSummary().contains("EIU") ||
+                        getSummary().contains("Projet") ||
+                        getSummary().contains("PGE") ||
+                        getSummary().contains("Accessibilité") ||
+                        getSummary().contains("Réunion de rentrée");
             }
             default -> {
                 return false;

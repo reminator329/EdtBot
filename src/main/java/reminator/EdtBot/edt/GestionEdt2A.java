@@ -22,8 +22,10 @@ public class GestionEdt2A extends GestionEdt {
 
         Date date = new Date();
 
-        TreeSet<Cours> nextCourses = new TreeSet<>(new TreeSet<>(courses).tailSet(new Cours(null, new Date(date.getTime() - 500 * 3600), null, null)));
+        TreeSet<Cours> nextCourses = new TreeSet<>(courses);
         nextCourses.removeIf(c -> c.isNotAccepted(2));
+
+        nextCourses = new TreeSet<>(nextCourses.tailSet(new Cours(null, new Date(date.getTime() - 500 * 3600), null, null)));
         return new ArrayList<>(nextCourses.headSet(nextCourses.first(), true));
     }
 

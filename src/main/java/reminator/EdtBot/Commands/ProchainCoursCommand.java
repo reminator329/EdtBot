@@ -59,7 +59,7 @@ public class ProchainCoursCommand implements Command {
             case "1A", "1" -> gestionEdt = new GestionEdt1A();
             case "2A", "2" -> gestionEdt = new GestionEdt2A();
             default -> {
-                channel.sendMessage(args.get(1) + " n'est pas un paramètre valide.").queue();
+                channel.sendMessage(args.get(0) + " n'est pas un paramètre valide.").queue();
                 return;
             }
         }

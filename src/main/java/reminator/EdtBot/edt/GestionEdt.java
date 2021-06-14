@@ -54,7 +54,8 @@ public abstract class GestionEdt {
             Cours c = new CoursParser(groupe).parse(courss.getJSONObject(i));
             TypeCourse type = getTypeCours(c);
             c.setType(type);
-            courses.add(c);
+            if (c.getStart() != null)
+                courses.add(c);
         }
     }
 

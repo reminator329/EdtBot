@@ -3,12 +3,20 @@ package reminator.EdtBot.edt.enums;
 import reminator.EdtBot.utils.HTTPRequest;
 
 public enum Edt {
-    EDT01("jjr0au21evqc6guauvan3034ug"),
-    EDT02("8nam511995lbsisujjcq80h964"),
-    EDT1("4jpbp5hcdimlmov6kscioe4am8"),
-    EDT2("e44ep4hdrj5b2defqf9mmcpd2k"),
-    EDT_2A("b99stiti1jc6in7n2cf9buoquk"),
-    EDT_2A_TP("db3arpv5ok1h4sd8rumvgd3cgc"),
+    // 1A
+    EDT01("jjr0au21evqc6guauvan3034ug@group.calendar.google.com"),
+    EDT02("8nam511995lbsisujjcq80h964@group.calendar.google.com"),
+    EDT1("4jpbp5hcdimlmov6kscioe4am8@group.calendar.google.com"),
+    EDT2("e44ep4hdrj5b2defqf9mmcpd2k@group.calendar.google.com"),
+
+    //2A
+    EDT_2A("b99stiti1jc6in7n2cf9buoquk@group.calendar.google.com"),
+    EDT_2A_TP("db3arpv5ok1h4sd8rumvgd3cgc@group.calendar.google.com"),
+
+    //3A
+    EDT_3A_C("master.sir.ups@gmail.com"),
+    EDT_3A_G1("lg0vrqu5jj8autgtnf6nep2cgo@group.calendar.google.com"),
+    EDT_3A_G2("gdlsf0bsq0jgg6alasc48epf14@group.calendar.google.com")
     ;
 
     private final String id;
@@ -18,7 +26,7 @@ public enum Edt {
     }
 
     private String getUrl() {
-        return "https://clients6.google.com/calendar/v3/calendars/" + id + "@group.calendar.google.com/events?calendarId=" + id + "@group.calendar.google.com&singleEvents=true&timeZone=Europe/Paris&maxAttendees=1&maxResults=250&sanitizeHtml=true";
+        return "https://clients6.google.com/calendar/v3/calendars/" + id + "/events?calendarId=" + id + "&singleEvents=true&timeZone=Europe/Paris&maxAttendees=1&maxResults=250&sanitizeHtml=true";
     }
 
     private String getUrl(String timeMin, String timeMax) {
