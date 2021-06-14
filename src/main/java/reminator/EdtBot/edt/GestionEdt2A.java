@@ -56,6 +56,7 @@ public class GestionEdt2A extends GestionEdt {
 
     @Override
     protected void updateCsv() {
+        // TODO créer un CSV
         try {
             csv = new HTTPRequest(Liens.CSV_1A.getUrl()).GET();
         } catch (IOException e) {
