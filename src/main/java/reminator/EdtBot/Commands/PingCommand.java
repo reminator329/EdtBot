@@ -1,8 +1,11 @@
 package reminator.EdtBot.Commands;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import reminator.EdtBot.Categories.Category;
 import reminator.EdtBot.Categories.enums.Categories;
 import reminator.EdtBot.bot.BotEmbed;
@@ -32,9 +35,17 @@ public class PingCommand implements Command {
     }
 
     @Override
-    public void execute(GuildMessageReceivedEvent event, User author, MessageChannel channel, List<String> args) {
+    public void execute(GenericGuildMessageEvent e, User author, MessageChannel channel, List<String> args) {
 
-        EmbedBuilder builder = BotEmbed.SPOTIFY.getBuilder(event.getMember());
+        EmbedBuilder builder;
+        if (e instanceof GuildMessageReceivedEvent event) {
+            builder = BotEmbed.SPOTIFY.getBuilder(event.getMember());
+        } else if (e instanceof GuildMessageUpdateEvent event){
+            builder = BotEmbed.SPOTIFY.getBuilder(event.getMember());
+        } else {
+            return;
+        }
+
         builder.setTitle("Pong !");
 
         channel.sendMessage(builder.build()).queue();

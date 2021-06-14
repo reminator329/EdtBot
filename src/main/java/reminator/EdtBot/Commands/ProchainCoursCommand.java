@@ -3,6 +3,7 @@ package reminator.EdtBot.Commands;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import reminator.EdtBot.Categories.Category;
 import reminator.EdtBot.Categories.enums.Categories;
@@ -49,7 +50,7 @@ public class ProchainCoursCommand implements Command {
     }
 
     @Override
-    public void execute(GuildMessageReceivedEvent event, User author, MessageChannel channel, List<String> args) {
+    public void execute(GenericGuildMessageEvent event, User author, MessageChannel channel, List<String> args) {
         GestionEdt gestionEdt;
         if (args.size() == 0) {
             channel.sendMessage("Commande mal utilisée, voir `edt!help prochain-cours`.").queue();

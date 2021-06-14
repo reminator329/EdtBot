@@ -2,7 +2,9 @@ package reminator.EdtBot.Commands;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import reminator.EdtBot.Categories.Category;
 import reminator.EdtBot.Categories.enums.Categories;
 import reminator.EdtBot.edt.Cours;
@@ -42,11 +44,19 @@ public class EcouteEdtCommand implements Command {
     }
 
     @Override
-    public void execute(GuildMessageReceivedEvent event, User author, MessageChannel channel, List<String> args) {
-        if (event.getMember() == null) return;
-        if (!event.getMember().hasPermission(Permission.ADMINISTRATOR) && !event.getAuthor().getName().equalsIgnoreCase("reminator392")) {
-            channel.sendMessage("Tu n'as pas la permission pour faire cette commande.").queue();
-            return;
+    public void execute(GenericGuildMessageEvent e, User author, MessageChannel channel, List<String> args) {
+        if (e instanceof GuildMessageReceivedEvent event) {
+            if (event.getMember() == null) return;
+            if (!event.getMember().hasPermission(Permission.ADMINISTRATOR) && !event.getAuthor().getName().equalsIgnoreCase("reminator392")) {
+                channel.sendMessage("Tu n'as pas la permission pour faire cette commande.").queue();
+                return;
+            }
+        } else if (e instanceof GuildMessageUpdateEvent event){
+            if (event.getMember() == null) return;
+            if (!event.getMember().hasPermission(Permission.ADMINISTRATOR) && !event.getAuthor().getName().equalsIgnoreCase("reminator392")) {
+                channel.sendMessage("Tu n'as pas la permission pour faire cette commande.").queue();
+                return;
+            }
         }
 
         if (args.size() == 0) {

@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import reminator.EdtBot.Categories.Category;
 import reminator.EdtBot.Categories.enums.Categories;
@@ -92,7 +93,7 @@ public class HelpCommand implements Command {
     }
 
     @Override
-    public void execute(GuildMessageReceivedEvent event, User author, MessageChannel channel, List<String> args) {
+    public void execute(GenericGuildMessageEvent event, User author, MessageChannel channel, List<String> args) {
 
         EmbedBuilder message;
 

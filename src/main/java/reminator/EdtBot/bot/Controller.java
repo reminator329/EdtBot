@@ -42,7 +42,25 @@ public class Controller extends ListenerAdapter {
 
     @Override
     public void onGuildMessageUpdate(@NotNull GuildMessageUpdateEvent event) {
-        //event.getChannel().sendMessage("!p test").queue();
+        if (event.getAuthor().isBot()) return;
+        List<String> args = new ArrayList<>(Arrays.asList(event.getMessage().getContentRaw().split("\\s+")));
+
+        String command = args.get(0);
+
+        for (Commands c : Commands.values()) {
+            Command cmd = c.getCommand();
+            String prefix = cmd.getPrefix();
+            String label = cmd.getLabel();
+            String prefixLabel = prefix + label;
+
+            String[] separation = command.split(prefix);
+
+            if (prefixLabel.equalsIgnoreCase(command) || separation.length > 1 && cmd.isAlias(separation[1])) {
+                args.remove(0);
+                c.getCommand().execute(event, event.getAuthor(), event.getChannel(), args);
+                return;
+            }
+        }
     }
 
     @Override
