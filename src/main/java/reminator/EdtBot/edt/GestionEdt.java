@@ -35,7 +35,8 @@ public abstract class GestionEdt {
     public Map<Integer, ArrayList<Cours>> getNextWeek() {
 
         Calendar cal = Calendar.getInstance();
-        cal.setTime(getNextCourse().get(0).getStart());
+        Date nextCourse = getNextCourse().get(0).getStart();
+        cal.setTime(nextCourse);
         System.out.println(cal.getTime());
 
         cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
@@ -132,7 +133,7 @@ public abstract class GestionEdt {
         for (Map.Entry<Integer, ArrayList<Cours>> entry : week.entrySet()) {
             if (entry.getValue().size() != 0) {
                 EmbedBuilder builder = BotEmbed.BASE.getBuilder(null);
-                cal.set(Calendar.DAY_OF_WEEK, entry.getKey());
+                cal.setTime(entry.getValue().get(0).getStart());
 
                 builder.setTitle(jour.format(cal.getTime()));
                 builder.setDescription(entry.getValue().stream().map(c -> String.format("**%s - %s** %s", heure.format(c.getStart()), heure.format(c.getEnd()), c.getSummary())).collect(Collectors.joining("\n")));
