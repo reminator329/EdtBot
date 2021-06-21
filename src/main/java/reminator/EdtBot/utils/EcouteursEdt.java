@@ -76,15 +76,19 @@ public class EcouteursEdt {
                     cours[0].addAll(pCours[0]);
 
                     cal.setTime(cours[0].get(0).getStart());
-                    if (!s[0] && currentWeek[0] != cal.get(Calendar.WEEK_OF_MONTH)) {
-                        gestionEdt.printWeek(gestionEdt.getNextWeek(), channel);
-                        currentWeek[0] = cal.get(Calendar.WEEK_OF_MONTH);
-                    }
 
-                    for (Cours c : cours[0]) {
-                        if (!s[0]) gestionEdt.printCourse(c, channel);
+                    if (!s[0]) {
+                        if (currentWeek[0] != cal.get(Calendar.WEEK_OF_YEAR)) {
+                            gestionEdt.printWeek(gestionEdt.getNextWeek(), channel);
+                        }
+
+                        for (Cours c : cours[0]) {
+                            gestionEdt.printCourse(c, channel);
+                        }
+                    } else {
+                        currentWeek[0] = cal.get(Calendar.WEEK_OF_YEAR);
+                        s[0] = false;
                     }
-                    s[0] = false;
                 }
             }
         }, 0, 1000 * 60/*500 * 3600*/);

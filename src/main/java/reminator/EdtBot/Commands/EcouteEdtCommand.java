@@ -7,13 +7,8 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import reminator.EdtBot.Categories.Category;
 import reminator.EdtBot.Categories.enums.Categories;
-import reminator.EdtBot.edt.Cours;
-import reminator.EdtBot.edt.GestionEdt;
-import reminator.EdtBot.edt.GestionEdt1A;
-import reminator.EdtBot.edt.GestionEdt2A;
 import reminator.EdtBot.utils.EcouteursEdt;
 
-import java.util.*;
 import java.util.List;
 
 public class EcouteEdtCommand implements Command {
