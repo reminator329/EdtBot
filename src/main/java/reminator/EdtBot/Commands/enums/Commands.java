@@ -15,6 +15,7 @@ public enum Commands {
     NEXT_COURSE(new ProchainCoursCommand()),
     WEEK(new WeekCommand()),
     LISTEN_EDT(new EcouteEdtCommand()),
+    RESET_ROLES(new ResetRolesCommand())
     ;
 
     private final Command command;
