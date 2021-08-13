@@ -3,6 +3,7 @@ package reminator.EdtBot.Commands;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -60,12 +61,30 @@ public class ResetRolesCommand implements Command {
 
         e.getGuild().getMembers().forEach(member -> {
             member.getRoles().forEach(role -> {
-                if (role.getName().equalsIgnoreCase("SRI")) {
+                if (isRole(role)) {
                     e.getGuild().removeRoleFromMember(member, role).queue();
-                    channel.sendMessage("Role " + role + " supprimé pour " + member.getAsMention()).queue();
+                    channel.sendMessage("Role " + role.getAsMention() + " supprimé pour " + member.getAsMention()).queue();
                 }
             });
         });
 
+    }
+
+    private boolean isRole(Role r) {
+        String name = r.getName();
+        return name.equalsIgnoreCase("SRI") ||
+                name.equalsIgnoreCase("SRI - 1A") ||
+                name.equalsIgnoreCase("SRI - 2A") ||
+                name.equalsIgnoreCase("SRI - 3A") ||
+
+                name.equalsIgnoreCase("STRI") ||
+                name.equalsIgnoreCase("STRI - 1A") ||
+                name.equalsIgnoreCase("STRI - 2A") ||
+                name.equalsIgnoreCase("STRI - 3A") ||
+
+                name.equalsIgnoreCase("GCGO") ||
+                name.equalsIgnoreCase("GCGO - 1A") ||
+                name.equalsIgnoreCase("GCGO - 2A") ||
+                name.equalsIgnoreCase("GCGO - 3A");
     }
 }
