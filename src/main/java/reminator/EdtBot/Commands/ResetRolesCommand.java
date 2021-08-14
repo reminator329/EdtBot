@@ -82,9 +82,12 @@ public class ResetRolesCommand implements Command {
                 name.equalsIgnoreCase("STRI - 2A") ||
                 name.equalsIgnoreCase("STRI - 3A") ||
 
-                name.equalsIgnoreCase("GCGO") ||
-                name.equalsIgnoreCase("GCGO - 1A") ||
-                name.equalsIgnoreCase("GCGO - 2A") ||
-                name.equalsIgnoreCase("GCGO - 3A");
+                name.equalsIgnoreCase("GCGEO") ||
+                name.equalsIgnoreCase("GCGEO - 1A") ||
+                name.equalsIgnoreCase("GCGEO - 2A") ||
+                name.equalsIgnoreCase("GCGEO - 3A") ||
+
+                name.equalsIgnoreCase("Etudiant") ||
+                name.equalsIgnoreCase("Resp. Disc.");
     }
 }
