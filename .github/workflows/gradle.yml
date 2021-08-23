@@ -44,6 +44,8 @@ jobs:
         SSH_HOST: ${{ secrets.SSH_HOST }}
     - name: Stop the bot
       run: ssh azure "sudo pkill -f 'java -jar'"
+    - name: Copy images
+      run: scp -r src/main/resources/images azure:/EdtBot/images
     - name: Upload jar on Azure VM
       run: |
         ssh azure 'echo "/usr/lib/jvm/java-16-oracle/bin/java -jar /EdtBot/EdtBot-1.0-all.jar ${{ secrets.BOT_TOKEN }} ${{ secrets.CSV_1A }} >> /EdtBot/log.txt 2>> /EdtBot/log.txt" > /EdtBot/run.sh'
