@@ -80,6 +80,7 @@ public class EcouteursEdt {
                     if (!s[0]) {
                         if (currentWeek[0] != cal.get(Calendar.WEEK_OF_YEAR)) {
                             gestionEdt.printWeek(gestionEdt.getNextWeek(), channel);
+                            currentWeek[0] = cal.get(Calendar.WEEK_OF_YEAR);
                         }
 
                         for (Cours c : cours[0]) {

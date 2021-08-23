@@ -67,7 +67,6 @@ public class ResetRolesCommand implements Command {
                 }
             });
         });
-
     }
 
     private boolean isRole(Role r) {
