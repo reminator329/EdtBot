@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import reminator.EdtBot.bot.BotEmbed;
 import reminator.EdtBot.utils.CoursParser;
 
+import java.awt.*;
 import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -136,6 +137,7 @@ public abstract class GestionEdt {
                 cal.setTime(entry.getValue().get(0).getStart());
 
                 builder.setTitle(jour.format(cal.getTime()));
+                builder.setColor(Color.GREEN);
                 builder.setDescription(entry.getValue().stream().map(c -> String.format("**%s - %s** %s", heure.format(c.getStart()), heure.format(c.getEnd()), c.getSummary())).collect(Collectors.joining("\n")));
                 channel.sendMessage(builder.build()).queue();
             }
