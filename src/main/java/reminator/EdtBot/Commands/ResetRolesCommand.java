@@ -13,7 +13,11 @@ import reminator.EdtBot.Categories.enums.Categories;
 import reminator.EdtBot.bot.BotEmbed;
 import reminator.EdtBot.bot.EdtBot;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class ResetRolesCommand implements Command {
@@ -60,7 +64,24 @@ public class ResetRolesCommand implements Command {
             }
         }
         File file = new File("/EdtBot/images/pioche.png");
-        channel.sendMessage(" ").addFile(file).queue();
+
+        BufferedImage image;
+        try {
+
+            image = ImageIO.read(file);
+            //récupérer l'objet Graphics
+            Graphics g = image.getGraphics();
+            //afficher le texte sur les coordonnées(x=50, y=150)
+            g.drawString("Ceci n'est pas une pioche", 0, 0);
+            g.dispose();
+            //écrire l'image
+            ImageIO.write(image, "png", new File("pioche2.png"));
+
+            channel.sendMessage(" ").addFile(file).queue();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
 
         e.getGuild().getMembers().forEach(member -> {
             member.getRoles().forEach(role -> {
