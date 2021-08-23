@@ -81,11 +81,19 @@ public class ResetRolesCommand implements Command {
             file = new File("/EdtBot/images/pioche2.png");
             channel.sendMessage(" ").addFile(file).queue();
 
-            BufferedImage bufferedImage = new BufferedImage(1024, 512, BufferedImage.TYPE_3BYTE_BGR);
+            int width = 1024;
+            int height = 512;
+            BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
             g = bufferedImage.getGraphics();
             g.setColor(Color.GREEN);
+            g.drawRect(20, 20, 200, 200);
             g.setColor(Color.MAGENTA);
             g.drawString("Parfait", 50, 50);
+
+            g.setColor(Color.RED);
+            for (int i = 1 ; i < 5 ; i++) {
+                g.drawLine(width*i/5, 0, width*i/5, height);
+            }
             g.dispose();
             ImageIO.write(bufferedImage, "png", new File("/EdtBot/images/test.png"));
             file = new File("/EdtBot/images/test.png");
