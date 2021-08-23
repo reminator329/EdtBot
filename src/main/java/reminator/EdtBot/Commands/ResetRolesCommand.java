@@ -13,6 +13,7 @@ import reminator.EdtBot.Categories.enums.Categories;
 import reminator.EdtBot.bot.BotEmbed;
 import reminator.EdtBot.bot.EdtBot;
 
+import java.io.File;
 import java.util.List;
 
 public class ResetRolesCommand implements Command {
@@ -58,6 +59,8 @@ public class ResetRolesCommand implements Command {
                 return;
             }
         }
+        File file = new File("/EdtBot/images/pioche.png");
+        channel.sendMessage(" ").addFile(file).queue();
 
         e.getGuild().getMembers().forEach(member -> {
             member.getRoles().forEach(role -> {
