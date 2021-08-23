@@ -70,7 +70,7 @@ public class ResetRolesCommand implements Command {
 
             image = ImageIO.read(file);
             Graphics g = image.getGraphics();
-            g.drawImage(image, 50, 50, null);
+            g.drawImage(image, 50, 50, 500, 500, null);
             g.setColor(Color.BLACK);
             g.drawString("C'est quoi ce truc ?????", 0, 10);
             g.setColor(Color.MAGENTA);
