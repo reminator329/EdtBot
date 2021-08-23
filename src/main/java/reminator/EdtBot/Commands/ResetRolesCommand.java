@@ -75,6 +75,7 @@ public class ResetRolesCommand implements Command {
             g.dispose();
             ImageIO.write(image, "png", new File("pioche2.png"));
 
+            file = new File("/EdtBot/images/pioche2.png");
             channel.sendMessage(" ").addFile(file).queue();
         } catch (IOException ex) {
             ex.printStackTrace();
