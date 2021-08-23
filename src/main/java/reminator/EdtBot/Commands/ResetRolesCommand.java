@@ -70,10 +70,12 @@ public class ResetRolesCommand implements Command {
 
             image = ImageIO.read(file);
             Graphics g = image.getGraphics();
+            g.setColor(Color.BLACK);
+            g.drawString("C'est quoi ce truc ?????", 0, 0);
             g.setColor(Color.MAGENTA);
             g.drawString("Ceci n'est pas une pioche", 20, 20);
             g.dispose();
-            ImageIO.write(image, "png", new File("pioche2.png"));
+            ImageIO.write(image, "png", new File("/EdtBot/images/pioche2.png"));
 
             file = new File("/EdtBot/images/pioche2.png");
             channel.sendMessage(" ").addFile(file).queue();
