@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.User;
 import reminator.EdtBot.edt.Cours;
 import reminator.EdtBot.edt.TypeCourse;
 
+import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -19,16 +20,14 @@ public enum BotEmbed {
     BASE(o -> new EmbedBuilder().setColor(EdtBot.color)),
 
     BASE_USER(o -> {
-        if (!(o instanceof User))
+        if (!(o instanceof User user))
             return BotEmbed.BASE.getBuilder(null);
-        User user = (User) o;
         return BotEmbed.BASE.getBuilder(null).setFooter(user.getName(), user.getAvatarUrl());
     }),
 
     SPOTIFY(o -> {
-        if (!(o instanceof Member))
+        if (!(o instanceof Member member))
             return BotEmbed.BASE.getBuilder(null);
-        Member member = (Member) o;
         EmbedBuilder builder = BotEmbed.BASE.getBuilder(null);
         List<Activity> activities = member.getActivities();
         for (Activity a : activities) {
@@ -40,10 +39,14 @@ public enum BotEmbed {
     }),
 
     COURSE(o -> {
-        if (!(o instanceof Cours))
+        if (!(o instanceof Cours cours))
             return BotEmbed.BASE.getBuilder(null);
-        Cours cours = (Cours) o;
         EmbedBuilder builder = BotEmbed.BASE.getBuilder(null);
+        if (!cours.getSummary().contains("EXAMEN"))
+            builder.setColor(Color.CYAN);
+        else {
+            builder.setColor(Color.RED);
+        }
         addCourse(builder, cours);
         return builder;
     });
