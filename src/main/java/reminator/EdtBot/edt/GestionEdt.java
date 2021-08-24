@@ -6,7 +6,11 @@ import org.json.JSONArray;
 import reminator.EdtBot.bot.BotEmbed;
 import reminator.EdtBot.utils.CoursParser;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -131,6 +135,9 @@ public abstract class GestionEdt {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat jour = new SimpleDateFormat("EEEEEEEEEEEEEEEE dd MMMMMMMMMM", Locale.FRANCE);
         SimpleDateFormat heure = new SimpleDateFormat("H:mm", Locale.FRANCE);
+
+        printImageWeek(week, channel);
+
         for (Map.Entry<Integer, ArrayList<Cours>> entry : week.entrySet()) {
             if (entry.getValue().size() != 0) {
                 EmbedBuilder builder = BotEmbed.BASE.getBuilder(null);
@@ -141,6 +148,87 @@ public abstract class GestionEdt {
                 builder.setDescription(entry.getValue().stream().map(c -> String.format("**%s - %s** %s", heure.format(c.getStart()), heure.format(c.getEnd()), c.getSummary())).collect(Collectors.joining("\n")));
                 channel.sendMessage(builder.build()).queue();
             }
+        }
+    }
+
+    protected void printImageWeek(Map<Integer, ArrayList<Cours>> week, MessageChannel channel) {
+
+        File file;// = new File("/EdtBot/images/pioche.png");
+
+        BufferedImage image;
+        Graphics g;
+        try {
+            int startHour = 7;
+            int endHour = 20;
+            int nbHours = endHour - startHour;
+            int width = 1024;
+            int height = 512;
+            int fontHeight = 10;
+            int hourWidth = fontHeight*6;
+            int dayHeight = fontHeight*2;
+            int coursesWidth = (width - hourWidth);
+            int dayWidth = coursesWidth / 5;
+            int coursesHeight = (height - dayHeight);
+            int hourHeight = coursesHeight / 13;
+
+            int dayLineOffset = 15;
+            int hourLineOffset = 15;
+            int textOffset = 5;
+            int courseHorizontalOffset = 5;
+
+            BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
+            g = bufferedImage.getGraphics();
+
+            // Lines
+            g.setColor(Color.GRAY);
+            g.drawLine(hourWidth, 0, hourWidth, height);
+            g.drawLine(0, dayHeight, width, dayHeight);
+
+            for (int i = 1 ; i <= 5 ; i++) {
+                int startX = coursesWidth * i / 5 + hourWidth;
+                g.drawLine(startX, dayHeight - dayLineOffset, startX, height);
+            }
+
+            for (int i = 1; i <= nbHours; i ++) {
+                int startY = hourHeight * i + dayHeight;
+                g.drawLine(hourWidth - hourLineOffset, startY, width, startY);
+
+                int hour = startHour + i;
+                g.drawString("" + hour + "h", textOffset, dayHeight + i * hourHeight + textOffset);
+            }
+
+            // Date
+            g.setColor(Color.WHITE);
+            String mounth = "Août";
+            g.drawString(mounth, 5, dayHeight - 5);
+            for (int i = 0; i < 5; i++) {
+                String text = "";
+                switch (i) {
+                    case 0 -> text = "Lundi";
+                    case 1 -> text = "Mardi";
+                    case 2 -> text = "Mercredi";
+                    case 3 -> text = "Jeudi";
+                    case 4 -> text = "Vendredi";
+                }
+                text += " " + (23 + i);
+                g.drawString(text, hourWidth + i * coursesWidth / 5 + textOffset, dayHeight - 5);
+            }
+
+            // Courses
+            g.setColor(Color.ORANGE);
+            g.fillRoundRect(hourWidth + courseHorizontalOffset, dayHeight + hourHeight, dayWidth - 2 * courseHorizontalOffset, 10 * hourHeight, 20, 20);
+
+            for (Map.Entry<Integer, ArrayList<Cours>> entry : week.entrySet()) {
+
+            }
+
+            g.dispose();
+            ImageIO.write(bufferedImage, "png", new File("/EdtBot/images/test.png"));
+            file = new File("/EdtBot/images/test.png");
+            channel.sendMessage(" ").addFile(file).queue();
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 }
