@@ -178,7 +178,7 @@ public abstract class GestionEdt {
 
             BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
             g = (Graphics2D) bufferedImage.getGraphics();
-            g.setRenderingHints(new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON));
+            g.setRenderingHints(new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON));
             g.setRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON));
 
 
@@ -227,19 +227,19 @@ public abstract class GestionEdt {
                     default -> throw new IllegalStateException("Unexpected value: " + monthNumber);
                 };
                 g.setColor(Color.WHITE);
-                String mounth = "Août";
-                g.drawString(mounth, 5, dayHeight/2 + g.getFontMetrics().getHeight());
+                g.drawString(mois, hourWidth/2 - g.getFontMetrics().stringWidth(mois), dayHeight / 2 + g.getFontMetrics().getHeight()/2);
                 for (int i = 0; i < 5; i++) {
-                    String text = "";
-                    switch (i) {
-                        case 0 -> text = "Lundi";
-                        case 1 -> text = "Mardi";
-                        case 2 -> text = "Mercredi";
-                        case 3 -> text = "Jeudi";
-                        case 4 -> text = "Vendredi";
-                    }
+                    String text =
+                            switch (i) {
+                                case 0 -> "Lundi";
+                                case 1 -> "Mardi";
+                                case 2 -> "Mercredi";
+                                case 3 -> "Jeudi";
+                                case 4 -> "Vendredi";
+                                default -> throw new IllegalStateException("Unexpected value: " + i);
+                            };
                     text += " " + (firstDay + i);
-                    g.drawString(text, hourWidth + i * coursesWidth / 5 + coursesWidth / 10 - g.getFontMetrics().stringWidth(text)/2, dayHeight/2 + g.getFontMetrics().getHeight());
+                    g.drawString(text, hourWidth + i * coursesWidth / 5 + coursesWidth / 10 - g.getFontMetrics().stringWidth(text) / 2, dayHeight / 2 + g.getFontMetrics().getHeight()/2);
                 }
 
                 // Courses
