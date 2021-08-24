@@ -71,6 +71,7 @@ public class Cours implements Comparable<Cours> {
             }
             case 2 -> {
                 return getSummary().contains("EMU") ||
+                        getSummary().contains("EXAMEN") ||
                         getSummary().contains("Réunion de rentrée") ||
                         getSummary().contains("Jeu d'accueil Ecole") ||
                         getSummary().contains("TER");
