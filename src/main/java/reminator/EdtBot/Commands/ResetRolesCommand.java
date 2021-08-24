@@ -85,17 +85,14 @@ public class ResetRolesCommand implements Command {
             int width = 1024;
             int height = 512;
             int fontHeight = 10;
-            int hourWidth = fontHeight*4;
+            int hourWidth = fontHeight*6;
             int dayHeight = fontHeight*2;
             int edtLineHeight = (width - hourWidth);
 
             BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
             g = bufferedImage.getGraphics();
-            g.setColor(Color.GREEN);
-            //g.drawRect(20, 20, 200, 200);
-            g.setColor(Color.MAGENTA);
-            //g.drawString("Parfait", 50, 50);
 
+            // Lines
             g.setColor(Color.GRAY);
             g.drawLine(hourWidth, 0, hourWidth, height);
             g.drawLine(0, dayHeight, width, dayHeight);
@@ -103,6 +100,21 @@ public class ResetRolesCommand implements Command {
             for (int i = 1 ; i < 5 ; i++) {
                 int startX = edtLineHeight * i / 5 + hourWidth;
                 g.drawLine(startX, dayHeight, startX, height);
+            }
+
+            // Days
+            g.setColor(Color.WHITE);
+            for (int i = 0; i < 5; i++) {
+                String text = "";
+                switch (i) {
+                    case 0 -> text = "Lundi";
+                    case 1 -> text = "Mardi";
+                    case 2 -> text = "Mercredi";
+                    case 3 -> text = "Jeudi";
+                    case 4 -> text = "Vendredi";
+                }
+                text += " " + (23 + i);
+                g.drawString(text, hourWidth + i * edtLineHeight / 5, dayHeight - 5);
             }
 
             g.dispose();
