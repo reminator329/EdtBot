@@ -197,6 +197,29 @@ public abstract class GestionEdt {
             }
 
             // Date
+            Calendar cal = Calendar.getInstance();
+            Cours anyCourse = week.values().stream().findAny().get().get(0);
+            cal.setTime(anyCourse.getStart());
+            int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
+            int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+            int firstDay = dayOfMonth - (dayOfWeek - 2);
+
+            int monthNumber = cal.get(Calendar.MONTH);
+            String mois = switch (monthNumber) {
+                case 0 -> "Janvier";
+                case 1 -> "Février";
+                case 2 -> "Mars";
+                case 3 -> "Avril";
+                case 4 -> "Mai";
+                case 5 -> "Juin";
+                case 6 -> "Juillet";
+                case 7 -> "Août";
+                case 8 -> "Septembre";
+                case 9 -> "Octobre";
+                case 10 -> "Novembre";
+                case 11 -> "Décembre";
+                default -> throw new IllegalStateException("Unexpected value: " + monthNumber);
+            };
             g.setColor(Color.WHITE);
             String mounth = "Août";
             g.drawString(mounth, 5, dayHeight - 5);
@@ -209,14 +232,13 @@ public abstract class GestionEdt {
                     case 3 -> text = "Jeudi";
                     case 4 -> text = "Vendredi";
                 }
-                text += " " + (23 + i);
+                text += " " + (firstDay + i);
                 g.drawString(text, hourWidth + i * coursesWidth / 5 + textOffset, dayHeight - 5);
             }
 
             // Courses
             //g.fillRoundRect(hourWidth + courseHorizontalOffset, dayHeight + hourHeight, dayWidth - 2 * courseHorizontalOffset, 10 * hourHeight, 20, 20);
 
-            Calendar cal = Calendar.getInstance();
             for (Map.Entry<Integer, ArrayList<Cours>> entry : week.entrySet()) {
                 if (entry.getValue().size() != 0) {
                     for (Cours cours : entry.getValue()) {
