@@ -198,7 +198,9 @@ public abstract class GestionEdt {
 
             // Date
             Calendar cal = Calendar.getInstance();
+            channel.sendMessage("Ok").queue();
             Optional<ArrayList<Cours>> optAnyCourse = week.values().stream().findAny();
+            channel.sendMessage("Ok").queue();
             Cours anyCourse;
             if (optAnyCourse.isPresent()) {
                 anyCourse = optAnyCourse.get().get(0);
@@ -210,6 +212,7 @@ public abstract class GestionEdt {
             int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
             int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
             int firstDay = dayOfMonth - (dayOfWeek - 2);
+            channel.sendMessage("oui " + dayOfMonth + " " + dayOfWeek + " " + firstDay).queue();
 
             int monthNumber = cal.get(Calendar.MONTH);
             String mois = switch (monthNumber) {
