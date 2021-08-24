@@ -111,7 +111,7 @@ public class ResetRolesCommand implements Command {
                 g.drawLine(startX, dayHeight - dayLineOffset, startX, height);
             }
 
-            for (int i = 1; i < nbHours; i ++) {
+            for (int i = 1; i <= nbHours; i ++) {
                 int startY = hourHeight * i + dayHeight;
                 g.drawLine(hourWidth - hourLineOffset, startY, width, startY);
 
