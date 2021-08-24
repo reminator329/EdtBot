@@ -66,10 +66,11 @@ public class ResetRolesCommand implements Command {
         File file = new File("/EdtBot/images/pioche.png");
 
         BufferedImage image;
+        Graphics g;
         try {
-
+/*
             image = ImageIO.read(file);
-            Graphics g = image.getGraphics();
+            g = image.getGraphics();
             g.drawImage(image, 50, 50, 50, 50, null);
             g.setColor(Color.BLACK);
             g.drawString("C'est quoi ce truc ?????", 0, 10);
@@ -80,19 +81,23 @@ public class ResetRolesCommand implements Command {
 
             file = new File("/EdtBot/images/pioche2.png");
             channel.sendMessage(" ").addFile(file).queue();
-
+*/
             int width = 1024;
             int height = 512;
+            int fontHeight = 10;
+
             BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
             g = bufferedImage.getGraphics();
             g.setColor(Color.GREEN);
-            g.drawRect(20, 20, 200, 200);
+            //g.drawRect(20, 20, 200, 200);
             g.setColor(Color.MAGENTA);
-            g.drawString("Parfait", 50, 50);
+            //g.drawString("Parfait", 50, 50);
 
-            g.setColor(Color.RED);
+            g.setColor(Color.GRAY);
+            g.drawLine(fontHeight*2, 0, fontHeight*2, height);
+            g.drawLine(0, fontHeight*2, width, fontHeight*2);
             for (int i = 1 ; i < 5 ; i++) {
-                g.drawLine(width*i/5, 0, width*i/5, height);
+                g.drawLine(width*i/5, fontHeight*2, width*i/5, height);
             }
             g.dispose();
             ImageIO.write(bufferedImage, "png", new File("/EdtBot/images/test.png"));
