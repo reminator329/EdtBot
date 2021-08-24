@@ -63,7 +63,7 @@ public class ResetRolesCommand implements Command {
                 return;
             }
         }
-        File file = new File("/EdtBot/images/pioche.png");
+        File file;// = new File("/EdtBot/images/pioche.png");
 
         BufferedImage image;
         Graphics g;
@@ -109,13 +109,13 @@ public class ResetRolesCommand implements Command {
 
             for (int i = 1; i < nbHours; i ++) {
                 int startY = hourHeight * i + dayHeight;
-                g.drawLine(0, startY, width, startY);
+                g.drawLine(hourWidth - 5, startY, width, startY);
             }
 
             // Date
             g.setColor(Color.WHITE);
             String mounth = "Août";
-            g.drawString(mounth, 0, dayHeight - 5);
+            g.drawString(mounth, 5, dayHeight - 5);
             for (int i = 0; i < 5; i++) {
                 String text = "";
                 switch (i) {
@@ -126,7 +126,7 @@ public class ResetRolesCommand implements Command {
                     case 4 -> text = "Vendredi";
                 }
                 text += " " + (23 + i);
-                g.drawString(text, hourWidth + i * coursesWidth / 5, dayHeight - 5);
+                g.drawString(text, hourWidth + i * coursesWidth / 5 + 5, dayHeight - 5);
             }
 
             g.dispose();
@@ -139,14 +139,12 @@ public class ResetRolesCommand implements Command {
         }
 
 
-        e.getGuild().getMembers().forEach(member -> {
-            member.getRoles().forEach(role -> {
-                if (isRole(role)) {
-                    e.getGuild().removeRoleFromMember(member, role).queue();
-                    channel.sendMessage("Role " + role.getAsMention() + " supprimé pour " + member.getAsMention()).queue();
-                }
-            });
-        });
+        e.getGuild().getMembers().forEach(member -> member.getRoles().forEach(role -> {
+            if (isRole(role)) {
+                e.getGuild().removeRoleFromMember(member, role).queue();
+                channel.sendMessage("Role " + role.getAsMention() + " supprimé pour " + member.getAsMention()).queue();
+            }
+        }));
     }
 
     private boolean isRole(Role r) {
