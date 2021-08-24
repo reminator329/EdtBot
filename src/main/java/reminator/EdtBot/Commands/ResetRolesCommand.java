@@ -82,12 +82,17 @@ public class ResetRolesCommand implements Command {
             file = new File("/EdtBot/images/pioche2.png");
             channel.sendMessage(" ").addFile(file).queue();
 */
+            int startHour = 7;
+            int endHour = 20;
+            int nbHours = endHour - startHour;
             int width = 1024;
             int height = 512;
             int fontHeight = 10;
             int hourWidth = fontHeight*6;
             int dayHeight = fontHeight*2;
             int coursesWidth = (width - hourWidth);
+            int coursesHeight = (height - dayHeight);
+            int hourHeight = coursesHeight / 13;
 
             BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
             g = bufferedImage.getGraphics();
@@ -102,10 +107,15 @@ public class ResetRolesCommand implements Command {
                 g.drawLine(startX, dayHeight, startX, height);
             }
 
+            for (int i = 1; i < nbHours; i ++) {
+                int startY = hourHeight * i + dayHeight;
+                g.drawLine(0, startY, width, startY);
+            }
+
             // Date
             g.setColor(Color.WHITE);
             String mounth = "Août";
-            g.drawString(mounth, hourWidth/2 - mounth.length()/2, dayHeight - 5);
+            g.drawString(mounth, 0, dayHeight - 5);
             for (int i = 0; i < 5; i++) {
                 String text = "";
                 switch (i) {
@@ -116,7 +126,7 @@ public class ResetRolesCommand implements Command {
                     case 4 -> text = "Vendredi";
                 }
                 text += " " + (23 + i);
-                g.drawString(text, hourWidth + i * coursesWidth / 5 + coursesWidth / 10 - text.length()/2, dayHeight - 5);
+                g.drawString(text, hourWidth + i * coursesWidth / 5, dayHeight - 5);
             }
 
             g.dispose();
