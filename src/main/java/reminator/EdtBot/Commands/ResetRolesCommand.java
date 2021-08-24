@@ -138,6 +138,7 @@ public class ResetRolesCommand implements Command {
             }
 
             // Courses
+            g.setColor(Color.ORANGE);
             g.drawRoundRect(hourWidth, dayHeight + hourWidth, dayWidth, 10 * dayHeight, 5, 5);
 
             g.dispose();
