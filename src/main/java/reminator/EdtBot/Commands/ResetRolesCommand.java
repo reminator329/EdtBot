@@ -91,6 +91,7 @@ public class ResetRolesCommand implements Command {
             int hourWidth = fontHeight*6;
             int dayHeight = fontHeight*2;
             int coursesWidth = (width - hourWidth);
+            int dayWidth = coursesWidth / 5;
             int coursesHeight = (height - dayHeight);
             int hourHeight = coursesHeight / 13;
 
@@ -106,7 +107,7 @@ public class ResetRolesCommand implements Command {
             g.drawLine(hourWidth, 0, hourWidth, height);
             g.drawLine(0, dayHeight, width, dayHeight);
 
-            for (int i = 1 ; i < 5 ; i++) {
+            for (int i = 1 ; i <= 5 ; i++) {
                 int startX = coursesWidth * i / 5 + hourWidth;
                 g.drawLine(startX, dayHeight - dayLineOffset, startX, height);
             }
@@ -135,6 +136,9 @@ public class ResetRolesCommand implements Command {
                 text += " " + (23 + i);
                 g.drawString(text, hourWidth + i * coursesWidth / 5 + textOffset, dayHeight - 5);
             }
+
+            // Courses
+            g.drawRoundRect(hourWidth, dayHeight + hourWidth, dayWidth, 10 * dayHeight, 5, 5);
 
             g.dispose();
             ImageIO.write(bufferedImage, "png", new File("/EdtBot/images/test.png"));
