@@ -140,7 +140,7 @@ public class ResetRolesCommand implements Command {
 
             // Courses
             g.setColor(Color.ORANGE);
-            g.drawRoundRect(hourWidth, dayHeight + hourHeight, dayWidth - courseHorizontalOffset, 10 * hourHeight, 20, 20);
+            g.fillRoundRect(hourWidth + courseHorizontalOffset, dayHeight + hourHeight, dayWidth - 2 * courseHorizontalOffset, 10 * hourHeight, 20, 20);
 
             g.dispose();
             ImageIO.write(bufferedImage, "png", new File("/EdtBot/images/test.png"));
