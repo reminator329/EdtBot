@@ -145,7 +145,7 @@ public abstract class GestionEdt {
 
                 builder.setTitle(jour.format(cal.getTime()));
                 builder.setColor(Color.GREEN);
-                builder.setDescription(entry.getValue().stream().map(c -> String.format("**%s - %s** %s", heure.format(c.getStart()), heure.format(c.getEnd()), c.getSummary())).collect(Collectors.joining("\n")));
+                builder.setDescription(entry.getValue().stream().map(c -> String.format("**%s - %s** %s", heure.format(c.getStart()), heure.format(c.getEnd()), c.getSummary().replace("*", ""))).collect(Collectors.joining("\n")));
                 channel.sendMessage(builder.build()).queue();
             }
         }
@@ -225,11 +225,13 @@ public abstract class GestionEdt {
                         cal.setTime(cours.getStart());
                         // Lundi = 2 - 2 = 0
                         int day = cal.get(Calendar.DAY_OF_WEEK) - 2;
-                        // Notre emploie du temps ne commence pas avant 7 heures
+                        // Notre emploi du temps ne commence pas avant 7 heures
                         int courseStartHour = cal.get(Calendar.HOUR_OF_DAY) - 7;
+                        int courseStartMinute = cal.get(Calendar.MINUTE);
                         cal.setTime(cours.getEnd());
                         int courseEndHour = cal.get(Calendar.HOUR_OF_DAY) - 7;
-                        g.fillRoundRect(hourWidth + courseHorizontalOffset + dayWidth * day, dayHeight + hourHeight * courseStartHour, dayWidth - 2 * courseHorizontalOffset, hourHeight * (courseEndHour - courseStartHour), 20, 20);
+                        int courseEndMinute = cal.get(Calendar.MINUTE);
+                        g.fillRoundRect(hourWidth + courseHorizontalOffset + dayWidth * day, dayHeight + hourHeight * courseStartHour + hourHeight * courseStartMinute / 60, dayWidth - 2 * courseHorizontalOffset, hourHeight * (courseEndHour - courseStartHour) + hourHeight * (courseEndMinute - courseStartMinute) / 60, 10, 15);
                     }
                 }
             }
