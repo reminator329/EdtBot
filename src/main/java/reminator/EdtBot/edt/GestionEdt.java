@@ -202,12 +202,10 @@ public abstract class GestionEdt {
             AtomicReference<Cours> anyCourse = new AtomicReference<>();
             week.forEach((id, value) -> value.forEach(anyCourse::set));
             try {
-                channel.sendMessage("Oui").queue();
                 cal.setTime(anyCourse.get().getStart());
                 int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
                 int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
                 int firstDay = dayOfMonth - (dayOfWeek - 2);
-                channel.sendMessage("oui " + dayOfMonth + " " + dayOfWeek + " " + firstDay).queue();
 
                 int monthNumber = cal.get(Calendar.MONTH);
                 String mois = switch (monthNumber) {
