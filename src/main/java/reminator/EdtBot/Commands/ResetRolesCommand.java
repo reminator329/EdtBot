@@ -114,7 +114,7 @@ public class ResetRolesCommand implements Command {
                     case 4 -> text = "Vendredi";
                 }
                 text += " " + (23 + i);
-                g.drawString(text, hourWidth + i * edtLineHeight / 5, dayHeight - 5);
+                g.drawString(text, hourWidth + i * edtLineHeight / 5 + edtLineHeight / 10 - text.length()/2, dayHeight - 5);
             }
 
             g.dispose();
