@@ -94,6 +94,10 @@ public class ResetRolesCommand implements Command {
             int coursesHeight = (height - dayHeight);
             int hourHeight = coursesHeight / 13;
 
+            int dayLineOffset = 15;
+            int hourLineOffset = 15;
+            int textOffset = 5;
+
             BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
             g = bufferedImage.getGraphics();
 
@@ -104,12 +108,15 @@ public class ResetRolesCommand implements Command {
 
             for (int i = 1 ; i < 5 ; i++) {
                 int startX = coursesWidth * i / 5 + hourWidth;
-                g.drawLine(startX, dayHeight, startX, height);
+                g.drawLine(startX, dayHeight - dayLineOffset, startX, height);
             }
 
             for (int i = 1; i < nbHours; i ++) {
                 int startY = hourHeight * i + dayHeight;
-                g.drawLine(hourWidth - 5, startY, width, startY);
+                g.drawLine(hourWidth - hourLineOffset, startY, width, startY);
+
+                int hour = startHour + i;
+                g.drawString("" + hour + "h", textOffset, dayHeight + i * hourHeight + textOffset);
             }
 
             // Date
@@ -126,7 +133,7 @@ public class ResetRolesCommand implements Command {
                     case 4 -> text = "Vendredi";
                 }
                 text += " " + (23 + i);
-                g.drawString(text, hourWidth + i * coursesWidth / 5 + 5, dayHeight - 5);
+                g.drawString(text, hourWidth + i * coursesWidth / 5 + textOffset, dayHeight - 5);
             }
 
             g.dispose();
