@@ -216,10 +216,22 @@ public abstract class GestionEdt {
 
             // Courses
             g.setColor(Color.ORANGE);
-            g.fillRoundRect(hourWidth + courseHorizontalOffset, dayHeight + hourHeight, dayWidth - 2 * courseHorizontalOffset, 10 * hourHeight, 20, 20);
+            //g.fillRoundRect(hourWidth + courseHorizontalOffset, dayHeight + hourHeight, dayWidth - 2 * courseHorizontalOffset, 10 * hourHeight, 20, 20);
 
+            Calendar cal = Calendar.getInstance();
             for (Map.Entry<Integer, ArrayList<Cours>> entry : week.entrySet()) {
-
+                if (entry.getValue().size() != 0) {
+                    for (Cours cours : entry.getValue()) {
+                        cal.setTime(cours.getStart());
+                        // Lundi = 2 - 2 = 0
+                        int day = cal.get(Calendar.DAY_OF_WEEK) - 2;
+                        // Notre emploie du temps ne commence pas avant 7 heures
+                        int courseStartHour = cal.get(Calendar.HOUR_OF_DAY) - 7;
+                        cal.setTime(cours.getEnd());
+                        int courseEndHour = cal.get(Calendar.HOUR_OF_DAY) - 7;
+                        g.fillRoundRect(hourWidth + courseHorizontalOffset + dayWidth * day, dayHeight + hourHeight * courseStartHour, dayWidth - 2 * courseHorizontalOffset, hourHeight * (courseEndHour - courseStartHour), 20, 20);
+                    }
+                }
             }
 
             g.dispose();
