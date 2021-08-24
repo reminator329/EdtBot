@@ -85,6 +85,9 @@ public class ResetRolesCommand implements Command {
             int width = 1024;
             int height = 512;
             int fontHeight = 10;
+            int hourWidth = fontHeight*4;
+            int dayHeight = fontHeight*2;
+            int edtLineHeight = (width - hourWidth);
 
             BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
             g = bufferedImage.getGraphics();
@@ -94,11 +97,14 @@ public class ResetRolesCommand implements Command {
             //g.drawString("Parfait", 50, 50);
 
             g.setColor(Color.GRAY);
-            g.drawLine(fontHeight*2, 0, fontHeight*2, height);
-            g.drawLine(0, fontHeight*2, width, fontHeight*2);
+            g.drawLine(hourWidth, 0, hourWidth, height);
+            g.drawLine(0, dayHeight, width, dayHeight);
+
             for (int i = 1 ; i < 5 ; i++) {
-                g.drawLine(width*i/5, fontHeight*2, width*i/5, height);
+                int startX = edtLineHeight * i / 5 + hourWidth;
+                g.drawLine(startX, dayHeight, startX, height);
             }
+
             g.dispose();
             ImageIO.write(bufferedImage, "png", new File("/EdtBot/images/test.png"));
             file = new File("/EdtBot/images/test.png");
