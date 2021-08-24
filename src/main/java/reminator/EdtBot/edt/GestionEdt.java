@@ -198,7 +198,14 @@ public abstract class GestionEdt {
 
             // Date
             Calendar cal = Calendar.getInstance();
-            Cours anyCourse = week.values().stream().findAny().get().get(0);
+            Optional<ArrayList<Cours>> optAnyCourse = week.values().stream().findAny();
+            Cours anyCourse;
+            if (optAnyCourse.isPresent()) {
+                anyCourse = optAnyCourse.get().get(0);
+            } else {
+                channel.sendMessage("Non");
+                return;
+            }
             cal.setTime(anyCourse.getStart());
             int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
             int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
