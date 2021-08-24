@@ -11,7 +11,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -164,8 +163,8 @@ public abstract class GestionEdt {
             int width = 1024;
             int height = 512;
             int fontHeight = 10;
-            int hourWidth = fontHeight*6;
-            int dayHeight = fontHeight*2;
+            int hourWidth = fontHeight * 6;
+            int dayHeight = fontHeight * 2;
             int coursesWidth = (width - hourWidth);
             int dayWidth = coursesWidth / 5;
             int coursesHeight = (height - dayHeight);
@@ -184,12 +183,12 @@ public abstract class GestionEdt {
             g.drawLine(hourWidth, 0, hourWidth, height);
             g.drawLine(0, dayHeight, width, dayHeight);
 
-            for (int i = 1 ; i <= 5 ; i++) {
+            for (int i = 1; i <= 5; i++) {
                 int startX = coursesWidth * i / 5 + hourWidth;
                 g.drawLine(startX, dayHeight - dayLineOffset, startX, height);
             }
 
-            for (int i = 1; i <= nbHours; i ++) {
+            for (int i = 1; i <= nbHours; i++) {
                 int startY = hourHeight * i + dayHeight;
                 g.drawLine(hourWidth - hourLineOffset, startY, width, startY);
 
@@ -215,13 +214,16 @@ public abstract class GestionEdt {
             }
 
             // Courses
-            g.setColor(Color.ORANGE);
             //g.fillRoundRect(hourWidth + courseHorizontalOffset, dayHeight + hourHeight, dayWidth - 2 * courseHorizontalOffset, 10 * hourHeight, 20, 20);
 
             Calendar cal = Calendar.getInstance();
             for (Map.Entry<Integer, ArrayList<Cours>> entry : week.entrySet()) {
                 if (entry.getValue().size() != 0) {
                     for (Cours cours : entry.getValue()) {
+                        if (cours.getSummary().contains("EXAMEN"))
+                            g.setColor(Color.RED);
+                        else
+                            g.setColor(Color.CYAN);
                         cal.setTime(cours.getStart());
                         // Lundi = 2 - 2 = 0
                         int day = cal.get(Calendar.DAY_OF_WEEK) - 2;
