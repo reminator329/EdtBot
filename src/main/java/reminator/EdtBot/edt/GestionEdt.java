@@ -202,82 +202,86 @@ public abstract class GestionEdt {
             Optional<ArrayList<Cours>> optAnyCourse = week.values().stream().findAny();
             channel.sendMessage("Ok").queue();
             Cours anyCourse;
-            if (optAnyCourse.isPresent()) {
-                anyCourse = optAnyCourse.get().get(0);
-            } else {
-                channel.sendMessage("Non").queue();
-                return;
-            }
-            channel.sendMessage("Oui").queue();
-            cal.setTime(anyCourse.getStart());
-            int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
-            int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
-            int firstDay = dayOfMonth - (dayOfWeek - 2);
-            channel.sendMessage("oui " + dayOfMonth + " " + dayOfWeek + " " + firstDay).queue();
-
-            int monthNumber = cal.get(Calendar.MONTH);
-            String mois = switch (monthNumber) {
-                case 0 -> "Janvier";
-                case 1 -> "Février";
-                case 2 -> "Mars";
-                case 3 -> "Avril";
-                case 4 -> "Mai";
-                case 5 -> "Juin";
-                case 6 -> "Juillet";
-                case 7 -> "Août";
-                case 8 -> "Septembre";
-                case 9 -> "Octobre";
-                case 10 -> "Novembre";
-                case 11 -> "Décembre";
-                default -> throw new IllegalStateException("Unexpected value: " + monthNumber);
-            };
-            g.setColor(Color.WHITE);
-            String mounth = "Août";
-            g.drawString(mounth, 5, dayHeight - 5);
-            for (int i = 0; i < 5; i++) {
-                String text = "";
-                switch (i) {
-                    case 0 -> text = "Lundi";
-                    case 1 -> text = "Mardi";
-                    case 2 -> text = "Mercredi";
-                    case 3 -> text = "Jeudi";
-                    case 4 -> text = "Vendredi";
+            try {
+                if (optAnyCourse.isPresent()) {
+                    anyCourse = optAnyCourse.get().get(0);
+                } else {
+                    channel.sendMessage("Non").queue();
+                    return;
                 }
-                text += " " + (firstDay + i);
-                g.drawString(text, hourWidth + i * coursesWidth / 5 + textOffset, dayHeight - 5);
-            }
+                channel.sendMessage("Oui").queue();
+                cal.setTime(anyCourse.getStart());
+                int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
+                int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+                int firstDay = dayOfMonth - (dayOfWeek - 2);
+                channel.sendMessage("oui " + dayOfMonth + " " + dayOfWeek + " " + firstDay).queue();
 
-            // Courses
-            //g.fillRoundRect(hourWidth + courseHorizontalOffset, dayHeight + hourHeight, dayWidth - 2 * courseHorizontalOffset, 10 * hourHeight, 20, 20);
+                int monthNumber = cal.get(Calendar.MONTH);
+                String mois = switch (monthNumber) {
+                    case 0 -> "Janvier";
+                    case 1 -> "Février";
+                    case 2 -> "Mars";
+                    case 3 -> "Avril";
+                    case 4 -> "Mai";
+                    case 5 -> "Juin";
+                    case 6 -> "Juillet";
+                    case 7 -> "Août";
+                    case 8 -> "Septembre";
+                    case 9 -> "Octobre";
+                    case 10 -> "Novembre";
+                    case 11 -> "Décembre";
+                    default -> throw new IllegalStateException("Unexpected value: " + monthNumber);
+                };
+                g.setColor(Color.WHITE);
+                String mounth = "Août";
+                g.drawString(mounth, 5, dayHeight - 5);
+                for (int i = 0; i < 5; i++) {
+                    String text = "";
+                    switch (i) {
+                        case 0 -> text = "Lundi";
+                        case 1 -> text = "Mardi";
+                        case 2 -> text = "Mercredi";
+                        case 3 -> text = "Jeudi";
+                        case 4 -> text = "Vendredi";
+                    }
+                    text += " " + (firstDay + i);
+                    g.drawString(text, hourWidth + i * coursesWidth / 5 + textOffset, dayHeight - 5);
+                }
 
-            for (Map.Entry<Integer, ArrayList<Cours>> entry : week.entrySet()) {
-                if (entry.getValue().size() != 0) {
-                    for (Cours cours : entry.getValue()) {
-                        if (cours.getSummary().contains("EXAMEN"))
-                            g.setColor(Color.RED);
-                        else
-                            g.setColor(Color.CYAN);
-                        cal.setTime(cours.getStart());
-                        // Lundi = 2 - 2 = 0
-                        int day = cal.get(Calendar.DAY_OF_WEEK) - 2;
-                        // Notre emploi du temps ne commence pas avant 7 heures
-                        int courseStartHour = cal.get(Calendar.HOUR_OF_DAY) - 7;
-                        int courseStartMinute = cal.get(Calendar.MINUTE);
-                        cal.setTime(cours.getEnd());
-                        int courseEndHour = cal.get(Calendar.HOUR_OF_DAY) - 7;
-                        int courseEndMinute = cal.get(Calendar.MINUTE);
-                        g.fillRoundRect(hourWidth + courseHorizontalOffset + dayWidth * day, dayHeight + hourHeight * courseStartHour + hourHeight * courseStartMinute / 60, dayWidth - 2 * courseHorizontalOffset, hourHeight * (courseEndHour - courseStartHour) + hourHeight * (courseEndMinute - courseStartMinute) / 60, 10, 15);
+                // Courses
+                //g.fillRoundRect(hourWidth + courseHorizontalOffset, dayHeight + hourHeight, dayWidth - 2 * courseHorizontalOffset, 10 * hourHeight, 20, 20);
+
+                for (Map.Entry<Integer, ArrayList<Cours>> entry : week.entrySet()) {
+                    if (entry.getValue().size() != 0) {
+                        for (Cours cours : entry.getValue()) {
+                            if (cours.getSummary().contains("EXAMEN"))
+                                g.setColor(Color.RED);
+                            else
+                                g.setColor(Color.CYAN);
+                            cal.setTime(cours.getStart());
+                            // Lundi = 2 - 2 = 0
+                            int day = cal.get(Calendar.DAY_OF_WEEK) - 2;
+                            // Notre emploi du temps ne commence pas avant 7 heures
+                            int courseStartHour = cal.get(Calendar.HOUR_OF_DAY) - 7;
+                            int courseStartMinute = cal.get(Calendar.MINUTE);
+                            cal.setTime(cours.getEnd());
+                            int courseEndHour = cal.get(Calendar.HOUR_OF_DAY) - 7;
+                            int courseEndMinute = cal.get(Calendar.MINUTE);
+                            g.fillRoundRect(hourWidth + courseHorizontalOffset + dayWidth * day, dayHeight + hourHeight * courseStartHour + hourHeight * courseStartMinute / 60, dayWidth - 2 * courseHorizontalOffset, hourHeight * (courseEndHour - courseStartHour) + hourHeight * (courseEndMinute - courseStartMinute) / 60, 10, 15);
+                        }
                     }
                 }
+
+                g.dispose();
+                ImageIO.write(bufferedImage, "png", new File("/EdtBot/images/test.png"));
+                file = new File("/EdtBot/images/test.png");
+                channel.sendMessage(" ").addFile(file).queue();
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
-
-            g.dispose();
-            ImageIO.write(bufferedImage, "png", new File("/EdtBot/images/test.png"));
-            file = new File("/EdtBot/images/test.png");
-            channel.sendMessage(" ").addFile(file).queue();
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            channel.sendMessage(e.getMessage()).queue();
         }
     }
 }
