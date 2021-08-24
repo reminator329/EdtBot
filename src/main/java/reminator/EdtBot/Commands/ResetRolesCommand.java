@@ -98,6 +98,7 @@ public class ResetRolesCommand implements Command {
             int dayLineOffset = 15;
             int hourLineOffset = 15;
             int textOffset = 5;
+            int courseHorizontalOffset = 5;
 
             BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
             g = bufferedImage.getGraphics();
@@ -139,7 +140,7 @@ public class ResetRolesCommand implements Command {
 
             // Courses
             g.setColor(Color.ORANGE);
-            g.drawRoundRect(hourWidth, dayHeight + hourWidth, dayWidth, 10 * dayHeight, 5, 5);
+            g.drawRoundRect(hourWidth, dayHeight + hourHeight, dayWidth - courseHorizontalOffset, 10 * hourHeight, 20, 20);
 
             g.dispose();
             ImageIO.write(bufferedImage, "png", new File("/EdtBot/images/test.png"));
