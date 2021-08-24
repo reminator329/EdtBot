@@ -203,7 +203,7 @@ public abstract class GestionEdt {
             if (optAnyCourse.isPresent()) {
                 anyCourse = optAnyCourse.get().get(0);
             } else {
-                channel.sendMessage("Non");
+                channel.sendMessage("Non").queue();
                 return;
             }
             cal.setTime(anyCourse.getStart());
