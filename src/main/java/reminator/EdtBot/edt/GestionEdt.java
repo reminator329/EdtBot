@@ -208,6 +208,7 @@ public abstract class GestionEdt {
                 channel.sendMessage("Non").queue();
                 return;
             }
+            channel.sendMessage("Oui").queue();
             cal.setTime(anyCourse.getStart());
             int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
             int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
