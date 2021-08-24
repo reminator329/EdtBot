@@ -7,6 +7,10 @@ import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent;
 import reminator.EdtBot.Categories.Category;
 import reminator.EdtBot.Categories.enums.Categories;
 import reminator.EdtBot.edt.*;
+import reminator.EdtBot.edt.gestionEdt.GestionEdt;
+import reminator.EdtBot.edt.gestionEdt.GestionEdt1A;
+import reminator.EdtBot.edt.gestionEdt.GestionEdt2A;
+import reminator.EdtBot.edt.gestionEdt.GestionEdt3A;
 
 import java.util.ArrayList;
 import java.util.List;

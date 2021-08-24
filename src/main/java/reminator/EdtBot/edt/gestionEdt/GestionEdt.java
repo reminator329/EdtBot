@@ -1,9 +1,10 @@
-package reminator.EdtBot.edt;
+package reminator.EdtBot.edt.gestionEdt;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import org.json.JSONArray;
 import reminator.EdtBot.bot.BotEmbed;
+import reminator.EdtBot.edt.*;
 import reminator.EdtBot.utils.CoursParser;
 
 import javax.imageio.ImageIO;
@@ -12,7 +13,10 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -37,7 +41,7 @@ public abstract class GestionEdt {
 
     protected abstract ArrayList<Cours> getNextCourses();
 
-    public Map<Integer, ArrayList<Cours>> getNextWeek() {
+    public Week getNextWeek() {
 
         Calendar cal = Calendar.getInstance();
         Date nextCourse = getNextCourse().get(0).getStart();
@@ -57,23 +61,16 @@ public abstract class GestionEdt {
 
         updateEdt(min.getTime(), max.getTime());
 
-        Map<Integer, ArrayList<Cours>> week = new TreeMap<>();
+        Week week = new Week();
         for (int i : new int[]{Calendar.MONDAY, Calendar.TUESDAY, Calendar.WEDNESDAY, Calendar.THURSDAY, Calendar.FRIDAY}) {
-            ArrayList<Cours> day = new ArrayList<>();
+            Day day = new Day();
             courses.stream().filter(c -> {
                 Calendar cal2 = Calendar.getInstance();
                 cal2.setTime(c.getStart());
                 return i == cal2.get(Calendar.DAY_OF_WEEK);
-            }).sorted().forEach(day::add);
+            }).forEach(c -> day.addCourse(c, this));
 
-            if (this instanceof GestionEdt1A)
-                day.removeIf(c -> c.isNotAccepted(1));
-            else if (this instanceof GestionEdt2A)
-                day.removeIf(c -> c.isNotAccepted(2));
-            else if (this instanceof GestionEdt3A)
-                day.removeIf(c -> c.isNotAccepted(3));
-
-            week.put(i, day);
+            week.addDay(i - 2, day);
         }
 
         return week;
@@ -128,7 +125,7 @@ public abstract class GestionEdt {
         channel.sendMessage(builder.build()).queue();
     }
 
-    public void printWeek(Map<Integer, ArrayList<Cours>> week, MessageChannel channel) {
+    public void printWeek(Week week, MessageChannel channel) {
 
         System.out.println(week);
 
@@ -138,20 +135,25 @@ public abstract class GestionEdt {
 
         printImageWeek(week, channel);
 
-        for (Map.Entry<Integer, ArrayList<Cours>> entry : week.entrySet()) {
-            if (entry.getValue().size() != 0) {
+        for (Day day : week) {
+            if (day.size() != 0) {
                 EmbedBuilder builder = BotEmbed.BASE.getBuilder(null);
-                cal.setTime(entry.getValue().get(0).getStart());
-
+                cal.setTime(day.stream().findAny().get().stream().findAny().get().getStart());
                 builder.setTitle(jour.format(cal.getTime()));
                 builder.setColor(Color.GREEN);
-                builder.setDescription(entry.getValue().stream().map(c -> String.format("**%s - %s** %s", heure.format(c.getStart()), heure.format(c.getEnd()), c.getSummary().replace("*", ""))).collect(Collectors.joining("\n")));
+
+                builder.setDescription(day.stream().map(
+                        s -> s.stream().map(
+                                c -> String.format("**%s - %s** %s", heure.format(c.getStart()), heure.format(c.getEnd()), c.getSummary().replace("*", ""))
+                        ).collect(Collectors.joining("\n"))
+                ).collect(Collectors.joining("\n")));
+
                 channel.sendMessage(builder.build()).queue();
             }
         }
     }
 
-    protected void printImageWeek(Map<Integer, ArrayList<Cours>> week, MessageChannel channel) {
+    protected void printImageWeek(Week week, MessageChannel channel) {
 
         File file;// = new File("/EdtBot/images/pioche.png");
 
@@ -203,7 +205,11 @@ public abstract class GestionEdt {
             // Date
             Calendar cal = Calendar.getInstance();
             AtomicReference<Cours> anyCourse = new AtomicReference<>();
-            week.forEach((id, value) -> value.forEach(anyCourse::set));
+            week.forEach(day -> {
+                if (day.size() > 0) {
+                    anyCourse.set(day.stream().findAny().get().stream().findAny().get());
+                }
+            });
             try {
                 cal.setTime(anyCourse.get().getStart());
                 int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
@@ -227,7 +233,7 @@ public abstract class GestionEdt {
                     default -> throw new IllegalStateException("Unexpected value: " + monthNumber);
                 };
                 g.setColor(Color.WHITE);
-                g.drawString(mois, hourWidth/2 - g.getFontMetrics().stringWidth(mois), dayHeight / 2 + g.getFontMetrics().getHeight()/2);
+                g.drawString(mois, hourWidth / 2 - g.getFontMetrics().stringWidth(mois), dayHeight / 2 + g.getFontMetrics().getHeight() / 2);
                 for (int i = 0; i < 5; i++) {
                     String text =
                             switch (i) {
@@ -239,29 +245,32 @@ public abstract class GestionEdt {
                                 default -> throw new IllegalStateException("Unexpected value: " + i);
                             };
                     text += " " + (firstDay + i);
-                    g.drawString(text, hourWidth + i * coursesWidth / 5 + coursesWidth / 10 - g.getFontMetrics().stringWidth(text) / 2, dayHeight / 2 + g.getFontMetrics().getHeight()/2);
+                    g.drawString(text, hourWidth + i * coursesWidth / 5 + coursesWidth / 10 - g.getFontMetrics().stringWidth(text) / 2, dayHeight / 2 + g.getFontMetrics().getHeight() / 2);
                 }
 
                 // Courses
                 //g.fillRoundRect(hourWidth + courseHorizontalOffset, dayHeight + hourHeight, dayWidth - 2 * courseHorizontalOffset, 10 * hourHeight, 20, 20);
 
-                for (Map.Entry<Integer, ArrayList<Cours>> entry : week.entrySet()) {
-                    if (entry.getValue().size() != 0) {
-                        for (Cours cours : entry.getValue()) {
-                            if (cours.getSummary().contains("EXAMEN"))
-                                g.setColor(Color.RED);
-                            else
-                                g.setColor(Color.CYAN);
-                            cal.setTime(cours.getStart());
-                            // Lundi = 2 - 2 = 0
-                            int day = cal.get(Calendar.DAY_OF_WEEK) - 2;
-                            // Notre emploi du temps ne commence pas avant 7 heures
-                            int courseStartHour = cal.get(Calendar.HOUR_OF_DAY) - 7;
-                            int courseStartMinute = cal.get(Calendar.MINUTE);
-                            cal.setTime(cours.getEnd());
-                            int courseEndHour = cal.get(Calendar.HOUR_OF_DAY) - 7;
-                            int courseEndMinute = cal.get(Calendar.MINUTE);
-                            g.fillRoundRect(hourWidth + courseHorizontalOffset + dayWidth * day, dayHeight + hourHeight * courseStartHour + hourHeight * courseStartMinute / 60, dayWidth - 2 * courseHorizontalOffset, hourHeight * (courseEndHour - courseStartHour) + hourHeight * (courseEndMinute - courseStartMinute) / 60, 15, 15);
+                for (Day day : week) {
+                    if (day.size() != 0) {
+                        for (Stack stack : day) {
+                            for (Cours cours : stack) {
+                                if (cours.getSummary().contains("EXAMEN"))
+                                    g.setColor(Color.RED);
+                                else
+                                    g.setColor(Color.CYAN);
+                                cal.setTime(cours.getStart());
+                                // Lundi = 2 - 2 = 0
+                                int d = cal.get(Calendar.DAY_OF_WEEK) - 2;
+                                // Notre emploi du temps ne commence pas avant 7 heures
+                                int courseStartHour = cal.get(Calendar.HOUR_OF_DAY) - 7;
+                                int courseStartMinute = cal.get(Calendar.MINUTE);
+                                cal.setTime(cours.getEnd());
+                                int courseEndHour = cal.get(Calendar.HOUR_OF_DAY) - 7;
+                                int courseEndMinute = cal.get(Calendar.MINUTE);
+
+                                g.fillRoundRect(hourWidth + courseHorizontalOffset + dayWidth * d, dayHeight + hourHeight * courseStartHour + hourHeight * courseStartMinute / 60, dayWidth - 2 * courseHorizontalOffset, hourHeight * (courseEndHour - courseStartHour) + hourHeight * (courseEndMinute - courseStartMinute) / 60, 15, 15);
+                            }
                         }
                     }
                 }

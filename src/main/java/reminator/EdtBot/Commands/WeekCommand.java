@@ -6,9 +6,12 @@ import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent;
 import reminator.EdtBot.Categories.Category;
 import reminator.EdtBot.Categories.enums.Categories;
 import reminator.EdtBot.edt.*;
+import reminator.EdtBot.edt.gestionEdt.GestionEdt;
+import reminator.EdtBot.edt.gestionEdt.GestionEdt1A;
+import reminator.EdtBot.edt.gestionEdt.GestionEdt2A;
+import reminator.EdtBot.edt.gestionEdt.GestionEdt3A;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +53,7 @@ public class WeekCommand implements Command {
                 return;
             }
         }
-        Map<Integer, ArrayList<Cours>> week = gestionEdt.getNextWeek();
+        Week week = gestionEdt.getNextWeek();
         gestionEdt.printWeek(week, channel);
     }
 }

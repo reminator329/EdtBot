@@ -1,7 +1,8 @@
-package reminator.EdtBot.edt;
+package reminator.EdtBot.edt.gestionEdt;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import reminator.EdtBot.edt.Cours;
 import reminator.EdtBot.edt.enums.Edt;
 import reminator.EdtBot.edt.enums.Liens;
 import reminator.EdtBot.utils.HTTPRequest;

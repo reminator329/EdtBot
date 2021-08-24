@@ -1,7 +1,8 @@
-package reminator.EdtBot.edt;
+package reminator.EdtBot.edt.gestionEdt;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import reminator.EdtBot.edt.Cours;
 import reminator.EdtBot.edt.enums.Edt;
 import reminator.EdtBot.edt.enums.Liens;
 import reminator.EdtBot.utils.HTTPRequest;
@@ -10,14 +11,12 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Map;
 import java.util.TreeSet;
 
-public class GestionEdt3A extends GestionEdt {
+public class GestionEdt2A extends GestionEdt {
 
-    private String edt3A;
-    private String edt3A_G1;
-    private String edt3A_G2;
+    private String edt2A;
+    private String edt2ATP;
 
     @Override
     protected ArrayList<Cours> getNextCourses() {
@@ -25,7 +24,7 @@ public class GestionEdt3A extends GestionEdt {
         Date date = new Date();
 
         TreeSet<Cours> nextCourses = new TreeSet<>(courses);
-        nextCourses.removeIf(c -> c.isNotAccepted(3));
+        nextCourses.removeIf(c -> c.isNotAccepted(2));
 
         nextCourses = new TreeSet<>(nextCourses.tailSet(new Cours(null, new Date(date.getTime() - 500 * 3600), null, null)));
         return new ArrayList<>(nextCourses.headSet(nextCourses.first(), true));
@@ -40,29 +39,25 @@ public class GestionEdt3A extends GestionEdt {
         String timeMax = dateFormat.format(new Date(max)).replace(":", "%3A").replace("+", "%2B");
 
         try {
-            this.edt3A = Edt.EDT_3A_C.getHTTPRequest(timeMin, timeMax).GET();
-            this.edt3A_G1 = Edt.EDT_3A_G1.getHTTPRequest(timeMin, timeMax).GET();
-            this.edt3A_G2 = Edt.EDT_3A_G2.getHTTPRequest(timeMin, timeMax).GET();
+            this.edt2A = Edt.EDT_2A.getHTTPRequest(timeMin, timeMax).GET();
+            this.edt2ATP = Edt.EDT_2A_TP.getHTTPRequest(timeMin, timeMax).GET();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        JSONObject jEdt01 = new JSONObject(edt3A);
-        JSONObject jEdt02 = new JSONObject(edt3A_G1);
-        JSONObject jEdt03 = new JSONObject(edt3A_G2);
+        JSONObject jEdt01 = new JSONObject(edt2A);
+        JSONObject jEdt02 = new JSONObject(edt2ATP);
 
         JSONArray jCourss01 = jEdt01.getJSONArray("items");
         JSONArray jCourss02 = jEdt02.getJSONArray("items");
-        JSONArray jCourss03 = jEdt03.getJSONArray("items");
 
         ajoutCourss(jCourss01, "0");
-        ajoutCourss(jCourss02, "1");
-        ajoutCourss(jCourss03, "2");
+        ajoutCourss(jCourss02, "0");
     }
 
     @Override
     protected void updateCsv() {
-        // TODO Créer un csv
+        // TODO créer un CSV
         try {
             csv = new HTTPRequest(Liens.CSV_1A.getUrl()).GET();
         } catch (IOException e) {

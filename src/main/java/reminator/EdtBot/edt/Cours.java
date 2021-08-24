@@ -12,6 +12,9 @@ public class Cours implements Comparable<Cours> {
     private TypeCourse typeCourse;
     private String groupe;
 
+    private int stack = 1;
+    private int position = 1;
+
     public Cours(String summary, Date start, Date end, String groupe) {
         this.summary = summary;
         this.start = start;
@@ -45,6 +48,22 @@ public class Cours implements Comparable<Cours> {
 
     public TypeCourse getTypeCourse() {
         return typeCourse;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public int getStack() {
+        return stack;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public void setStack(int stack) {
+        this.stack = stack;
     }
 
     @Override
@@ -92,5 +111,13 @@ public class Cours implements Comparable<Cours> {
 
     public boolean isNotAccepted(int annee) {
         return !isAccepted(annee);
+    }
+
+    public boolean isInTheSameTime(Cours cours) {
+        return cours.getStart().compareTo(this.getEnd()) < 0 && cours.getStart().compareTo(this.getStart()) > 0 ||
+                cours.getEnd().compareTo(this.getEnd()) < 0 && cours.getEnd().compareTo(this.getStart()) > 0 ||
+                this.getStart().compareTo(cours.getEnd()) < 0 && this.getStart().compareTo(cours.getStart()) > 0 ||
+                this.getEnd().compareTo(cours.getEnd()) < 0 && this.getEnd().compareTo(cours.getStart()) > 0 ||
+                cours.getStart().compareTo(this.getStart()) == 0 || cours.getEnd().compareTo(this.getEnd()) == 0;
     }
 }

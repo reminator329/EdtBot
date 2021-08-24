@@ -4,6 +4,10 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import org.json.JSONObject;
 import reminator.EdtBot.bot.EdtBot;
 import reminator.EdtBot.edt.*;
+import reminator.EdtBot.edt.gestionEdt.GestionEdt;
+import reminator.EdtBot.edt.gestionEdt.GestionEdt1A;
+import reminator.EdtBot.edt.gestionEdt.GestionEdt2A;
+import reminator.EdtBot.edt.gestionEdt.GestionEdt3A;
 
 import java.io.*;
 import java.util.*;
