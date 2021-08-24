@@ -228,7 +228,7 @@ public abstract class GestionEdt {
                 };
                 g.setColor(Color.WHITE);
                 String mounth = "Août";
-                g.drawString(mounth, 5, dayHeight - 5);
+                g.drawString(mounth, 5, dayHeight/2 + g.getFontMetrics().getHeight());
                 for (int i = 0; i < 5; i++) {
                     String text = "";
                     switch (i) {
@@ -239,7 +239,7 @@ public abstract class GestionEdt {
                         case 4 -> text = "Vendredi";
                     }
                     text += " " + (firstDay + i);
-                    g.drawString(text, hourWidth + i * coursesWidth / 5 + textOffset, dayHeight - 5);
+                    g.drawString(text, hourWidth + i * coursesWidth / 5 + coursesWidth / 10 - g.getFontMetrics().stringWidth(text)/2, dayHeight/2 + g.getFontMetrics().getHeight());
                 }
 
                 // Courses
