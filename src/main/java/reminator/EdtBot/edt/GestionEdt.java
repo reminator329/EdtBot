@@ -156,7 +156,7 @@ public abstract class GestionEdt {
         File file;// = new File("/EdtBot/images/pioche.png");
 
         BufferedImage image;
-        Graphics g;
+        Graphics2D g;
         try {
             int startHour = 7;
             int endHour = 20;
@@ -177,7 +177,12 @@ public abstract class GestionEdt {
             int courseHorizontalOffset = 5;
 
             BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
-            g = bufferedImage.getGraphics();
+            g = (Graphics2D) bufferedImage.getGraphics();
+            RenderingHints rh = new RenderingHints(
+                    RenderingHints.KEY_TEXT_ANTIALIASING,
+                    RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            g.setRenderingHints(rh);
+
 
             // Lines
             g.setColor(Color.GRAY);
