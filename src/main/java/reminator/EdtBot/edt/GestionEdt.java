@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public abstract class GestionEdt {
@@ -198,19 +199,11 @@ public abstract class GestionEdt {
 
             // Date
             Calendar cal = Calendar.getInstance();
-            channel.sendMessage("Ok").queue();
-            Optional<ArrayList<Cours>> optAnyCourse = week.values().stream().findAny();
-            channel.sendMessage("Ok").queue();
-            Cours anyCourse;
+            AtomicReference<Cours> anyCourse = new AtomicReference<>();
+            week.forEach((id, value) -> value.forEach(anyCourse::set));
             try {
-                if (optAnyCourse.isPresent()) {
-                    anyCourse = optAnyCourse.get().get(0);
-                } else {
-                    channel.sendMessage("Non").queue();
-                    return;
-                }
                 channel.sendMessage("Oui").queue();
-                cal.setTime(anyCourse.getStart());
+                cal.setTime(anyCourse.get().getStart());
                 int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
                 int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
                 int firstDay = dayOfMonth - (dayOfWeek - 2);
