@@ -179,6 +179,7 @@ public abstract class GestionEdt {
 
             BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
             g = (Graphics2D) bufferedImage.getGraphics();
+            g.setBackground(new Color(0x37474f));
             g.setRenderingHints(new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON));
             g.setRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON));
 
@@ -274,7 +275,7 @@ public abstract class GestionEdt {
                                         hourWidth + courseHorizontalOffset + dayWidth * d + position * dayWidth / nbCourses,
                                         dayHeight + hourHeight * courseStartHour + hourHeight * courseStartMinute / 60,
                                         dayWidth / nbCourses - 2 * courseHorizontalOffset,
-                                        hourHeight * (courseEndHour - courseStartHour) + hourHeight * (courseEndMinute - courseStartMinute) / 60,
+                                        hourHeight * (courseEndHour - courseStartHour) + hourHeight * (courseEndMinute - courseStartMinute) / 60 - 1,
                                         15,
                                         15);
                             }
