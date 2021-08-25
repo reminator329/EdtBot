@@ -271,7 +271,7 @@ public abstract class GestionEdt {
                                 int x = hourWidth + courseHorizontalOffset + dayWidth * d + position * dayWidth / nbCourses;
                                 int y = dayHeight + hourHeight * courseStartHour + hourHeight * courseStartMinute / 60;
                                 int widthRect = dayWidth / nbCourses - 2 * courseHorizontalOffset;
-                                int heightRect = hourHeight * (courseEndHour - courseStartHour) + hourHeight * (courseEndMinute - courseStartMinute) / 60 - 1;
+                                int heightRect = hourHeight * (courseEndHour - courseStartHour) + hourHeight * (courseEndMinute - courseStartMinute) / 60 - 5;
 
                                 if (cours.getSummary().contains("EXAMEN"))
                                     g.setColor(new Color(0xb0003a));
@@ -280,8 +280,8 @@ public abstract class GestionEdt {
                                 g.fillRoundRect(
                                         x,
                                         y,
-                                        widthRect + 3,
-                                        heightRect + 3,
+                                        widthRect + 5,
+                                        heightRect + 5,
                                         15,
                                         15);
 
