@@ -22,6 +22,7 @@ public class Day extends TreeSet<Stack> {
         for (Stack stack : this) {
             if (stack.stream().anyMatch(course::isInTheSameTime)) {
                 find = true;
+                course.setPosition(stack.last().getPosition());
                 stack.add(course);
             }
         }

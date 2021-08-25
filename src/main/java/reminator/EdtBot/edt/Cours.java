@@ -12,8 +12,7 @@ public class Cours implements Comparable<Cours> {
     private TypeCourse typeCourse;
     private String groupe;
 
-    private int stack = 1;
-    private int position = 1;
+    private int position = 0;
 
     public Cours(String summary, Date start, Date end, String groupe) {
         this.summary = summary;
@@ -54,21 +53,16 @@ public class Cours implements Comparable<Cours> {
         return position;
     }
 
-    public int getStack() {
-        return stack;
-    }
-
     public void setPosition(int position) {
         this.position = position;
     }
 
-    public void setStack(int stack) {
-        this.stack = stack;
-    }
-
     @Override
-    public int compareTo(@NotNull Cours o) {
-        return start.compareTo(o.getStart());
+    public int compareTo(@NotNull Cours course) {
+        int start = this.getStart().compareTo(course.getStart());
+        if (start == 0)
+            return this.position - course.position;
+        return start;
     }
 
     @Override

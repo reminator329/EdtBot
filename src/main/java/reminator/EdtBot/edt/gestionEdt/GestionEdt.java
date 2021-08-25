@@ -133,8 +133,6 @@ public abstract class GestionEdt {
         SimpleDateFormat jour = new SimpleDateFormat("EEEEEEEEEEEEEEEE dd MMMMMMMMMM", Locale.FRANCE);
         SimpleDateFormat heure = new SimpleDateFormat("H:mm", Locale.FRANCE);
 
-        printImageWeek(week, channel);
-
         for (Day day : week) {
             if (day.size() != 0) {
                 EmbedBuilder builder = BotEmbed.BASE.getBuilder(null);
@@ -151,11 +149,12 @@ public abstract class GestionEdt {
                 channel.sendMessage(builder.build()).queue();
             }
         }
+        printImageWeek(week, channel);
     }
 
     protected void printImageWeek(Week week, MessageChannel channel) {
 
-        File file;// = new File("/EdtBot/images/pioche.png");
+        File file;
 
         BufferedImage image;
         Graphics2D g;
@@ -254,7 +253,9 @@ public abstract class GestionEdt {
                 for (Day day : week) {
                     if (day.size() != 0) {
                         for (Stack stack : day) {
+                            int nbCourses = stack.size();
                             for (Cours cours : stack) {
+                                int position = cours.getPosition();
                                 if (cours.getSummary().contains("EXAMEN"))
                                     g.setColor(Color.RED);
                                 else
@@ -269,7 +270,13 @@ public abstract class GestionEdt {
                                 int courseEndHour = cal.get(Calendar.HOUR_OF_DAY) - 7;
                                 int courseEndMinute = cal.get(Calendar.MINUTE);
 
-                                g.fillRoundRect(hourWidth + courseHorizontalOffset + dayWidth * d, dayHeight + hourHeight * courseStartHour + hourHeight * courseStartMinute / 60, dayWidth - 2 * courseHorizontalOffset, hourHeight * (courseEndHour - courseStartHour) + hourHeight * (courseEndMinute - courseStartMinute) / 60, 15, 15);
+                                g.fillRoundRect(
+                                        hourWidth + courseHorizontalOffset + dayWidth * d + position * dayWidth / nbCourses,
+                                        dayHeight + hourHeight * courseStartHour + hourHeight * courseStartMinute / 60,
+                                        dayWidth / nbCourses - 2 * courseHorizontalOffset,
+                                        hourHeight * (courseEndHour - courseStartHour) + hourHeight * (courseEndMinute - courseStartMinute) / 60,
+                                        15,
+                                        15);
                             }
                         }
                     }
