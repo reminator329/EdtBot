@@ -1,7 +1,9 @@
 package reminator.EdtBot.edt.gestionEdt;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.requests.RestAction;
 import org.json.JSONArray;
 import reminator.EdtBot.bot.BotEmbed;
 import reminator.EdtBot.edt.*;
@@ -304,7 +306,11 @@ public abstract class GestionEdt {
                 g.dispose();
                 ImageIO.write(bufferedImage, "png", new File("/EdtBot/images/test.png"));
                 file = new File("/EdtBot/images/test.png");
-                channel.sendMessage(" ").addFile(file).queue();
+                channel.sendMessage(" ").addFile(file).queue(message -> {
+                    java.util.List<Message> messages = channel.retrievePinnedMessages().complete();
+                    messages.forEach(m -> m.unpin().queue());
+                    message.pin().queue();
+                });
 
             } catch (IOException ex) {
                 ex.printStackTrace();
