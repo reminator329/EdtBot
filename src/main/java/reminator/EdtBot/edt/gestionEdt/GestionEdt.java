@@ -180,7 +180,7 @@ public abstract class GestionEdt {
             BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
             g = (Graphics2D) bufferedImage.getGraphics();
             g.setColor(new Color(0x37474f));
-            g.drawRect(0, 0, width, height);
+            g.fillRect(0, 0, width, height);
             g.setRenderingHints(new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON));
             g.setRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON));
 
