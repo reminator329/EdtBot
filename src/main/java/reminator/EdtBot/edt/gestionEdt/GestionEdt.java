@@ -274,9 +274,9 @@ public abstract class GestionEdt {
                                 int heightRect = hourHeight * (courseEndHour - courseStartHour) + hourHeight * (courseEndMinute - courseStartMinute) / 60 - 5;
 
                                 if (cours.getSummary().contains("EXAMEN"))
-                                    g.setColor(new Color(0xb0003a));
+                                    g.setColor(new Color(0xa00037));
                                 else
-                                    g.setColor(new Color(0x002984));
+                                    g.setColor(new Color(0x004ba0));
                                 g.fillRoundRect(
                                         x,
                                         y,
@@ -286,9 +286,9 @@ public abstract class GestionEdt {
                                         15);
 
                                 if (cours.getSummary().contains("EXAMEN"))
-                                    g.setColor(new Color(0xe91e63));
+                                    g.setColor(new Color(0xd81b60));
                                 else
-                                    g.setColor(new Color(0x3f51b5));
+                                    g.setColor(new Color(0x1976d2));
                                 g.fillRoundRect(
                                         x,
                                         y,
