@@ -257,9 +257,9 @@ public abstract class GestionEdt {
                             for (Cours cours : stack) {
                                 int position = cours.getPosition();
                                 if (cours.getSummary().contains("EXAMEN"))
-                                    g.setColor(new Color(141, 6, 6));
+                                    g.setColor(new Color(0xe91e63));
                                 else
-                                    g.setColor(new Color(19, 27, 139));
+                                    g.setColor(new Color(0x3f51b5));
                                 cal.setTime(cours.getStart());
                                 // Lundi = 2 - 2 = 0
                                 int d = cal.get(Calendar.DAY_OF_WEEK) - 2;
