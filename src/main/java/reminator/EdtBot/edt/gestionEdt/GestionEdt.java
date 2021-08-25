@@ -258,10 +258,6 @@ public abstract class GestionEdt {
                             int nbCourses = stack.size();
                             for (Cours cours : stack) {
                                 int position = cours.getPosition();
-                                if (cours.getSummary().contains("EXAMEN"))
-                                    g.setColor(new Color(0xe91e63));
-                                else
-                                    g.setColor(new Color(0x3f51b5));
                                 cal.setTime(cours.getStart());
                                 // Lundi = 2 - 2 = 0
                                 int d = cal.get(Calendar.DAY_OF_WEEK) - 2;
@@ -272,11 +268,32 @@ public abstract class GestionEdt {
                                 int courseEndHour = cal.get(Calendar.HOUR_OF_DAY) - 7;
                                 int courseEndMinute = cal.get(Calendar.MINUTE);
 
+                                int x = hourWidth + courseHorizontalOffset + dayWidth * d + position * dayWidth / nbCourses;
+                                int y = dayHeight + hourHeight * courseStartHour + hourHeight * courseStartMinute / 60;
+                                int widthRect = dayWidth / nbCourses - 2 * courseHorizontalOffset;
+                                int heightRect = hourHeight * (courseEndHour - courseStartHour) + hourHeight * (courseEndMinute - courseStartMinute) / 60 - 1;
+
+                                if (cours.getSummary().contains("EXAMEN"))
+                                    g.setColor(new Color(0xb0003a));
+                                else
+                                    g.setColor(new Color(0x002984));
                                 g.fillRoundRect(
-                                        hourWidth + courseHorizontalOffset + dayWidth * d + position * dayWidth / nbCourses,
-                                        dayHeight + hourHeight * courseStartHour + hourHeight * courseStartMinute / 60,
-                                        dayWidth / nbCourses - 2 * courseHorizontalOffset,
-                                        hourHeight * (courseEndHour - courseStartHour) + hourHeight * (courseEndMinute - courseStartMinute) / 60 - 1,
+                                        x,
+                                        y,
+                                        widthRect + 3,
+                                        heightRect + 3,
+                                        15,
+                                        15);
+
+                                if (cours.getSummary().contains("EXAMEN"))
+                                    g.setColor(new Color(0xe91e63));
+                                else
+                                    g.setColor(new Color(0x3f51b5));
+                                g.fillRoundRect(
+                                        x,
+                                        y,
+                                        widthRect,
+                                        heightRect,
                                         15,
                                         15);
                             }
