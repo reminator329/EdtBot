@@ -1,10 +1,12 @@
 package reminator.EdtBot.bot;
 
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.jetbrains.annotations.NotNull;
 import reminator.EdtBot.Categories.OtherCategory;
 import reminator.EdtBot.Categories.Category;
@@ -14,10 +16,7 @@ import reminator.EdtBot.Commands.enums.Commands;
 import reminator.EdtBot.utils.EcouteursEdt;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.TimeZone;
+import java.util.*;
 
 public class Controller extends ListenerAdapter {
 
@@ -26,7 +25,24 @@ public class Controller extends ListenerAdapter {
     }
 
     @Override
-    public void onMessageReceived(@NotNull MessageReceivedEvent event) {
+    public void onSlashCommand(@NotNull SlashCommandEvent event) {
+        if (!event.getName().equals("ping")) return;
+        long time = System.currentTimeMillis();
+        OptionMapping optEphemeral = event.getOption("Ephemeral");
+        boolean ephemeral;
+        if (optEphemeral == null) {
+            ephemeral = false;
+        } else {
+            ephemeral = optEphemeral.getAsBoolean();
+        }
+        event.reply("Pong!").setEphemeral(ephemeral)
+                .flatMap(v ->
+                        event.getHook().editOriginalFormat("Pong: %d ms", System.currentTimeMillis() - time)
+                ).queue();
+    }
+
+    @Override
+    public void onMessageReceived(MessageReceivedEvent event) {
         if (event.getAuthor().isBot() || event.isFromGuild()) return;
 
         event.getAuthor().openPrivateChannel()

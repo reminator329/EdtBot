@@ -4,7 +4,10 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import reminator.EdtBot.edt.enums.Liens;
 import reminator.EdtBot.utils.EcouteursEdt;
@@ -26,6 +29,13 @@ public class EdtBot {
         API = api;
         api.addEventListener(new Controller());
         api.getPresence().setPresence(OnlineStatus.ONLINE, Activity.listening("edt!help"));
+
+        CommandListUpdateAction commands = api.updateCommands()
+                .addCommands(
+                new CommandData("ping", "Retourne pong")
+                        .addOption(OptionType.BOOLEAN, "Ephemeral", "Mettre à true pour que personne de voit la réponse.", false)
+        );
+        commands.queue();
 
         new EcouteursEdt().start();
     }

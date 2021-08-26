@@ -6,15 +6,23 @@ plugins {
 mainClassName = 'reminator.EdtBot.bot.EdtBot'
 
 version '1.0'
-def jdaVersion = '4.2.0_214'
 
 repositories {
     jcenter()
+    maven {
+        url 'https://repo.maven.apache.org/maven2'
+        name 'Maven Central'
+    }
+    mavenCentral() // for transitive dependencies
+    maven {
+        name 'm2-dv8tion'
+        url 'https://m2.dv8tion.net/releases'
+    }
 }
 
 dependencies {
-    implementation "net.dv8tion:JDA:$jdaVersion"
-    implementation "org.json:json:20200518"
+    implementation('net.dv8tion:JDA:4.3.0_310')
+    implementation 'org.json:json:20210307'
 }
 
 compileJava.options.encoding = 'UTF-8'
