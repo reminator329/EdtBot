@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.requests.RestAction;
 import org.json.JSONArray;
 import reminator.EdtBot.bot.BotEmbed;
 import reminator.EdtBot.edt.*;
+import reminator.EdtBot.edt.Stack;
 import reminator.EdtBot.utils.CoursParser;
 
 import javax.imageio.ImageIO;
@@ -15,10 +16,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -48,7 +46,6 @@ public abstract class GestionEdt {
         Calendar cal = Calendar.getInstance();
         Date nextCourse = getNextCourse().get(0).getStart();
         cal.setTime(nextCourse);
-        System.out.println(cal.getTime());
 
         cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
         cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -57,9 +54,6 @@ public abstract class GestionEdt {
         cal.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
         cal.set(Calendar.HOUR_OF_DAY, 23);
         Date max = cal.getTime();
-
-        System.out.println(min);
-        System.out.println(max);
 
         updateEdt(min.getTime(), max.getTime());
 
@@ -215,28 +209,9 @@ public abstract class GestionEdt {
             });
             try {
                 cal.setTime(anyCourse.get().getStart());
-                int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
-                int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
-                int firstDay = dayOfMonth - (dayOfWeek - 2);
-
-                int monthNumber = cal.get(Calendar.MONTH);
-                String mois = switch (monthNumber) {
-                    case 0 -> "Janvier";
-                    case 1 -> "Février";
-                    case 2 -> "Mars";
-                    case 3 -> "Avril";
-                    case 4 -> "Mai";
-                    case 5 -> "Juin";
-                    case 6 -> "Juillet";
-                    case 7 -> "Août";
-                    case 8 -> "Septembre";
-                    case 9 -> "Octobre";
-                    case 10 -> "Novembre";
-                    case 11 -> "Décembre";
-                    default -> throw new IllegalStateException("Unexpected value: " + monthNumber);
-                };
+                cal.set(Calendar.DAY_OF_MONTH, Calendar.MONDAY);
                 g.setColor(Color.WHITE);
-                g.drawString(mois, hourWidth / 2 - g.getFontMetrics().stringWidth(mois), dayHeight / 2 + g.getFontMetrics().getHeight() / 2);
+                //g.drawString(mois, hourWidth / 2 - g.getFontMetrics().stringWidth(mois), dayHeight / 2 + g.getFontMetrics().getHeight() / 2);
                 for (int i = 0; i < 5; i++) {
                     String text =
                             switch (i) {
@@ -247,7 +222,12 @@ public abstract class GestionEdt {
                                 case 4 -> "Vendredi";
                                 default -> throw new IllegalStateException("Unexpected value: " + i);
                             };
-                    text += " " + (firstDay + i);
+
+
+                    int monthNumber = cal.get(Calendar.MONTH) + 1;
+                    String textMouth = monthNumber < 10 ? "0" + monthNumber : "" + monthNumber;
+
+                    text += " " + cal.get(Calendar.DAY_OF_MONTH) + "/" + textMouth;
                     g.drawString(text, hourWidth + i * coursesWidth / 5 + coursesWidth / 10 - g.getFontMetrics().stringWidth(text) / 2, dayHeight / 2 + g.getFontMetrics().getHeight() / 2);
                 }
 

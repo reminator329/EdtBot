@@ -60,7 +60,7 @@ public class HelpCommand implements Command {
             List<Command> commands = categoryListEntry.getValue();
 
             String titreField = category.getName();
-            String descriptionField = category.getDescription() + "\n" + commands.stream().map(cmd -> String.format("`%s`", cmd.getName())).collect(Collectors.joining(" "));
+            String descriptionField = category.getDescription() + "\n" + commands.stream().map(cmd -> String.format("`%s`", cmd.getLabel())).collect(Collectors.joining(" "));
             builder.addField(titreField, descriptionField, false);
         }
         return builder;
@@ -74,7 +74,7 @@ public class HelpCommand implements Command {
 
         EmbedBuilder builder = new EmbedBuilder();
         builder.setColor(command.getColor());
-        builder.setTitle("Commande " + command.getLabel());
+        builder.setTitle("Commande " + command.getName());
         builder.appendDescription(command.getDescription());
 
         builder.addField("Signature", "`" + command.getSignature() + "`", false);

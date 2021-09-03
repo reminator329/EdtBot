@@ -7,7 +7,7 @@ import java.util.Iterator;
 
 public class Week implements Iterable<Day> {
 
-    private Day[] days = new Day[5];
+    private final Day[] days = new Day[5];
 
     public Week() {
         for (int i = 0; i < 5; i++) days[i] = new Day();
