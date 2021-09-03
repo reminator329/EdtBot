@@ -227,8 +227,12 @@ public abstract class GestionEdt {
                     int monthNumber = cal.get(Calendar.MONTH) + 1;
                     String textMouth = monthNumber < 10 ? "0" + monthNumber : "" + monthNumber;
 
-                    text += " " + cal.get(Calendar.DAY_OF_MONTH) + "/" + textMouth;
+                    int dayNumber = cal.get(Calendar.DAY_OF_MONTH);
+                    String textDay = dayNumber < 10 ? "0" + dayNumber : "" + dayNumber;
+
+                    text += " " + textDay + "/" + textMouth;
                     g.drawString(text, hourWidth + i * coursesWidth / 5 + coursesWidth / 10 - g.getFontMetrics().stringWidth(text) / 2, dayHeight / 2 + g.getFontMetrics().getHeight() / 2);
+                    cal.add(Calendar.DATE, 1);
                 }
 
                 // Courses
