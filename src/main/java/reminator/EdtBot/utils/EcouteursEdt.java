@@ -1,9 +1,14 @@
 package reminator.EdtBot.utils;
 
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.TextChannel;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import reminator.EdtBot.bot.EdtBot;
-import reminator.EdtBot.edt.*;
+import reminator.EdtBot.edt.Cours;
+import reminator.EdtBot.edt.enums.Edt;
 import reminator.EdtBot.edt.gestionEdt.GestionEdt;
 import reminator.EdtBot.edt.gestionEdt.GestionEdt1A;
 import reminator.EdtBot.edt.gestionEdt.GestionEdt2A;
@@ -11,6 +16,7 @@ import reminator.EdtBot.edt.gestionEdt.GestionEdt3A;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class EcouteursEdt {
 
@@ -48,12 +54,16 @@ public class EcouteursEdt {
         if (content.toString().equals("")) {
             content.append("{}");
         }
-        JSONObject json = new JSONObject(content.toString());
-        json.put(idChannel, annee);
+        JSONObject jsonChannels = new JSONObject(content.toString());
+
+        JSONObject jsonChannel = new JSONObject();
+        jsonChannel.put("annee", annee);
+
+        jsonChannels.put(idChannel, jsonChannel);
 
         try {
             bw = new BufferedWriter(new FileWriter(fileEcouteurs.getAbsoluteFile()));
-            bw.write(json.toString());
+            bw.write(jsonChannels.toString());
             bw.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -74,7 +84,6 @@ public class EcouteursEdt {
             @Override
             public void run() {
                 pCours[0].clear();
-                System.out.println("GET NEXT");
                 pCours[0].addAll(gestionEdt.getNextCourse());
                 System.out.println("test");
                 if (cours[0].size() == 0 || !cours[0].get(0).getSummary().equals(pCours[0].get(0).getSummary())) {
@@ -87,13 +96,14 @@ public class EcouteursEdt {
 
                     if (!s[0]) {
                         if (currentWeek[0] != cal.get(Calendar.WEEK_OF_YEAR)) {
-                            System.out.println("GET WEEK");
                             gestionEdt.printWeek(gestionEdt.getNextWeek(), channel);
                             currentWeek[0] = cal.get(Calendar.WEEK_OF_YEAR);
                         }
 
+                        deleteLastCourses(channel);
+
                         for (Cours c : cours[0]) {
-                            gestionEdt.printCourse(c, channel);
+                            saveIdNextCourse(channel, gestionEdt.printCourse(c, channel));
                         }
                     } else {
                         currentWeek[0] = cal.get(Calendar.WEEK_OF_YEAR);
@@ -103,6 +113,103 @@ public class EcouteursEdt {
             }
         }, 0, 1000 * 60/*500 * 3600*/);
         return timer;
+    }
+
+    private void deleteLastCourses(MessageChannel channel) {
+
+        try {
+            br = new BufferedReader(new FileReader(nomFile));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        StringBuilder content = new StringBuilder();
+        String line;
+        try {
+            while ((line = br.readLine()) != null) {
+                content.append(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+        if (content.toString().equals("")) {
+            content.append("{}");
+        }
+        JSONObject json = new JSONObject(content.toString());
+        JSONObject jsonChannel = json.getJSONObject(channel.getId());
+        JSONArray jsonNextCourses;
+
+        try {
+            jsonNextCourses = jsonChannel.getJSONArray("nextCourses");
+        } catch (JSONException e) {
+            return;
+        }
+        jsonNextCourses.forEach(o -> {
+            String idMessage = (String) o;
+            channel.deleteMessageById(idMessage).queue();
+        });
+
+        jsonNextCourses.clear();
+        jsonChannel.put("nextCourses", jsonNextCourses);
+        json.put(channel.getId(), jsonChannel);
+
+        try {
+            bw = new BufferedWriter(new FileWriter(fileEcouteurs.getAbsoluteFile()));
+            bw.write(json.toString());
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void saveIdNextCourse(MessageChannel channel, CompletableFuture<Message> message) {
+
+        try {
+            br = new BufferedReader(new FileReader(nomFile));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        StringBuilder content = new StringBuilder();
+        String line;
+        try {
+            while ((line = br.readLine()) != null) {
+                content.append(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+        if (content.toString().equals("")) {
+            content.append("{}");
+        }
+        JSONObject json = new JSONObject(content.toString());
+        JSONObject jsonChannel = json.getJSONObject(channel.getId());
+        JSONArray jsonNextCourses;
+
+        try {
+            jsonNextCourses = jsonChannel.getJSONArray("nextCourses");
+        } catch (JSONException e) {
+            jsonNextCourses = new JSONArray();
+        }
+        JSONArray finalJsonNextCourses = jsonNextCourses;
+        JSONArray finalJsonNextCourses1 = jsonNextCourses;
+        message.thenAcceptAsync(m -> {
+            finalJsonNextCourses.put(m.getId());
+            jsonChannel.put("nextCourses", finalJsonNextCourses1);
+            json.put(channel.getId(), jsonChannel);
+
+            try {
+                bw = new BufferedWriter(new FileWriter(fileEcouteurs.getAbsoluteFile()));
+                bw.write(json.toString());
+                bw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public void supprimerEcouteur(String idChannel) {
@@ -133,7 +240,7 @@ public class EcouteursEdt {
             content.append("{}");
         }
         JSONObject json = new JSONObject(content.toString());
-        json.remove(String.valueOf(idChannel));
+        json.remove(idChannel);
 
         try {
             bw = new BufferedWriter(new FileWriter(fileEcouteurs.getAbsoluteFile()));
@@ -169,14 +276,12 @@ public class EcouteursEdt {
         JSONObject json = new JSONObject(content.toString());
 
         json.keySet().forEach(s -> {
-            System.out.println(s);
-            System.out.println(EdtBot.API.getUserById(368733622246834188L));
-            System.out.println("OUI " + EdtBot.API.getTextChannelById(s));
-            ecoutes.put(s, lancerTimer(EdtBot.API.getTextChannelById(s), switch (json.getInt(s)) {
+            JSONObject jsonChannel = json.getJSONObject(s);
+            ecoutes.put(s, lancerTimer(EdtBot.API.getTextChannelById(s), switch (jsonChannel.getInt("annee")) {
                 case 1 -> new GestionEdt1A();
                 case 2 -> new GestionEdt2A();
                 case 3 -> new GestionEdt3A();
-                default -> throw new IllegalStateException("Unexpected value: " + json.getInt(s));
+                default -> throw new IllegalStateException("Unexpected value: " + jsonChannel.getInt("annee"));
             }, true));
         });
     }
