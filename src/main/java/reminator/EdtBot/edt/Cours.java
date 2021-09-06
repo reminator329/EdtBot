@@ -61,7 +61,8 @@ public class Cours implements Comparable<Cours> {
     public int compareTo(@NotNull Cours course) {
         int start = this.getStart().compareTo(course.getStart());
         if (start == 0)
-            return this.position - course.position;
+            return this.getSummary().compareTo(course.getSummary());
+            //return this.position - course.position;
         return start;
     }
 

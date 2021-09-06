@@ -74,15 +74,20 @@ public class EcouteursEdt {
             @Override
             public void run() {
                 pCours[0].clear();
+                System.out.println("GET NEXT");
                 pCours[0].addAll(gestionEdt.getNextCourse());
+                System.out.println("test");
                 if (cours[0].size() == 0 || !cours[0].get(0).getSummary().equals(pCours[0].get(0).getSummary())) {
                     cours[0].clear();
                     cours[0].addAll(pCours[0]);
+                    System.out.println("\n\n\n BONJOUR");
+                    System.out.println(cours[0]);
 
                     cal.setTime(cours[0].get(0).getStart());
 
                     if (!s[0]) {
                         if (currentWeek[0] != cal.get(Calendar.WEEK_OF_YEAR)) {
+                            System.out.println("GET WEEK");
                             gestionEdt.printWeek(gestionEdt.getNextWeek(), channel);
                             currentWeek[0] = cal.get(Calendar.WEEK_OF_YEAR);
                         }
