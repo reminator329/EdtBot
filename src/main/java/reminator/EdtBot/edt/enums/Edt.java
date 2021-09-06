@@ -8,6 +8,7 @@ public enum Edt {
     EDT02("8nam511995lbsisujjcq80h964@group.calendar.google.com"),
     EDT1("4jpbp5hcdimlmov6kscioe4am8@group.calendar.google.com"),
     EDT2("e44ep4hdrj5b2defqf9mmcpd2k@group.calendar.google.com"),
+    EDT3("suv86i7e8723b3o0utsq1ackes@group.calendar.google.com"),
 
     //2A
     EDT_2A("b99stiti1jc6in7n2cf9buoquk@group.calendar.google.com"),

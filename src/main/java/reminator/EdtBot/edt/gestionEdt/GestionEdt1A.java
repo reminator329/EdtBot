@@ -17,6 +17,7 @@ public class GestionEdt1A extends GestionEdt {
     private String edt02;
     private String edt1;
     private String edt2;
+    private String edt3;
 
 
     @Override
@@ -44,6 +45,7 @@ public class GestionEdt1A extends GestionEdt {
             this.edt02 = Edt.EDT02.getHTTPRequest(timeMin, timeMax).GET();
             this.edt1 = Edt.EDT1.getHTTPRequest(timeMin, timeMax).GET();
             this.edt2 = Edt.EDT2.getHTTPRequest(timeMin, timeMax).GET();
+            this.edt3 = Edt.EDT3.getHTTPRequest(timeMin, timeMax).GET();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -52,16 +54,19 @@ public class GestionEdt1A extends GestionEdt {
         JSONObject jEdt02 = new JSONObject(edt02);
         JSONObject jEdt1 = new JSONObject(edt1);
         JSONObject jEdt2 = new JSONObject(edt2);
+        JSONObject jEdt3 = new JSONObject(edt3);
 
         JSONArray jCourss01 = jEdt01.getJSONArray("items");
         JSONArray jCourss02 = jEdt02.getJSONArray("items");
         JSONArray jCourss1 = jEdt1.getJSONArray("items");
         JSONArray jCourss2 = jEdt2.getJSONArray("items");
+        JSONArray jCourss3 = jEdt3.getJSONArray("items");
 
         ajoutCourss(jCourss01, "0");
         ajoutCourss(jCourss02, "0");
         ajoutCourss(jCourss1, "1");
         ajoutCourss(jCourss2, "2");
+        ajoutCourss(jCourss3, "3");
     }
 
     @Override
