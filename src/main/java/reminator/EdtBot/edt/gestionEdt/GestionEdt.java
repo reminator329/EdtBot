@@ -312,7 +312,7 @@ public abstract class GestionEdt {
             g2.dispose();
             //ImageIO.write(bufferedImage, "png", new File("week_" + channel.getId() + "_2.png"));
             //file = new File("week_" + channel.getId() + "_2.png");
-            return channel.sendMessage(HttpServer.INSTANCE.getWeekUrl(channel.getId(), bufferedImage)).submit();
+            return channel.sendMessage(HttpServer.INSTANCE.getWeekUrl(channel.getId(), b)).submit();
 
         } catch (Exception e) {
             channel.sendMessage(e.getMessage()).queue();
@@ -324,8 +324,9 @@ public abstract class GestionEdt {
         CompletableFuture<Message> week = channel.retrieveMessageById(idWeek).submit();
         week.thenAcceptAsync(message -> {
 
-            BufferedImage b = weekImages.get(idWeek);
-            Graphics2D g2 = (Graphics2D) b.getGraphics();
+            BufferedImage b = weekImages.get(channel.getId());
+            BufferedImage b2 = new BufferedImage(b.getWidth(), b.getHeight(), b.getType());
+            Graphics2D g2 = (Graphics2D) b2.getGraphics();
             Calendar cal = Calendar.getInstance();
             cal.setTime(new Date());
             int today = cal.get(Calendar.DAY_OF_WEEK) - 2;
@@ -358,7 +359,7 @@ public abstract class GestionEdt {
             );
 
             g2.dispose();
-            message.editMessage(HttpServer.INSTANCE.getWeekUrl(channel.getId(), b)).queue();
+            message.editMessage(HttpServer.INSTANCE.getWeekUrl(channel.getId(), b2)).queue();
         });
     }
 }
