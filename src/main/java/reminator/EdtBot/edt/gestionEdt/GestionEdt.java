@@ -18,7 +18,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.stream.Collectors;
 
 public abstract class GestionEdt {
@@ -122,7 +121,7 @@ public abstract class GestionEdt {
         return channel.sendMessage(builder.build()).submit();
     }
 
-    public void printWeek(Week week, MessageChannel channel) {
+    public CompletableFuture<Message> printWeek(Week week, MessageChannel channel) {
 
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat jour = new SimpleDateFormat("EEEEEEEEEEEEEEEE dd MMMMMMMMMM", Locale.FRANCE);
@@ -144,10 +143,10 @@ public abstract class GestionEdt {
                 channel.sendMessage(builder.build()).queue();
             }
         }
-        printImageWeek(week, channel);
+        return(printImageWeek(week, channel));
     }
 
-    protected void printImageWeek(Week week, MessageChannel channel) {
+    protected CompletableFuture<Message> printImageWeek(Week week, MessageChannel channel) {
 
         File file;
 
@@ -170,7 +169,8 @@ public abstract class GestionEdt {
             int dayLineOffset = 15;
             int hourLineOffset = 15;
             int textOffset = 5;
-            int courseHorizontalOffset = 5;
+            int courseHorizontalOffset = 3;
+            int shadowWidth = 5;
 
             BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
             g = (Graphics2D) bufferedImage.getGraphics();
@@ -253,9 +253,9 @@ public abstract class GestionEdt {
                                 int courseEndHour = cal.get(Calendar.HOUR_OF_DAY) - 7;
                                 int courseEndMinute = cal.get(Calendar.MINUTE);
 
-                                int x = hourWidth + courseHorizontalOffset + dayWidth * d + position * dayWidth / nbCourses;
+                                int x = hourWidth + courseHorizontalOffset + (dayWidth+1) * d + position * dayWidth / nbCourses;
                                 int y = dayHeight + hourHeight * courseStartHour + hourHeight * courseStartMinute / 60;
-                                int widthRect = dayWidth / nbCourses - 2 * courseHorizontalOffset;
+                                int widthRect = dayWidth / nbCourses - 2 * courseHorizontalOffset - shadowWidth;
                                 int heightRect = hourHeight * (courseEndHour - courseStartHour) + hourHeight * (courseEndMinute - courseStartMinute) / 60 - 5;
 
                                 if (cours.getSummary().contains("EXAMEN"))
@@ -265,8 +265,8 @@ public abstract class GestionEdt {
                                 g.fillRoundRect(
                                         x,
                                         y,
-                                        widthRect + 5,
-                                        heightRect + 5,
+                                        widthRect + shadowWidth,
+                                        heightRect + shadowWidth,
                                         15,
                                         15);
 
@@ -285,15 +285,29 @@ public abstract class GestionEdt {
                         }
                     }
                 }
+                ImageIO.write(bufferedImage, "png", new File("week_" + channel.getId() + ".png"));
+
+                cal.setTime(new Date());
+                int today = cal.get(Calendar.DAY_OF_WEEK) - 2;
+                int hour = cal.get(Calendar.HOUR_OF_DAY) - 7;
+                int minute = cal.get(Calendar.MINUTE);
+
+                int x = hourWidth + today * (dayWidth + 1) + 1;
+                int y = dayHeight + hourHeight * hour + hourHeight * minute / 60;
+
+                g.setColor(Color.ORANGE);
+                g.setStroke(new BasicStroke(5));
+                g.drawLine(
+                        x,
+                        y,
+                        x + dayWidth - 3,
+                        y
+                        );
 
                 g.dispose();
-                ImageIO.write(bufferedImage, "png", new File("/EdtBot/images/test.png"));
-                file = new File("/EdtBot/images/test.png");
-                channel.sendMessage(" ").addFile(file).queue(message -> {
-                    java.util.List<Message> messages = channel.retrievePinnedMessages().complete();
-                    messages.forEach(m -> m.unpin().queue());
-                    message.pin().queue();
-                });
+                ImageIO.write(bufferedImage, "png", new File("week_" + channel.getId() + "_2.png"));
+                file = new File("week_" + channel.getId() + "_2.png");
+                return channel.sendMessage(" ").addFile(file).submit();
 
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -301,5 +315,28 @@ public abstract class GestionEdt {
         } catch (Exception e) {
             channel.sendMessage(e.getMessage()).queue();
         }
+        return null;
+    }
+
+    public void updateWeek(MessageChannel channel, String idWeek) {
+        System.out.println();
+        CompletableFuture<Message> week = channel.retrieveMessageById(idWeek).submit();
+        week.thenAcceptAsync(message -> {
+            System.out.println("ICI :");
+            message.editMessage("maj...").queue();
+            //message.editMessageFormat()
+            Message.Attachment attachment = message.getAttachments().get(0);
+            CompletableFuture<File> file = attachment.downloadToFile("week.png");
+            file.thenAcceptAsync(image -> {
+
+                try {
+                    BufferedImage bufferedImage = ImageIO.read(image);
+                    Graphics2D g = (Graphics2D) bufferedImage.getGraphics();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        });
     }
 }

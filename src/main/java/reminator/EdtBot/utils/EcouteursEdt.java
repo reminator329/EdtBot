@@ -2,13 +2,11 @@ package reminator.EdtBot.utils;
 
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.TextChannel;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import reminator.EdtBot.bot.EdtBot;
 import reminator.EdtBot.edt.Cours;
-import reminator.EdtBot.edt.enums.Edt;
 import reminator.EdtBot.edt.gestionEdt.GestionEdt;
 import reminator.EdtBot.edt.gestionEdt.GestionEdt1A;
 import reminator.EdtBot.edt.gestionEdt.GestionEdt2A;
@@ -96,7 +94,7 @@ public class EcouteursEdt {
 
                     if (!s[0]) {
                         if (currentWeek[0] != cal.get(Calendar.WEEK_OF_YEAR)) {
-                            gestionEdt.printWeek(gestionEdt.getNextWeek(), channel);
+                            saveIdWeek(channel, gestionEdt.printWeek(gestionEdt.getNextWeek(), channel));
                             currentWeek[0] = cal.get(Calendar.WEEK_OF_YEAR);
                         }
 
@@ -110,9 +108,46 @@ public class EcouteursEdt {
                         s[0] = false;
                     }
                 }
+                String week = getIdWeek(channel);
+                if (week != null)
+                    gestionEdt.updateWeek(channel, week);
             }
         }, 0, 1000 * 60/*500 * 3600*/);
         return timer;
+    }
+
+    private String getIdWeek(MessageChannel channel) {
+
+        try {
+            br = new BufferedReader(new FileReader(nomFile));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        StringBuilder content = new StringBuilder();
+        String line;
+        try {
+            while ((line = br.readLine()) != null) {
+                content.append(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        if (content.toString().equals("")) {
+            content.append("{}");
+        }
+        JSONObject json = new JSONObject(content.toString());
+        JSONObject jsonChannel = json.getJSONObject(channel.getId());
+        String week;
+        try {
+            week = jsonChannel.getString("week");
+        } catch (JSONException e) {
+            week = null;
+        }
+
+        return week;
     }
 
     private void deleteLastCourses(MessageChannel channel) {
@@ -164,40 +199,81 @@ public class EcouteursEdt {
         }
     }
 
-    private void saveIdNextCourse(MessageChannel channel, CompletableFuture<Message> message) {
-
-        try {
-            br = new BufferedReader(new FileReader(nomFile));
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        StringBuilder content = new StringBuilder();
-        String line;
-        try {
-            while ((line = br.readLine()) != null) {
-                content.append(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
-        if (content.toString().equals("")) {
-            content.append("{}");
-        }
-        JSONObject json = new JSONObject(content.toString());
-        JSONObject jsonChannel = json.getJSONObject(channel.getId());
-        JSONArray jsonNextCourses;
-
-        try {
-            jsonNextCourses = jsonChannel.getJSONArray("nextCourses");
-        } catch (JSONException e) {
-            jsonNextCourses = new JSONArray();
-        }
-        JSONArray finalJsonNextCourses = jsonNextCourses;
-        JSONArray finalJsonNextCourses1 = jsonNextCourses;
+    private void saveIdWeek(MessageChannel channel, CompletableFuture<Message> message) {
         message.thenAcceptAsync(m -> {
+            System.out.println("testeeeeeeeeeee");
+            try {
+                br = new BufferedReader(new FileReader(nomFile));
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
+
+            StringBuilder content = new StringBuilder();
+            String line;
+            try {
+                while ((line = br.readLine()) != null) {
+                    content.append(line);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
+            if (content.toString().equals("")) {
+                content.append("{}");
+            }
+            JSONObject json = new JSONObject(content.toString());
+            JSONObject jsonChannel = json.getJSONObject(channel.getId());
+
+            System.out.println("ENFINNNNN");
+            jsonChannel.put("week", m.getId());
+            json.put(channel.getId(), jsonChannel);
+            System.out.println(json);
+
+            try {
+                bw = new BufferedWriter(new FileWriter(fileEcouteurs.getAbsoluteFile()));
+                bw.write(json.toString());
+                bw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private void saveIdNextCourse(MessageChannel channel, CompletableFuture<Message> message) {
+        message.thenAcceptAsync(m -> {
+
+            try {
+                br = new BufferedReader(new FileReader(nomFile));
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
+
+            StringBuilder content = new StringBuilder();
+            String line;
+            try {
+                while ((line = br.readLine()) != null) {
+                    content.append(line);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
+            if (content.toString().equals("")) {
+                content.append("{}");
+            }
+            JSONObject json = new JSONObject(content.toString());
+            JSONObject jsonChannel = json.getJSONObject(channel.getId());
+            JSONArray jsonNextCourses;
+
+            try {
+                jsonNextCourses = jsonChannel.getJSONArray("nextCourses");
+            } catch (JSONException e) {
+                jsonNextCourses = new JSONArray();
+            }
+            JSONArray finalJsonNextCourses = jsonNextCourses;
+            JSONArray finalJsonNextCourses1 = jsonNextCourses;
             finalJsonNextCourses.put(m.getId());
             jsonChannel.put("nextCourses", finalJsonNextCourses1);
             json.put(channel.getId(), jsonChannel);
