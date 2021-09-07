@@ -8,6 +8,7 @@ import reminator.EdtBot.bot.BotEmbed;
 import reminator.EdtBot.edt.*;
 import reminator.EdtBot.edt.Stack;
 import reminator.EdtBot.utils.CoursParser;
+import reminator.EdtBot.utils.HttpServer;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -25,6 +26,7 @@ public abstract class GestionEdt {
     protected ArrayList<Cours> nextCourses = new ArrayList<>();
     protected ArrayList<Cours> courses;
     protected String csv;
+    private final Map<String, BufferedImage> weekImages = new HashMap<>();
 
     public GestionEdt() {
         courses = new ArrayList<>();
@@ -206,112 +208,112 @@ public abstract class GestionEdt {
                     anyCourse.set(day.stream().findAny().get().stream().findAny().get());
                 }
             });
-            try {
-                cal.setTime(anyCourse.get().getStart());
-                cal.set(Calendar.DAY_OF_MONTH, Calendar.MONDAY);
-                g.setColor(Color.WHITE);
-                //g.drawString(mois, hourWidth / 2 - g.getFontMetrics().stringWidth(mois), dayHeight / 2 + g.getFontMetrics().getHeight() / 2);
-                for (int i = 0; i < 5; i++) {
-                    String text =
-                            switch (i) {
-                                case 0 -> "Lundi";
-                                case 1 -> "Mardi";
-                                case 2 -> "Mercredi";
-                                case 3 -> "Jeudi";
-                                case 4 -> "Vendredi";
-                                default -> throw new IllegalStateException("Unexpected value: " + i);
-                            };
+            cal.setTime(anyCourse.get().getStart());
+            cal.set(Calendar.DAY_OF_MONTH, Calendar.MONDAY);
+            g.setColor(Color.WHITE);
+            //g.drawString(mois, hourWidth / 2 - g.getFontMetrics().stringWidth(mois), dayHeight / 2 + g.getFontMetrics().getHeight() / 2);
+            for (int i = 0; i < 5; i++) {
+                String text =
+                        switch (i) {
+                            case 0 -> "Lundi";
+                            case 1 -> "Mardi";
+                            case 2 -> "Mercredi";
+                            case 3 -> "Jeudi";
+                            case 4 -> "Vendredi";
+                            default -> throw new IllegalStateException("Unexpected value: " + i);
+                        };
 
 
-                    int monthNumber = cal.get(Calendar.MONTH) + 1;
-                    String textMouth = monthNumber < 10 ? "0" + monthNumber : "" + monthNumber;
+                int monthNumber = cal.get(Calendar.MONTH) + 1;
+                String textMouth = monthNumber < 10 ? "0" + monthNumber : "" + monthNumber;
 
-                    int dayNumber = cal.get(Calendar.DAY_OF_MONTH);
-                    String textDay = dayNumber < 10 ? "0" + dayNumber : "" + dayNumber;
+                int dayNumber = cal.get(Calendar.DAY_OF_MONTH);
+                String textDay = dayNumber < 10 ? "0" + dayNumber : "" + dayNumber;
 
-                    text += " " + textDay + "/" + textMouth;
-                    g.drawString(text, hourWidth + i * coursesWidth / 5 + coursesWidth / 10 - g.getFontMetrics().stringWidth(text) / 2, dayHeight / 2 + g.getFontMetrics().getHeight() / 2);
-                    cal.add(Calendar.DATE, 1);
-                }
+                text += " " + textDay + "/" + textMouth;
+                g.drawString(text, hourWidth + i * coursesWidth / 5 + coursesWidth / 10 - g.getFontMetrics().stringWidth(text) / 2, dayHeight / 2 + g.getFontMetrics().getHeight() / 2);
+                cal.add(Calendar.DATE, 1);
+            }
 
-                // Courses
-                //g.fillRoundRect(hourWidth + courseHorizontalOffset, dayHeight + hourHeight, dayWidth - 2 * courseHorizontalOffset, 10 * hourHeight, 20, 20);
+            // Courses
+            //g.fillRoundRect(hourWidth + courseHorizontalOffset, dayHeight + hourHeight, dayWidth - 2 * courseHorizontalOffset, 10 * hourHeight, 20, 20);
 
-                for (Day day : week) {
-                    if (day.size() != 0) {
-                        for (Stack stack : day) {
-                            int nbCourses = stack.size();
-                            for (Cours cours : stack) {
-                                int position = cours.getPosition();
-                                cal.setTime(cours.getStart());
-                                // Lundi = 2 - 2 = 0
-                                int d = cal.get(Calendar.DAY_OF_WEEK) - 2;
-                                // Notre emploi du temps ne commence pas avant 7 heures
-                                int courseStartHour = cal.get(Calendar.HOUR_OF_DAY) - 7;
-                                int courseStartMinute = cal.get(Calendar.MINUTE);
-                                cal.setTime(cours.getEnd());
-                                int courseEndHour = cal.get(Calendar.HOUR_OF_DAY) - 7;
-                                int courseEndMinute = cal.get(Calendar.MINUTE);
+            for (Day day : week) {
+                if (day.size() != 0) {
+                    for (Stack stack : day) {
+                        int nbCourses = stack.size();
+                        for (Cours cours : stack) {
+                            int position = cours.getPosition();
+                            cal.setTime(cours.getStart());
+                            // Lundi = 2 - 2 = 0
+                            int d = cal.get(Calendar.DAY_OF_WEEK) - 2;
+                            // Notre emploi du temps ne commence pas avant 7 heures
+                            int courseStartHour = cal.get(Calendar.HOUR_OF_DAY) - 7;
+                            int courseStartMinute = cal.get(Calendar.MINUTE);
+                            cal.setTime(cours.getEnd());
+                            int courseEndHour = cal.get(Calendar.HOUR_OF_DAY) - 7;
+                            int courseEndMinute = cal.get(Calendar.MINUTE);
 
-                                int x = hourWidth + courseHorizontalOffset + (dayWidth+1) * d + position * dayWidth / nbCourses;
-                                int y = dayHeight + hourHeight * courseStartHour + hourHeight * courseStartMinute / 60;
-                                int widthRect = dayWidth / nbCourses - 2 * courseHorizontalOffset - shadowWidth;
-                                int heightRect = hourHeight * (courseEndHour - courseStartHour) + hourHeight * (courseEndMinute - courseStartMinute) / 60 - 5;
+                            int x = hourWidth + courseHorizontalOffset + (dayWidth+1) * d + position * dayWidth / nbCourses;
+                            int y = dayHeight + hourHeight * courseStartHour + hourHeight * courseStartMinute / 60;
+                            int widthRect = dayWidth / nbCourses - 2 * courseHorizontalOffset - shadowWidth;
+                            int heightRect = hourHeight * (courseEndHour - courseStartHour) + hourHeight * (courseEndMinute - courseStartMinute) / 60 - 5;
 
-                                if (cours.getSummary().contains("EXAMEN"))
-                                    g.setColor(new Color(0xa00037));
-                                else
-                                    g.setColor(new Color(0x004ba0));
-                                g.fillRoundRect(
-                                        x,
-                                        y,
-                                        widthRect + shadowWidth,
-                                        heightRect + shadowWidth,
-                                        15,
-                                        15);
+                            if (cours.getSummary().contains("EXAMEN"))
+                                g.setColor(new Color(0xa00037));
+                            else
+                                g.setColor(new Color(0x004ba0));
+                            g.fillRoundRect(
+                                    x,
+                                    y,
+                                    widthRect + shadowWidth,
+                                    heightRect + shadowWidth,
+                                    15,
+                                    15);
 
-                                if (cours.getSummary().contains("EXAMEN"))
-                                    g.setColor(new Color(0xd81b60));
-                                else
-                                    g.setColor(new Color(0x1976d2));
-                                g.fillRoundRect(
-                                        x,
-                                        y,
-                                        widthRect,
-                                        heightRect,
-                                        15,
-                                        15);
-                            }
+                            if (cours.getSummary().contains("EXAMEN"))
+                                g.setColor(new Color(0xd81b60));
+                            else
+                                g.setColor(new Color(0x1976d2));
+                            g.fillRoundRect(
+                                    x,
+                                    y,
+                                    widthRect,
+                                    heightRect,
+                                    15,
+                                    15);
                         }
                     }
                 }
-                ImageIO.write(bufferedImage, "png", new File("week_" + channel.getId() + ".png"));
-
-                cal.setTime(new Date());
-                int today = cal.get(Calendar.DAY_OF_WEEK) - 2;
-                int hour = cal.get(Calendar.HOUR_OF_DAY) - 7;
-                int minute = cal.get(Calendar.MINUTE);
-
-                int x = hourWidth + today * (dayWidth + 1) + 1;
-                int y = dayHeight + hourHeight * hour + hourHeight * minute / 60;
-
-                g.setColor(Color.ORANGE);
-                g.setStroke(new BasicStroke(5));
-                g.drawLine(
-                        x,
-                        y,
-                        x + dayWidth - 3,
-                        y
-                        );
-
-                g.dispose();
-                ImageIO.write(bufferedImage, "png", new File("week_" + channel.getId() + "_2.png"));
-                file = new File("week_" + channel.getId() + "_2.png");
-                return channel.sendMessage(" ").addFile(file).submit();
-
-            } catch (IOException ex) {
-                ex.printStackTrace();
             }
+            weekImages.put(channel.getId(), bufferedImage);
+
+            BufferedImage b = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight(), bufferedImage.getType());
+            Graphics2D g2 = (Graphics2D) b.getGraphics();
+            g2.drawImage(bufferedImage, 0, 0, null);
+
+            cal.setTime(new Date());
+            int today = cal.get(Calendar.DAY_OF_WEEK) - 2;
+            int hour = cal.get(Calendar.HOUR_OF_DAY) - 7;
+            int minute = cal.get(Calendar.MINUTE);
+
+            int x = hourWidth + today * (dayWidth + 1) + 1;
+            int y = dayHeight + hourHeight * hour + hourHeight * minute / 60;
+
+            g2.setColor(Color.ORANGE);
+            g2.setStroke(new BasicStroke(5));
+            g2.drawLine(
+                    x,
+                    y,
+                    x + dayWidth - 3,
+                    y
+                    );
+
+            g2.dispose();
+            //ImageIO.write(bufferedImage, "png", new File("week_" + channel.getId() + "_2.png"));
+            //file = new File("week_" + channel.getId() + "_2.png");
+            return channel.sendMessage(HttpServer.INSTANCE.getWeekUrl(channel.getId(), bufferedImage)).submit();
+
         } catch (Exception e) {
             channel.sendMessage(e.getMessage()).queue();
         }
@@ -319,24 +321,44 @@ public abstract class GestionEdt {
     }
 
     public void updateWeek(MessageChannel channel, String idWeek) {
-        System.out.println();
         CompletableFuture<Message> week = channel.retrieveMessageById(idWeek).submit();
         week.thenAcceptAsync(message -> {
-            System.out.println("ICI :");
-            message.editMessage("maj...").queue();
-            //message.editMessageFormat()
-            Message.Attachment attachment = message.getAttachments().get(0);
-            CompletableFuture<File> file = attachment.downloadToFile("week.png");
-            file.thenAcceptAsync(image -> {
 
-                try {
-                    BufferedImage bufferedImage = ImageIO.read(image);
-                    Graphics2D g = (Graphics2D) bufferedImage.getGraphics();
+            BufferedImage b = weekImages.get(idWeek);
+            Graphics2D g2 = (Graphics2D) b.getGraphics();
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(new Date());
+            int today = cal.get(Calendar.DAY_OF_WEEK) - 2;
+            int hour = cal.get(Calendar.HOUR_OF_DAY) - 7;
+            int minute = cal.get(Calendar.MINUTE);
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
+            int startHour = 7;
+            int endHour = 20;
+            int nbHours = endHour - startHour;
+            int width = 1024;
+            int height = 512;
+            int fontHeight = 10;
+            int hourWidth = fontHeight * 6;
+            int dayHeight = fontHeight * 2;
+            int coursesWidth = (width - hourWidth);
+            int dayWidth = coursesWidth / 5;
+            int coursesHeight = (height - dayHeight);
+            int hourHeight = coursesHeight / 13;
+
+            int x = hourWidth + today * (dayWidth + 1) + 1;
+            int y = dayHeight + hourHeight * hour + hourHeight * minute / 60;
+
+            g2.setColor(Color.ORANGE);
+            g2.setStroke(new BasicStroke(5));
+            g2.drawLine(
+                    x,
+                    y,
+                    x + dayWidth - 3,
+                    y
+            );
+
+            g2.dispose();
+            message.editMessage(HttpServer.INSTANCE.getWeekUrl(channel.getId(), b)).queue();
         });
     }
 }

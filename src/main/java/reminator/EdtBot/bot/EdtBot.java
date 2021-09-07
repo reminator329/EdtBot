@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import reminator.EdtBot.edt.enums.Liens;
 import reminator.EdtBot.utils.EcouteursEdt;
+import reminator.EdtBot.utils.HttpServer;
 
 import java.awt.*;
 
@@ -33,10 +34,11 @@ public class EdtBot {
         CommandListUpdateAction commands = api.updateCommands()
                 .addCommands(
                 new CommandData("ping", "Retourne pong")
-                        .addOption(OptionType.BOOLEAN, "Ephemeral", "Mettre à true pour que personne de voit la réponse.", false)
+                        .addOption(OptionType.BOOLEAN, "ephemeral", "Mettre à true pour que personne de voit la réponse.", false)
         );
         commands.queue();
 
+        HttpServer.INSTANCE.start();
         new EcouteursEdt().start();
     }
 }
