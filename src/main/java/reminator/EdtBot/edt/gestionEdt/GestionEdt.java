@@ -286,6 +286,7 @@ public abstract class GestionEdt {
                     }
                 }
             }
+            g.dispose();
             weekImages.put(channel.getId(), bufferedImage);
 
             BufferedImage b = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight(), bufferedImage.getType());
@@ -298,7 +299,14 @@ public abstract class GestionEdt {
             int minute = cal.get(Calendar.MINUTE);
 
             int x = hourWidth + today * (dayWidth + 1) + 1;
-            int y = dayHeight + hourHeight * hour + hourHeight * minute / 60;
+            int y;
+            if (hour < 0) {
+                y = 1;
+            } else if (hour > 12){
+                y = height - 1;
+            } else {
+                y = dayHeight + hourHeight * hour + hourHeight * minute / 60;
+            }
 
             g2.setColor(Color.ORANGE);
             g2.setStroke(new BasicStroke(5));
@@ -327,6 +335,8 @@ public abstract class GestionEdt {
             BufferedImage b = weekImages.get(channel.getId());
             BufferedImage b2 = new BufferedImage(b.getWidth(), b.getHeight(), b.getType());
             Graphics2D g2 = (Graphics2D) b2.getGraphics();
+            g2.drawImage(b, 0, 0, null);
+
             Calendar cal = Calendar.getInstance();
             cal.setTime(new Date());
             int today = cal.get(Calendar.DAY_OF_WEEK) - 2;
@@ -347,7 +357,14 @@ public abstract class GestionEdt {
             int hourHeight = coursesHeight / 13;
 
             int x = hourWidth + today * (dayWidth + 1) + 1;
-            int y = dayHeight + hourHeight * hour + hourHeight * minute / 60;
+            int y;
+            if (hour < 0) {
+                y = 1;
+            } else if (hour > 12){
+                y = height - 1;
+            } else {
+                y = dayHeight + hourHeight * hour + hourHeight * minute / 60;
+            }
 
             g2.setColor(Color.ORANGE);
             g2.setStroke(new BasicStroke(5));

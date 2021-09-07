@@ -20,7 +20,7 @@ public class HttpServer {
     private final Map<String, BufferedImage> weekImages = new HashMap<>();
 
     private String serverIP;
-    private final static int PORT = 8080;
+    private final static int PORT = 32768;
 
     private HttpServer() {
         try {
