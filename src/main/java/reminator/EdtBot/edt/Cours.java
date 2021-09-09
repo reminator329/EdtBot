@@ -1,6 +1,10 @@
 package reminator.EdtBot.edt;
 
 import org.jetbrains.annotations.NotNull;
+import reminator.EdtBot.edt.gestionEdt.GestionEdt;
+import reminator.EdtBot.edt.gestionEdt.GestionEdt1A;
+import reminator.EdtBot.edt.gestionEdt.GestionEdt2A;
+import reminator.EdtBot.edt.gestionEdt.GestionEdt3A;
 
 import java.util.Date;
 import java.util.Objects;
@@ -117,5 +121,23 @@ public class Cours implements Comparable<Cours> {
                 this.getStart().compareTo(cours.getEnd()) < 0 && this.getStart().compareTo(cours.getStart()) > 0 ||
                 this.getEnd().compareTo(cours.getEnd()) < 0 && this.getEnd().compareTo(cours.getStart()) > 0 ||
                 cours.getStart().compareTo(this.getStart()) == 0 || cours.getEnd().compareTo(this.getEnd()) == 0;
+    }
+
+    public boolean isExam(GestionEdt gestionEdt) {
+        int annee = 1;
+        if (gestionEdt instanceof GestionEdt2A) {
+            annee = 2;
+        } else if (gestionEdt instanceof GestionEdt3A){
+            annee = 3;
+        }
+        switch (annee) {
+            case 1, 3 -> {
+                return getSummary().contains("EXAMEN");
+            }
+            case 2 -> {
+                return getSummary().contains("***") || getSummary().contains("EXAMEN");
+            }
+        }
+        return false;
     }
 }

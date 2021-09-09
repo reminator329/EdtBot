@@ -259,7 +259,7 @@ public abstract class GestionEdt {
                             int widthRect = dayWidth / nbCourses - 2 * courseHorizontalOffset - shadowWidth;
                             int heightRect = hourHeight * (courseEndHour - courseStartHour) + hourHeight * (courseEndMinute - courseStartMinute) / 60 - 5;
 
-                            if (cours.getSummary().contains("EXAMEN"))
+                            if (cours.isExam(this))
                                 g.setColor(new Color(0xa00037));
                             else
                                 g.setColor(new Color(0x004ba0));
@@ -271,7 +271,7 @@ public abstract class GestionEdt {
                                     15,
                                     15);
 
-                            if (cours.getSummary().contains("EXAMEN"))
+                            if (cours.isExam(this))
                                 g.setColor(new Color(0xd81b60));
                             else
                                 g.setColor(new Color(0x1976d2));
