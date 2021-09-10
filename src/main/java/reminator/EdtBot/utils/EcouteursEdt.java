@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import reminator.EdtBot.bot.EdtBot;
 import reminator.EdtBot.edt.Cours;
+import reminator.EdtBot.edt.Week;
 import reminator.EdtBot.edt.gestionEdt.GestionEdt;
 import reminator.EdtBot.edt.gestionEdt.GestionEdt1A;
 import reminator.EdtBot.edt.gestionEdt.GestionEdt2A;
@@ -84,6 +85,7 @@ public class EcouteursEdt {
                 pCours[0].clear();
                 pCours[0].addAll(gestionEdt.getNextCourse());
                 System.out.println("test");
+                Week week = null;
                 if (cours[0].size() == 0 || !cours[0].get(0).getSummary().equals(pCours[0].get(0).getSummary())) {
                     cours[0].clear();
                     cours[0].addAll(pCours[0]);
@@ -94,7 +96,8 @@ public class EcouteursEdt {
 
                     if (!s[0]) {
                         if (currentWeek[0] != cal.get(Calendar.WEEK_OF_YEAR)) {
-                            saveIdWeek(channel, gestionEdt.printWeek(gestionEdt.getNextWeek(), channel));
+                            week = gestionEdt.getNextWeek();
+                            saveIdWeek(channel, gestionEdt.printWeek(week, channel));
                             currentWeek[0] = cal.get(Calendar.WEEK_OF_YEAR);
                         }
 
@@ -108,9 +111,9 @@ public class EcouteursEdt {
                         s[0] = false;
                     }
                 }
-                String week = getIdWeek(channel);
-                if (week != null)
-                    gestionEdt.updateWeek(channel, week);
+                String idWeek = getIdWeek(channel);
+                if (idWeek != null)
+                    gestionEdt.updateWeek(channel, idWeek);
             }
         }, 0, 1000 * 60/*500 * 3600*/);
         return timer;
