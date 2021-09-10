@@ -209,7 +209,7 @@ public abstract class GestionEdt {
                 }
             });
             cal.setTime(anyCourse.get().getStart());
-            cal.set(Calendar.DAY_OF_MONTH, Calendar.MONDAY);
+            cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
             g.setColor(Color.WHITE);
             //g.drawString(mois, hourWidth / 2 - g.getFontMetrics().stringWidth(mois), dayHeight / 2 + g.getFontMetrics().getHeight() / 2);
             for (int i = 0; i < 5; i++) {
