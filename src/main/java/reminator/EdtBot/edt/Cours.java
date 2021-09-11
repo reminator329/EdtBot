@@ -87,8 +87,7 @@ public class Cours implements Comparable<Cours> {
                         getSummary().contains("ACCUEIL") ||
                         getSummary().contains("Réunion Information") ||
                         getSummary().contains("Fresque du Climat") ||
-                        getSummary().contains("Réunion") ||
-                        getSummary().contains("UPSSITECH");
+                        getSummary().contains("Réunion");
             }
             case 2 -> {
                 return getSummary().contains("EMU") ||
@@ -103,7 +102,8 @@ public class Cours implements Comparable<Cours> {
                         getSummary().contains("Projet") ||
                         getSummary().contains("PGE") ||
                         getSummary().contains("Accessibilité") ||
-                        getSummary().contains("Réunion de rentrée");
+                        getSummary().contains("Réunion de rentrée") ||
+                        getSummary().contains("TOEIC");
             }
             default -> {
                 return false;
