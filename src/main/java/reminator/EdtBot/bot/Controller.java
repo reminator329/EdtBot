@@ -1,19 +1,20 @@
 package reminator.EdtBot.bot;
 
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.jetbrains.annotations.NotNull;
-import reminator.EdtBot.Categories.OtherCategory;
-import reminator.EdtBot.Categories.Category;
-import reminator.EdtBot.Categories.EdtCategory;
-import reminator.EdtBot.Commands.*;
+import reminator.EdtBot.Commands.Command;
+import reminator.EdtBot.Commands.argument.Arguments;
 import reminator.EdtBot.Commands.enums.Commands;
-import reminator.EdtBot.utils.EcouteursEdt;
+import reminator.EdtBot.Commands.genericEvent.commandEvent.LegacyCommandEvent;
+import reminator.EdtBot.exceptions.ArgumentFormatException;
 
 import java.time.Duration;
 import java.util.*;
@@ -26,19 +27,30 @@ public class Controller extends ListenerAdapter {
 
     @Override
     public void onSlashCommand(@NotNull SlashCommandEvent event) {
-        if (!event.getName().equals("ping")) return;
-        long time = System.currentTimeMillis();
-        OptionMapping optEphemeral = event.getOption("Ephemeral");
-        boolean ephemeral;
-        if (optEphemeral == null) {
-            ephemeral = false;
-        } else {
-            ephemeral = optEphemeral.getAsBoolean();
+
+        for (Commands c : Commands.values()) {
+            Command cmd = c.getCommand();
+            String prefix = cmd.getPrefix();
+            String label = cmd.getLabel();
+            String prefixLabel = prefix + label;
+
+            if (event.getName().equals(label)) {
+                Optional<Arguments> arguments = Optional.empty();
+                try {
+                    arguments = cmd.getArguments(event.getOptions().stream().map(OptionMapping::getAsString).toList());
+                } catch (ArgumentFormatException e) {
+                    event.getChannel().sendMessage(e.getMessage()).queue();
+                }
+
+                if (arguments.isPresent()) {
+                    System.out.println(arguments);
+                    cmd.execute(new reminator.EdtBot.Commands.genericEvent.commandEvent.SlashCommandEvent(event), event.getUser(), event.getChannel(), arguments.get());
+                } else {
+                    event.getChannel().sendMessage("Commande mal utilisée, voir `" + prefix + "help " + label + "`.").queue();
+                }
+                return;
+            }
         }
-        event.reply("Pong!").setEphemeral(ephemeral)
-                .flatMap(v ->
-                        event.getHook().editOriginalFormat("Pong: %d ms", System.currentTimeMillis() - time)
-                ).queue();
     }
 
     @Override
@@ -58,33 +70,23 @@ public class Controller extends ListenerAdapter {
 
     @Override
     public void onGuildMessageUpdate(@NotNull GuildMessageUpdateEvent event) {
-        if (event.getAuthor().isBot()) return;
-        List<String> args = new ArrayList<>(Arrays.asList(event.getMessage().getContentRaw().split("\\s+")));
-
-        String command = args.get(0);
-
-        for (Commands c : Commands.values()) {
-            Command cmd = c.getCommand();
-            String prefix = cmd.getPrefix();
-            String label = cmd.getLabel();
-            String prefixLabel = prefix + label;
-
-            String[] separation = command.split("(?i)" + prefix);
-
-            if (prefixLabel.equalsIgnoreCase(command) || separation.length > 1 && cmd.isAlias(separation[1])) {
-                args.remove(0);
-                c.getCommand().execute(event, event.getAuthor(), event.getChannel(), args);
-                return;
-            }
-        }
+        commandSent(event.getAuthor(), event.getMessage(), event);
     }
 
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
-        if (event.getAuthor().isBot()) return;
-        List<String> args = new ArrayList<>(Arrays.asList(event.getMessage().getContentRaw().split("\\s+")));
+        commandSent(event.getAuthor(), event.getMessage(), event);
+    }
 
+    private void commandSent(User author, Message message, @NotNull GenericGuildMessageEvent event) {
+        if (author.isBot()) return;
+        List<String> args = new ArrayList<>(Arrays.asList(message.getContentRaw().split("\\s+")));
         String command = args.get(0);
+        args.remove(0);
+        verifyBeforeExecute(command, args, author, event);
+    }
+
+    private void verifyBeforeExecute(String command, List<String> args, User author, @NotNull GenericGuildMessageEvent event) {
 
         for (Commands c : Commands.values()) {
             Command cmd = c.getCommand();
@@ -95,8 +97,20 @@ public class Controller extends ListenerAdapter {
             String[] separation = command.split("(?i)" + prefix);
 
             if (prefixLabel.equalsIgnoreCase(command) || separation.length > 1 && cmd.isAlias(separation[1])) {
-                args.remove(0);
-                c.getCommand().execute(event, event.getAuthor(), event.getChannel(), args);
+
+                Optional<Arguments> arguments = Optional.empty();
+                try {
+                    arguments = cmd.getArguments(args);
+                } catch (ArgumentFormatException e) {
+                    event.getChannel().sendMessage(e.getMessage()).queue();
+                }
+
+                if (arguments.isPresent()) {
+                    System.out.println(arguments);
+                    cmd.execute(new LegacyCommandEvent(event), author, event.getChannel(), arguments.get());
+                } else {
+                    event.getChannel().sendMessage("Commande mal utilisée, voir `" + prefix + "help " + label + "`.").queue();
+                }
                 return;
             }
         }

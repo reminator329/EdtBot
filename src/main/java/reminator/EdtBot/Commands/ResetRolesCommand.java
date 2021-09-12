@@ -1,26 +1,24 @@
 package reminator.EdtBot.Commands;
 
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import reminator.EdtBot.Categories.Category;
 import reminator.EdtBot.Categories.enums.Categories;
-import reminator.EdtBot.bot.BotEmbed;
-import reminator.EdtBot.bot.EdtBot;
+import reminator.EdtBot.Commands.argument.Argument;
+import reminator.EdtBot.Commands.argument.Arguments;
+import reminator.EdtBot.Commands.genericEvent.commandEvent.CommandEvent;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ResetRolesCommand implements Command {
+
+    @Override
+    public List<Argument<?>> getArguments() {
+        return new ArrayList<>();
+    }
 
     @Override
     public Category getCategory() {
@@ -48,25 +46,16 @@ public class ResetRolesCommand implements Command {
     }
 
     @Override
-    public void execute(GenericGuildMessageEvent e, User author, MessageChannel channel, List<String> args) {
+    public void execute(CommandEvent event, User author, MessageChannel channel, Arguments arguments) {
 
-        if (e instanceof GuildMessageReceivedEvent event) {
-            if (event.getMember() == null) return;
-            if (!event.getMember().hasPermission(Permission.ADMINISTRATOR) && !event.getAuthor().getName().equalsIgnoreCase("reminator392")) {
-                channel.sendMessage("Tu n'as pas la permission pour faire cette commande.").queue();
-                return;
-            }
-        } else if (e instanceof GuildMessageUpdateEvent event){
-            if (event.getMember() == null) return;
-            if (!event.getMember().hasPermission(Permission.ADMINISTRATOR) && !event.getAuthor().getName().equalsIgnoreCase("reminator392")) {
-                channel.sendMessage("Tu n'as pas la permission pour faire cette commande.").queue();
-                return;
-            }
+        if (!event.getMember().hasPermission(Permission.ADMINISTRATOR) && !author.getName().equalsIgnoreCase("reminator392")) {
+            channel.sendMessage("Tu n'as pas la permission pour faire cette commande.").queue();
+            return;
         }
 
-        e.getGuild().getMembers().forEach(member -> member.getRoles().forEach(role -> {
+        event.getGuild().getMembers().forEach(member -> member.getRoles().forEach(role -> {
             if (isRole(role)) {
-                e.getGuild().removeRoleFromMember(member, role).queue();
+                event.getGuild().removeRoleFromMember(member, role).queue();
                 channel.sendMessage("Role " + role.getAsMention() + " supprimé pour " + member.getAsMention()).queue();
             }
         }));

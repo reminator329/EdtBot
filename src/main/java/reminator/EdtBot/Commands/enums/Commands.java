@@ -2,6 +2,7 @@ package reminator.EdtBot.Commands.enums;
 
 import reminator.EdtBot.Categories.Category;
 import reminator.EdtBot.Commands.*;
+import reminator.EdtBot.Commands.argument.Argument;
 
 import java.util.Arrays;
 import java.util.List;

@@ -9,11 +9,15 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import reminator.EdtBot.Commands.Command;
+import reminator.EdtBot.Commands.argument.Argument;
+import reminator.EdtBot.Commands.enums.Commands;
 import reminator.EdtBot.edt.enums.Liens;
 import reminator.EdtBot.utils.EcouteursEdt;
 import reminator.EdtBot.utils.HttpServer;
 
 import java.awt.*;
+import java.util.Arrays;
 
 public class EdtBot {
 
@@ -31,11 +35,29 @@ public class EdtBot {
         api.addEventListener(new Controller());
         api.getPresence().setPresence(OnlineStatus.ONLINE, Activity.listening("edt!help"));
 
-        CommandListUpdateAction commands = api.updateCommands()
-                .addCommands(
-                new CommandData("ping", "Retourne pong")
-                        .addOption(OptionType.BOOLEAN, "ephemeral", "Mettre à true pour que personne de voit la réponse.", false)
-        );
+        CommandListUpdateAction commands = api.updateCommands();
+
+        for (Command c : Arrays.stream(Commands.values()).map(Commands::getCommand).toList()) {
+            CommandData data = new CommandData(c.getLabel(), c.getShortDescription());
+
+            for (Argument<?> argument : c.getArguments()) {
+                OptionType type;
+                Class<?> argumentType = argument.getType();
+
+                if (Boolean.class.equals(argumentType)) {
+                    type = OptionType.BOOLEAN;
+                } else if (String.class.equals(argumentType)) {
+                    type = OptionType.STRING;
+                } else if (Integer.class.equals(argumentType)) {
+                    type = OptionType.INTEGER;
+                } else {
+                    throw new IllegalStateException("Unexpected value: " + argument.getType());
+                }
+                data.addOption(type, argument.getName(), argument.getDescription(), !argument.isOptional());
+            }
+
+            commands.addCommands(data).queue();
+        }
         commands.queue();
 
         HttpServer.INSTANCE.start();
