@@ -10,6 +10,7 @@ import reminator.EdtBot.utils.HTTPRequest;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.TreeSet;
 
@@ -23,10 +24,14 @@ public class GestionEdt2A extends GestionEdt {
 
         Date date = new Date();
 
-        TreeSet<Cours> nextCourses = new TreeSet<>(courses);
+        TreeSet<Cours> nextCourses = new TreeSet<>();
+        nextCourses.addAll(courses);
+        //System.out.println(nextCourses.stream().sorted().toList());
         nextCourses.removeIf(c -> c.isNotAccepted(2));
-        nextCourses = new TreeSet<>(nextCourses.tailSet(new Cours(null, new Date(date.getTime() - 1000 * 60 * 10), null, null)));
-        return new ArrayList<>(nextCourses.headSet(nextCourses.first(), true));
+        nextCourses = new TreeSet<>(nextCourses.tailSet(new Cours("", new Date(date.getTime() - 1000 * 60 * 14), null, null)));
+
+        //System.out.println(new ArrayList<>(nextCourses.headSet(new Cours("ZZZZZ", nextCourses.first().getStart(), null, null), true)));
+        return new ArrayList<>(nextCourses.headSet(new Cours("ZZZZZ", nextCourses.first().getStart(), null, null), true));
     }
 
     @Override

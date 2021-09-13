@@ -3,6 +3,7 @@ package reminator.EdtBot.edt;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class Cours implements Comparable<Cours> {
 
@@ -60,9 +61,25 @@ public class Cours implements Comparable<Cours> {
     @Override
     public int compareTo(@NotNull Cours course) {
         int start = this.getStart().compareTo(course.getStart());
-        if (start == 0)
-            return this.position - course.position;
-        return start;
+        if (start != 0)
+            return start;
+        //int position = this.position - course.position;
+        //if (position != 0)
+            //return position;
+        return this.summary.compareTo(course.getSummary());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Cours cours = (Cours) o;
+        return Objects.equals(summary, cours.summary) && Objects.equals(start, cours.start);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(summary, start);
     }
 
     @Override

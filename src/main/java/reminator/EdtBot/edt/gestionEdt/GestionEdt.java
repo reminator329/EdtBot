@@ -3,7 +3,6 @@ package reminator.EdtBot.edt.gestionEdt;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.requests.RestAction;
 import org.json.JSONArray;
 import reminator.EdtBot.bot.BotEmbed;
 import reminator.EdtBot.edt.*;
@@ -17,7 +16,9 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.stream.Collectors;
 
 public abstract class GestionEdt {
@@ -34,7 +35,7 @@ public abstract class GestionEdt {
         courses.clear();
         updateCsv();
         Date date = new Date();
-        updateEdt(date.getTime(), date.getTime() + 1000L * 3600 * 24 * 7 * 20);
+        updateEdt(date.getTime(), date.getTime() + 1000L * 3600 * 24 * 7 * 15);
         nextCourses.clear();
         return getNextCourses();
     }
@@ -106,7 +107,7 @@ public abstract class GestionEdt {
         }
     }
 
-    public void printCourse(Cours cours, MessageChannel channel) {
+    public CompletableFuture<Message> printCourse(Cours cours, MessageChannel channel) {
 
         EmbedBuilder builder = BotEmbed.COURSE.getBuilder(cours);
 
@@ -118,12 +119,10 @@ public abstract class GestionEdt {
         }
         builder.appendDescription(cours.getSummary());
 
-        channel.sendMessage(builder.build()).queue();
+        return channel.sendMessage(builder.build()).submit();
     }
 
     public void printWeek(Week week, MessageChannel channel) {
-
-        System.out.println(week);
 
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat jour = new SimpleDateFormat("EEEEEEEEEEEEEEEE dd MMMMMMMMMM", Locale.FRANCE);
