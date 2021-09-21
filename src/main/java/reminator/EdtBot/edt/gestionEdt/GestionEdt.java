@@ -3,6 +3,7 @@ package reminator.EdtBot.edt.gestionEdt;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.internal.utils.tuple.Pair;
 import org.json.JSONArray;
 import reminator.EdtBot.bot.BotEmbed;
 import reminator.EdtBot.edt.Stack;
@@ -12,7 +13,6 @@ import reminator.EdtBot.utils.HttpServer;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -25,6 +25,7 @@ public abstract class GestionEdt {
     protected ArrayList<Cours> nextCourses = new ArrayList<>();
     protected ArrayList<Cours> courses;
     protected String csv;
+    protected Week thisWeek = new Week();
 
     public GestionEdt() {
         courses = new ArrayList<>();
@@ -57,19 +58,18 @@ public abstract class GestionEdt {
 
         updateEdt(min.getTime(), max.getTime());
 
-        Week week = new Week();
         for (int i : new int[]{Calendar.MONDAY, Calendar.TUESDAY, Calendar.WEDNESDAY, Calendar.THURSDAY, Calendar.FRIDAY}) {
-            Day day = new Day();
+            Day day = new Day(i - 2);
             courses.stream().filter(c -> {
                 Calendar cal2 = Calendar.getInstance();
                 cal2.setTime(c.getStart());
                 return i == cal2.get(Calendar.DAY_OF_WEEK);
             }).forEach(c -> day.addCourse(c, this));
 
-            week.addDay(i - 2, day);
+            thisWeek.setDay(i - 2, day);
         }
 
-        return week;
+        return thisWeek;
     }
 
     public TypeCourse getTypeCours(Cours cours) {
@@ -121,12 +121,13 @@ public abstract class GestionEdt {
         return channel.sendMessage(builder.build()).submit();
     }
 
-    public CompletableFuture<Message> printWeek(Week week, MessageChannel channel) {
+    public Pair<CompletableFuture<Message>, CompletableFuture<Message>[]> printWeek(Week week, MessageChannel channel) {
 
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat jour = new SimpleDateFormat("EEEEEEEEEEEEEEEE dd MMMMMMMMMM", Locale.FRANCE);
         SimpleDateFormat heure = new SimpleDateFormat("H:mm", Locale.FRANCE);
 
+        CompletableFuture<Message>[] jours = new CompletableFuture[5];
         for (Day day : week) {
             if (day.size() != 0) {
                 EmbedBuilder builder = BotEmbed.BASE.getBuilder(null);
@@ -140,17 +141,14 @@ public abstract class GestionEdt {
                         ).collect(Collectors.joining("\n"))
                 ).collect(Collectors.joining("\n")));
 
-                channel.sendMessage(builder.build()).queue();
+                jours[day.getDay()] = channel.sendMessage(builder.build()).submit();
             }
         }
-        return (printImageWeek(week, channel));
+        return Pair.of(printImageWeek(week, channel), jours);
     }
 
     protected CompletableFuture<Message> printImageWeek(Week week, MessageChannel channel) {
 
-        File file;
-
-        BufferedImage image;
         Graphics2D g;
         int width = 1024;
         int height = 512;
@@ -172,7 +170,7 @@ public abstract class GestionEdt {
         return channel.sendMessage(HttpServer.INSTANCE.getWeekUrl(channel.getId(), b)).submit();
     }
 
-    public void updateWeek(MessageChannel channel, String idWeek) {
+    public void updateImageWeek(MessageChannel channel, String idWeek) {
         CompletableFuture<Message> week = channel.retrieveMessageById(idWeek).submit();
         week.thenAcceptAsync(message -> {
 
@@ -367,5 +365,34 @@ public abstract class GestionEdt {
                 x + dayWidth - 3,
                 y
         );
+    }
+
+    public void updateWeek(MessageChannel channel, String[] idDays) {
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat jour = new SimpleDateFormat("EEEEEEEEEEEEEEEE dd MMMMMMMMMM", Locale.FRANCE);
+        SimpleDateFormat heure = new SimpleDateFormat("H:mm", Locale.FRANCE);
+        Day[] days = this.thisWeek.getDays();
+
+        for (int i = 0; i < idDays.length; i++) {
+            if (idDays[i] == null) continue;
+            CompletableFuture<Message> idDay = channel.retrieveMessageById(idDays[i]).submit();
+            int finalI = i;
+            idDay.thenAcceptAsync(message -> {
+                EmbedBuilder builder = BotEmbed.BASE.getBuilder(null);
+                Day day = days[finalI];
+
+                cal.setTime(day.stream().findAny().get().stream().findAny().get().getStart());
+                builder.setTitle(jour.format(cal.getTime()));
+                builder.setColor(Color.GREEN);
+
+                builder.setDescription(day.stream().map(
+                        s -> s.stream().map(
+                                c -> String.format("**%s - %s** %s", heure.format(c.getStart()), heure.format(c.getEnd()), c.getSummary().replace("*", ""))
+                        ).collect(Collectors.joining("\n"))
+                ).collect(Collectors.joining("\n")));
+
+                message.editMessageEmbeds(builder.build()).queue();
+            });
+        }
     }
 }

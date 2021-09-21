@@ -20,4 +20,9 @@ public class Stack extends TreeSet<Cours> implements Comparable<Stack> {
     public int compareTo(@NotNull Stack o) {
         return this.first().compareTo(o.first());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
 }

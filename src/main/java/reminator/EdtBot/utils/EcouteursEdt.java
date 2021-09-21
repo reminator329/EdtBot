@@ -2,6 +2,7 @@ package reminator.EdtBot.utils;
 
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.internal.utils.tuple.Pair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -78,14 +79,16 @@ public class EcouteursEdt {
 
         Calendar cal = Calendar.getInstance();
         final int[] currentWeek = {-1};
+        final int[] minutes = {0};
 
+        final Week[] week = {null};
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 pCours[0].clear();
                 pCours[0].addAll(gestionEdt.getNextCourse());
                 System.out.println("test");
-                Week week = null;
+                Pair<CompletableFuture<Message>, CompletableFuture<Message>[]> pair;
                 if (cours[0].size() == 0 || !cours[0].get(0).getSummary().equals(pCours[0].get(0).getSummary())) {
                     cours[0].clear();
                     cours[0].addAll(pCours[0]);
@@ -96,8 +99,10 @@ public class EcouteursEdt {
 
                     if (!s[0]) {
                         if (currentWeek[0] != cal.get(Calendar.WEEK_OF_YEAR)) {
-                            week = gestionEdt.getNextWeek();
-                            saveIdWeek(channel, gestionEdt.printWeek(week, channel));
+                            week[0] = gestionEdt.getNextWeek();
+                            pair = gestionEdt.printWeek(week[0], channel);
+                            saveIdWeek(channel, pair.getLeft());
+                            saveIdsDays(channel, pair.getRight());
                             currentWeek[0] = cal.get(Calendar.WEEK_OF_YEAR);
                         }
 
@@ -113,10 +118,104 @@ public class EcouteursEdt {
                 }
                 String idWeek = getIdWeek(channel);
                 if (idWeek != null)
-                    gestionEdt.updateWeek(channel, idWeek);
+                    gestionEdt.updateImageWeek(channel, idWeek);
+
+                if (minutes[0] >= 60) {
+                    minutes[0] = 0;
+                    Week newWeek = gestionEdt.getNextWeek();
+                    if (week[0] != newWeek) {
+                        week[0] = newWeek;
+                        String[] days = getIdsDays(channel);
+                        if (days != null)
+                            gestionEdt.updateWeek(channel, days);
+                    }
+                }
+                minutes[0]++;
             }
         }, 0, 1000 * 60/*500 * 3600*/);
         return timer;
+    }
+
+    private String[] getIdsDays(MessageChannel channel) {
+
+        try {
+            br = new BufferedReader(new FileReader(nomFile));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        StringBuilder content = new StringBuilder();
+        String line;
+        try {
+            while ((line = br.readLine()) != null) {
+                content.append(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        if (content.toString().equals("")) {
+            content.append("{}");
+        }
+        JSONObject json = new JSONObject(content.toString());
+        JSONObject jsonChannel = json.getJSONObject(channel.getId());
+
+        String[] week = new String[5];
+        for (int i = 0; i < 5; i++) {
+            try {
+                week[i] = jsonChannel.getString("day-" + i);
+            } catch (JSONException e) {
+                week[i] = null;
+            }
+        }
+
+        return week;
+    }
+
+    private void saveIdsDays(MessageChannel channel, CompletableFuture<Message>[] messages) {
+        for (int i = 0; i < messages.length; i++) {
+            CompletableFuture<Message> message = messages[i];
+
+            int finalI = i;
+            message.thenAcceptAsync(m -> {
+
+                try {
+                    br = new BufferedReader(new FileReader(nomFile));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return;
+                }
+
+                StringBuilder content = new StringBuilder();
+                String line;
+                try {
+                    while ((line = br.readLine()) != null) {
+                        content.append(line);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return;
+                }
+                if (content.toString().equals("")) {
+                    content.append("{}");
+                }
+                JSONObject json = new JSONObject(content.toString());
+                JSONObject jsonChannel = json.getJSONObject(channel.getId());
+
+                jsonChannel.put("day-" + finalI, m.getId());
+                json.put(channel.getId(), jsonChannel);
+                System.out.println(json);
+
+                try {
+                    bw = new BufferedWriter(new FileWriter(fileEcouteurs.getAbsoluteFile()));
+                    bw.write(json.toString());
+                    bw.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
     }
 
     private String getIdWeek(MessageChannel channel) {

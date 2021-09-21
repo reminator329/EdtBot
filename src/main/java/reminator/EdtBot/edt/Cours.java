@@ -67,8 +67,15 @@ public class Cours implements Comparable<Cours> {
         int start = this.getStart().compareTo(course.getStart());
         if (start == 0)
             return this.getSummary().compareTo(course.getSummary());
-            //return this.position - course.position;
         return start;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Cours cours = (Cours) o;
+        return Objects.equals(summary, cours.summary) && Objects.equals(start, cours.start);
     }
 
     @Override
