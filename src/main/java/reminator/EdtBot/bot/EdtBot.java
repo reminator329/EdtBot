@@ -27,7 +27,7 @@ public class EdtBot {
     public static JDA API;
 
     public static void main(String[] arguments) throws Exception {
-        token = "NzY0OTM3NTQ1NzE1OTQxNDA2.X4Nhmg.VBRKo3ypaUXlMBIgJeCxcKkJqE4";
+        token = arguments[0];
         Liens.CSV_1A.setUrl(arguments[1]);
         JDA api = JDABuilder.create(token, GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.DIRECT_MESSAGES).enableCache(CacheFlag.ACTIVITY).build();
         api.awaitReady();
