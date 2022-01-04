@@ -22,7 +22,7 @@ repositories {
 
 dependencies {
     implementation('net.dv8tion:JDA:4.3.0_310')
-    implementation 'org.json:json:20210307'
+    implementation 'org.json:json:20211205'
 }
 
 compileJava.options.encoding = 'UTF-8'
