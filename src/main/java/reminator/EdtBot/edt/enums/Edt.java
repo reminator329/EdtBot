@@ -38,7 +38,7 @@ public enum Edt {
     }
 
     public HTTPRequest getHTTPRequest(String timeMin, String timeMax) {
-        System.out.println(getUrl(timeMin, timeMax));
+        //System.out.println(getUrl(timeMin, timeMax));
         return new HTTPRequest(getUrl(timeMin, timeMax));
         /*
         .withHeader("Accept", "*//** ")

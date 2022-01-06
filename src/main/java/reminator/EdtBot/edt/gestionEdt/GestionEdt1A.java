@@ -71,10 +71,11 @@ public class GestionEdt1A extends GestionEdt {
 
     @Override
     protected void updateCsv() {
+        /*
         try {
             csv = new HTTPRequest(Liens.CSV_1A.getUrl()).GET();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 }

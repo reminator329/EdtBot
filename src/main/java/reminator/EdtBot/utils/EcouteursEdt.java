@@ -87,13 +87,10 @@ public class EcouteursEdt {
             public void run() {
                 pCours[0].clear();
                 pCours[0].addAll(gestionEdt.getNextCourse());
-                System.out.println("test");
                 Pair<CompletableFuture<Message>, CompletableFuture<Message>[]> pair;
-                if (cours[0].size() == 0 || !cours[0].get(0).getSummary().equals(pCours[0].get(0).getSummary())) {
+                if (cours[0].size() == 0 || !cours[0].get(0).equals(pCours[0].get(0))) {
                     cours[0].clear();
                     cours[0].addAll(pCours[0]);
-                    System.out.println("\n\n\n BONJOUR");
-                    System.out.println(cours[0]);
 
                     cal.setTime(cours[0].get(0).getStart());
 
@@ -205,7 +202,6 @@ public class EcouteursEdt {
 
                 jsonChannel.put("day-" + finalI, m.getId());
                 json.put(channel.getId(), jsonChannel);
-                System.out.println(json);
 
                 try {
                     bw = new BufferedWriter(new FileWriter(fileEcouteurs.getAbsoluteFile()));
@@ -303,7 +299,6 @@ public class EcouteursEdt {
 
     private void saveIdWeek(MessageChannel channel, CompletableFuture<Message> message) {
         message.thenAcceptAsync(m -> {
-            System.out.println("testeeeeeeeeeee");
             try {
                 br = new BufferedReader(new FileReader(nomFile));
             } catch (IOException e) {
@@ -327,10 +322,8 @@ public class EcouteursEdt {
             JSONObject json = new JSONObject(content.toString());
             JSONObject jsonChannel = json.getJSONObject(channel.getId());
 
-            System.out.println("ENFINNNNN");
             jsonChannel.put("week", m.getId());
             json.put(channel.getId(), jsonChannel);
-            System.out.println(json);
 
             try {
                 bw = new BufferedWriter(new FileWriter(fileEcouteurs.getAbsoluteFile()));

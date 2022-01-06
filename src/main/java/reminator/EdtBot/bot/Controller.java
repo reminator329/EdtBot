@@ -43,7 +43,6 @@ public class Controller extends ListenerAdapter {
                 }
 
                 if (arguments.isPresent()) {
-                    System.out.println(arguments);
                     cmd.execute(new reminator.EdtBot.Commands.genericEvent.commandEvent.SlashCommandEvent(event), event.getUser(), event.getChannel(), arguments.get());
                 } else {
                     event.getChannel().sendMessage("Commande mal utilisée, voir `" + prefix + "help " + label + "`.").queue();
@@ -106,7 +105,6 @@ public class Controller extends ListenerAdapter {
                 }
 
                 if (arguments.isPresent()) {
-                    System.out.println(arguments);
                     cmd.execute(new LegacyCommandEvent(event), author, event.getChannel(), arguments.get());
                 } else {
                     event.getChannel().sendMessage("Commande mal utilisée, voir `" + prefix + "help " + label + "`.").queue();

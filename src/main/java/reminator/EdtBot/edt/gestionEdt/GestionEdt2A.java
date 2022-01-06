@@ -61,6 +61,7 @@ public class GestionEdt2A extends GestionEdt {
         // TODO créer un CSV
         try {
             csv = new HTTPRequest(Liens.CSV_1A.getUrl()).GET();
+            System.out.println(csv);
         } catch (IOException e) {
             e.printStackTrace();
         }

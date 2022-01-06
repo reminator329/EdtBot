@@ -75,7 +75,7 @@ public class Cours implements Comparable<Cours> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Cours cours = (Cours) o;
-        return Objects.equals(summary, cours.summary) && Objects.equals(start, cours.start);
+        return Objects.equals(summary, cours.summary) && Objects.equals(start, cours.start) && Objects.equals(typeCourse, cours.typeCourse);
     }
 
     @Override

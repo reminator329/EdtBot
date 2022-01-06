@@ -68,7 +68,6 @@ public class ProchainCoursCommand implements Command {
             }
         }
         ArrayList<Cours> courss = gestionEdt.getNextCourse();
-        //System.out.println(courss);
         for (Cours cours : courss) {
             gestionEdt.printCourse(cours, channel);
         }
