@@ -105,7 +105,7 @@ public class Cours implements Comparable<Cours> {
                         getSummary().contains("Réunion") ||
                         getSummary().contains("Conférence") ||
                         getSummary().contains("SRI") ||
-                        getSummary().contains("TER");
+                        (getSummary().contains("TER") && !getSummary().contains("Libre"));
             }
             case 3 -> {
                 return getSummary().contains("EIU") ||
