@@ -89,7 +89,10 @@ public class EcouteursEdt {
                 pCours[0].addAll(gestionEdt.getNextCourse());
                 Pair<CompletableFuture<Message>, CompletableFuture<Message>[]> pair;
                 if (cours[0].size() == 0 || !cours[0].get(0).equals(pCours[0].get(0))) {
-                    Date date = cours[0].get(0).getStart();
+                    Date date = null;
+                    if (cours[0].size() != 0) {
+                        date = cours[0].get(0).getStart();
+                    }
                     cours[0].clear();
                     cours[0].addAll(pCours[0]);
 
@@ -104,7 +107,8 @@ public class EcouteursEdt {
                             currentWeek[0] = cal.get(Calendar.WEEK_OF_YEAR);
                         }
 
-                        deleteLastCourses(channel, date.equals(cours[0].get(0).getStart()));
+                        if (date != null)
+                            deleteLastCourses(channel, date.equals(cours[0].get(0).getStart()));
 
                         for (Cours c : cours[0]) {
                             saveIdNextCourse(channel, gestionEdt.printCourse(c, channel));
