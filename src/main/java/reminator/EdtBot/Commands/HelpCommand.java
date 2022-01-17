@@ -4,7 +4,6 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent;
 import reminator.EdtBot.Categories.Category;
 import reminator.EdtBot.Categories.enums.Categories;
 import reminator.EdtBot.Commands.argument.Argument;
@@ -74,7 +73,7 @@ public class HelpCommand implements Command {
 
         if (author != null)
             message.setFooter(author.getName(), author.getAvatarUrl());
-        channel.sendMessage(message.build()).queue();
+        channel.sendMessageEmbeds(message.build()).queue();
     }
 
     private EmbedBuilder help() {

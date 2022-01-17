@@ -118,7 +118,7 @@ public abstract class GestionEdt {
         }
         builder.appendDescription(cours.getSummary());
 
-        return channel.sendMessage(builder.build()).submit();
+        return channel.sendMessageEmbeds(builder.build()).submit();
     }
 
     public Pair<CompletableFuture<Message>, CompletableFuture<Message>[]> printWeek(Week week, MessageChannel channel) {
@@ -141,7 +141,7 @@ public abstract class GestionEdt {
                         ).collect(Collectors.joining("\n"))
                 ).collect(Collectors.joining("\n")));
 
-                jours[day.getDay()] = channel.sendMessage(builder.build()).submit();
+                jours[day.getDay()] = channel.sendMessageEmbeds(builder.build()).submit();
             }
         }
         return Pair.of(printImageWeek(week, channel), jours);
