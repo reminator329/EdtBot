@@ -2,9 +2,6 @@ package reminator.EdtBot.Commands;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import reminator.EdtBot.Categories.Category;
 import reminator.EdtBot.Categories.enums.Categories;
 import reminator.EdtBot.Commands.argument.Argument;
