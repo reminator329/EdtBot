@@ -3,10 +3,9 @@ package reminator.EdtBot.bot;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.message.GenericMessageEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
+import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.jetbrains.annotations.NotNull;
@@ -54,30 +53,30 @@ public class Controller extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if (event.getAuthor().isBot() || event.isFromGuild()) return;
+        if (event.getAuthor().isBot()) return;
+        if (event.isFromGuild()) {
+            commandSent(event.getAuthor(), event.getMessage(), event);
+        } else {
+            event.getAuthor().openPrivateChannel()
+                    .flatMap(channel -> channel.sendMessage("3"))
+                    .delay(Duration.ofSeconds(1))
+                    .flatMap(channel -> channel.editMessage("2"))
+                    .delay(Duration.ofSeconds(1))
+                    .flatMap(channel -> channel.editMessage("1"))
+                    .delay(Duration.ofSeconds(1))
+                    .flatMap(Message::delete)
+                    .queue();
+        }
 
-        event.getAuthor().openPrivateChannel()
-                .flatMap(channel -> channel.sendMessage("3"))
-                .delay(Duration.ofSeconds(1))
-                .flatMap(channel -> channel.editMessage("2"))
-                .delay(Duration.ofSeconds(1))
-                .flatMap(channel -> channel.editMessage("1"))
-                .delay(Duration.ofSeconds(1))
-                .flatMap(Message::delete)
-                .queue();
     }
 
     @Override
-    public void onGuildMessageUpdate(@NotNull GuildMessageUpdateEvent event) {
+    public void onMessageUpdate(@NotNull MessageUpdateEvent event) {
+        if (!event.isFromGuild()) return;
         commandSent(event.getAuthor(), event.getMessage(), event);
     }
 
-    @Override
-    public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
-        commandSent(event.getAuthor(), event.getMessage(), event);
-    }
-
-    private void commandSent(User author, Message message, @NotNull GenericGuildMessageEvent event) {
+    private void commandSent(User author, Message message, @NotNull GenericMessageEvent event) {
         if (author.isBot()) return;
         List<String> args = new ArrayList<>(Arrays.asList(message.getContentRaw().split("\\s+")));
         String command = args.get(0);
@@ -85,7 +84,7 @@ public class Controller extends ListenerAdapter {
         verifyBeforeExecute(command, args, author, event);
     }
 
-    private void verifyBeforeExecute(String command, List<String> args, User author, @NotNull GenericGuildMessageEvent event) {
+    private void verifyBeforeExecute(String command, List<String> args, User author, @NotNull GenericMessageEvent event) {
 
         for (Commands c : Commands.values()) {
             Command cmd = c.getCommand();

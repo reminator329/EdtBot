@@ -3,9 +3,9 @@ package reminator.EdtBot.Commands.genericEvent.commandEvent;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
+import net.dv8tion.jda.api.events.message.GenericMessageEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import reminator.EdtBot.Commands.genericEvent.action.CommandAction;
 import reminator.EdtBot.Commands.genericEvent.guildEvent.GuildEvent;
 import reminator.EdtBot.Commands.genericEvent.guildEvent.GuildReceivedEvent;
@@ -15,11 +15,11 @@ public class LegacyCommandEvent implements CommandEvent {
 
     private final GuildEvent event;
 
-    public LegacyCommandEvent(GenericGuildMessageEvent event) {
-        if (event instanceof GuildMessageReceivedEvent) {
-            this.event = new GuildReceivedEvent((GuildMessageReceivedEvent) event);
-        } else if (event instanceof GuildMessageUpdateEvent) {
-            this.event = new GuildUpdateEvent((GuildMessageUpdateEvent) event);
+    public LegacyCommandEvent(GenericMessageEvent event) {
+        if (event instanceof MessageReceivedEvent) {
+            this.event = new GuildReceivedEvent((MessageReceivedEvent) event);
+        } else if (event instanceof MessageUpdateEvent) {
+            this.event = new GuildUpdateEvent((MessageUpdateEvent) event);
         } else {
             this.event = null;
         }

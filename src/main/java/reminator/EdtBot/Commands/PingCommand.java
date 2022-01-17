@@ -3,16 +3,12 @@ package reminator.EdtBot.Commands;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import reminator.EdtBot.Categories.Category;
 import reminator.EdtBot.Categories.enums.Categories;
 import reminator.EdtBot.Commands.argument.Argument;
 import reminator.EdtBot.Commands.argument.Arguments;
 import reminator.EdtBot.Commands.argument.OptionalArgument;
 import reminator.EdtBot.Commands.genericEvent.commandEvent.CommandEvent;
-import reminator.EdtBot.Commands.genericEvent.commandEvent.LegacyCommandEvent;
-import reminator.EdtBot.bot.BotEmbed;
 
 import java.util.List;
 import java.util.Optional;

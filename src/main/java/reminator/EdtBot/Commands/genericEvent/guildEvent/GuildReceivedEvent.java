@@ -4,15 +4,15 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import reminator.EdtBot.Commands.genericEvent.action.CommandAction;
 import reminator.EdtBot.Commands.genericEvent.action.LegacyCommandAction;
 
 public class GuildReceivedEvent implements GuildEvent {
 
-    private final GuildMessageReceivedEvent event;
+    private final MessageReceivedEvent event;
 
-    public GuildReceivedEvent(GuildMessageReceivedEvent event) {
+    public GuildReceivedEvent(MessageReceivedEvent event) {
         this.event = event;
     }
 
@@ -28,11 +28,13 @@ public class GuildReceivedEvent implements GuildEvent {
 
     @Override
     public CommandAction<Message> sendMessage(MessageEmbed messageEmbed) {
-        return new LegacyCommandAction(event.getChannel().sendMessage(messageEmbed));
+        return new LegacyCommandAction(event.getChannel().sendMessageEmbeds(messageEmbed));
     }
 
     @Override
     public TextChannel getChannel() {
-        return event.getChannel();
+        // Différence entre TextChannel et Channel ?
+        // return event.getChannel()
+        return event.getTextChannel();
     }
 }
