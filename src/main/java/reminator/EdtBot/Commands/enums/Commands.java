@@ -2,7 +2,6 @@ package reminator.EdtBot.Commands.enums;
 
 import reminator.EdtBot.Categories.Category;
 import reminator.EdtBot.Commands.*;
-import reminator.EdtBot.Commands.argument.Argument;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,7 +15,7 @@ public enum Commands {
     NEXT_COURSE(new ProchainCoursCommand()),
     WEEK(new WeekCommand()),
     LISTEN_EDT(new EcouteEdtCommand()),
-    RESET_ROLES(new ResetRolesCommand())
+    RESET_ROLES(new RemoveRoleCommand())
     ;
 
     private final Command command;
