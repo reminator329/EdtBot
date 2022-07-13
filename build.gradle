@@ -8,7 +8,6 @@ mainClassName = 'reminator.EdtBot.bot.EdtBot'
 version '1.0'
 
 repositories {
-    jcenter()
     maven {
         url 'https://repo.maven.apache.org/maven2'
         name 'Maven Central'
@@ -21,8 +20,9 @@ repositories {
 }
 
 dependencies {
-    implementation('net.dv8tion:JDA:4.3.0_310')
-    implementation 'org.json:json:20210307'
+    // https://mvnrepository.com/artifact/net.dv8tion/JDA
+    implementation 'net.dv8tion:JDA:5.0.0-alpha.4'
+    implementation 'org.json:json:20211205'
 }
 
 compileJava.options.encoding = 'UTF-8'

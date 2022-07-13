@@ -1,6 +1,10 @@
 package reminator.EdtBot.edt;
 
 import org.jetbrains.annotations.NotNull;
+import reminator.EdtBot.edt.gestionEdt.GestionEdt;
+import reminator.EdtBot.edt.gestionEdt.GestionEdt1A;
+import reminator.EdtBot.edt.gestionEdt.GestionEdt2A;
+import reminator.EdtBot.edt.gestionEdt.GestionEdt3A;
 
 import java.util.Date;
 import java.util.Objects;
@@ -61,12 +65,9 @@ public class Cours implements Comparable<Cours> {
     @Override
     public int compareTo(@NotNull Cours course) {
         int start = this.getStart().compareTo(course.getStart());
-        if (start != 0)
-            return start;
-        //int position = this.position - course.position;
-        //if (position != 0)
-            //return position;
-        return this.summary.compareTo(course.getSummary());
+        if (start == 0)
+            return this.getSummary().compareTo(course.getSummary());
+        return start;
     }
 
     @Override
@@ -74,12 +75,7 @@ public class Cours implements Comparable<Cours> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Cours cours = (Cours) o;
-        return Objects.equals(summary, cours.summary) && Objects.equals(start, cours.start);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(summary, start);
+        return Objects.equals(summary, cours.summary) && Objects.equals(start, cours.start) && Objects.equals(typeCourse, cours.typeCourse);
     }
 
     @Override
@@ -97,22 +93,28 @@ public class Cours implements Comparable<Cours> {
                         getSummary().contains("**EXAMEN**") ||
                         getSummary().contains("ACCUEIL") ||
                         getSummary().contains("Réunion Information") ||
-                        getSummary().contains("UPSSITECH");
+                        getSummary().contains("Fresque du Climat") ||
+                        getSummary().contains("Conférence") ||
+                        getSummary().contains("Réunion");
             }
             case 2 -> {
                 return getSummary().contains("EMU") ||
                         getSummary().contains("EXAMEN") ||
                         getSummary().contains("Soutenance") ||
-                        getSummary().contains("Réunion de rentrée") ||
                         getSummary().contains("Jeu d'accueil Ecole") ||
-                        getSummary().contains("TER");
+                        getSummary().contains("Réunion") ||
+                        getSummary().contains("Conférence") ||
+                        getSummary().contains("SRI") ||
+                        getSummary().contains("Philosophie") ||
+                        (getSummary().contains("TER") && !getSummary().contains("Libre"));
             }
             case 3 -> {
                 return getSummary().contains("EIU") ||
                         getSummary().contains("Projet") ||
                         getSummary().contains("PGE") ||
                         getSummary().contains("Accessibilité") ||
-                        getSummary().contains("Réunion de rentrée");
+                        getSummary().contains("Réunion de rentrée") ||
+                        getSummary().contains("TOEIC");
             }
             default -> {
                 return false;
@@ -130,5 +132,23 @@ public class Cours implements Comparable<Cours> {
                 this.getStart().compareTo(cours.getEnd()) < 0 && this.getStart().compareTo(cours.getStart()) > 0 ||
                 this.getEnd().compareTo(cours.getEnd()) < 0 && this.getEnd().compareTo(cours.getStart()) > 0 ||
                 cours.getStart().compareTo(this.getStart()) == 0 || cours.getEnd().compareTo(this.getEnd()) == 0;
+    }
+
+    public boolean isExam(GestionEdt gestionEdt) {
+        int annee = 1;
+        if (gestionEdt instanceof GestionEdt2A) {
+            annee = 2;
+        } else if (gestionEdt instanceof GestionEdt3A){
+            annee = 3;
+        }
+        switch (annee) {
+            case 1, 3 -> {
+                return getSummary().contains("EXAMEN");
+            }
+            case 2 -> {
+                return getSummary().contains("***") || getSummary().contains("EXAMEN");
+            }
+        }
+        return false;
     }
 }

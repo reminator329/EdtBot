@@ -23,15 +23,12 @@ public class GestionEdt2A extends GestionEdt {
     protected ArrayList<Cours> getNextCourses() {
 
         Date date = new Date();
-
-        TreeSet<Cours> nextCourses = new TreeSet<>();
-        nextCourses.addAll(courses);
-        //System.out.println(nextCourses.stream().sorted().toList());
+      
+        TreeSet<Cours> nextCourses = new TreeSet<>(courses);
         nextCourses.removeIf(c -> c.isNotAccepted(2));
-        nextCourses = new TreeSet<>(nextCourses.tailSet(new Cours("", new Date(date.getTime() - 1000 * 60 * 14), null, null)));
-
-        //System.out.println(new ArrayList<>(nextCourses.headSet(new Cours("ZZZZZ", nextCourses.first().getStart(), null, null), true)));
-        return new ArrayList<>(nextCourses.headSet(new Cours("ZZZZZ", nextCourses.first().getStart(), null, null), true));
+      
+        nextCourses = new TreeSet<>(nextCourses.tailSet(new Cours("ZZZZZZZZZZZ", new Date(date.getTime() - 1000 * 60 * 10), null, null)));
+        return new ArrayList<>(nextCourses.headSet(new Cours("ZZZZZZZZZZZ", nextCourses.first().getStart(), null, null), true));
     }
 
     @Override
@@ -64,6 +61,7 @@ public class GestionEdt2A extends GestionEdt {
         // TODO créer un CSV
         try {
             csv = new HTTPRequest(Liens.CSV_1A.getUrl()).GET();
+            System.out.println(csv);
         } catch (IOException e) {
             e.printStackTrace();
         }

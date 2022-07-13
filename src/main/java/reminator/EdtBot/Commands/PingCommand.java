@@ -1,18 +1,25 @@
 package reminator.EdtBot.Commands;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
+import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.User;
 import reminator.EdtBot.Categories.Category;
 import reminator.EdtBot.Categories.enums.Categories;
-import reminator.EdtBot.bot.BotEmbed;
+import reminator.EdtBot.Commands.argument.Argument;
+import reminator.EdtBot.Commands.argument.Arguments;
+import reminator.EdtBot.Commands.argument.OptionalArgument;
+import reminator.EdtBot.Commands.genericEvent.commandEvent.CommandEvent;
 
 import java.util.List;
+import java.util.Optional;
 
 public class PingCommand implements Command {
+    private final Argument<Optional<Boolean>> ephemeral = new OptionalArgument<>(Boolean.class, "ephemeral", "Mettre à true pour que personne de voit la réponse.");
+
+    @Override
+    public List<Argument<?>> getArguments() {
+        return List.of(ephemeral);
+    }
 
     @Override
     public Category getCategory() {
@@ -35,19 +42,14 @@ public class PingCommand implements Command {
     }
 
     @Override
-    public void execute(GenericGuildMessageEvent e, User author, MessageChannel channel, List<String> args) {
+    public void execute(CommandEvent event, User author, MessageChannel channel, Arguments arguments) {
 
-        EmbedBuilder builder;
-        if (e instanceof GuildMessageReceivedEvent event) {
-            builder = BotEmbed.SPOTIFY.getBuilder(event.getMember());
-        } else if (e instanceof GuildMessageUpdateEvent event){
-            builder = BotEmbed.SPOTIFY.getBuilder(event.getMember());
-        } else {
-            return;
-        }
+        Optional<Boolean> optEphemeral = arguments.get(ephemeral);
+        boolean ephemeral;
+        ephemeral = optEphemeral.orElse(false);
 
-        builder.setTitle("Pong !");
-
-        channel.sendMessage(builder.build()).queue();
+        long time = System.currentTimeMillis();
+        event.reply("Pong!").setEphemeral(ephemeral)
+                .thenEdit("Pong: " +  (System.currentTimeMillis() - time) + "ms");
     }
 }

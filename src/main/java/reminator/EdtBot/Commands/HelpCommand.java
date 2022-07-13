@@ -4,18 +4,27 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import reminator.EdtBot.Categories.Category;
 import reminator.EdtBot.Categories.enums.Categories;
+import reminator.EdtBot.Commands.argument.Argument;
+import reminator.EdtBot.Commands.argument.Arguments;
+import reminator.EdtBot.Commands.argument.OptionalArgument;
 import reminator.EdtBot.Commands.enums.Commands;
+import reminator.EdtBot.Commands.genericEvent.commandEvent.CommandEvent;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class HelpCommand implements Command {
+    private final Argument<Optional<String>> command = new OptionalArgument<>(String.class, "command", "Affiche la page d'aide de cette commande, si elle existe.");
+
+    @Override
+    public List<Argument<?>> getArguments() {
+        return List.of(command);
+    }
 
     @Override
     public Category getCategory() {
@@ -40,6 +49,31 @@ public class HelpCommand implements Command {
     @Override
     public String getSignature() {
         return Command.super.getSignature() + " [commande]";
+    }
+
+    @Override
+    public void execute(CommandEvent event, User author, MessageChannel channel, Arguments arguments) {
+
+        EmbedBuilder message;
+
+        Optional<String> optCommand = arguments.get(command);
+        String nameCommand = optCommand.orElse("");
+
+        if (optCommand.isEmpty()) {
+            message = this.help();
+        } else {
+            Command command = Commands.getCommand(optCommand.get());
+            message = this.help(command);
+        }
+
+        if (message == null) {
+            channel.sendMessage("La commande `" + nameCommand + "` n'existe pas").queue();
+            return;
+        }
+
+        if (author != null)
+            message.setFooter(author.getName(), author.getAvatarUrl());
+        channel.sendMessageEmbeds(message.build()).queue();
     }
 
     private EmbedBuilder help() {
@@ -90,28 +124,5 @@ public class HelpCommand implements Command {
         }
 
         return builder;
-    }
-
-    @Override
-    public void execute(GenericGuildMessageEvent event, User author, MessageChannel channel, List<String> args) {
-
-        EmbedBuilder message;
-
-        if (args.size() == 0) {
-            message = this.help();
-        } else {
-            Command command = Commands.getCommand(args.get(0));
-            message = this.help(command);
-        }
-
-        if (message == null) {
-            channel.sendMessage("La commande `" + args.get(0) + "` n'existe pas").queue();
-            return;
-        }
-
-        if (author != null)
-            message.setFooter(author.getName(), author.getAvatarUrl());
-        channel.sendMessage(message.build()).queue();
-
     }
 }

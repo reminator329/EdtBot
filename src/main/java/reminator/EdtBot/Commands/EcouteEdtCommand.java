@@ -2,16 +2,22 @@ package reminator.EdtBot.Commands;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.message.guild.GenericGuildMessageEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import reminator.EdtBot.Categories.Category;
 import reminator.EdtBot.Categories.enums.Categories;
+import reminator.EdtBot.Commands.argument.Argument;
+import reminator.EdtBot.Commands.argument.Arguments;
+import reminator.EdtBot.Commands.genericEvent.commandEvent.CommandEvent;
 import reminator.EdtBot.utils.EcouteursEdt;
 
 import java.util.List;
 
 public class EcouteEdtCommand implements Command {
+    private final Argument<String> annee = new Argument<>(String.class, "annee", "(1|2|3)A");
+
+    @Override
+    public List<Argument<?>> getArguments() {
+        return List.of(annee);
+    }
 
     @Override
     public String getName() {
@@ -39,27 +45,22 @@ public class EcouteEdtCommand implements Command {
     }
 
     @Override
-    public void execute(GenericGuildMessageEvent e, User author, MessageChannel channel, List<String> args) {
-        if (e instanceof GuildMessageReceivedEvent event) {
-            if (event.getMember() == null) return;
-            if (!event.getMember().hasPermission(Permission.ADMINISTRATOR) && !event.getAuthor().getName().equalsIgnoreCase("reminator392")) {
-                channel.sendMessage("Tu n'as pas la permission pour faire cette commande.").queue();
-                return;
-            }
-        } else if (e instanceof GuildMessageUpdateEvent event){
-            if (event.getMember() == null) return;
-            if (!event.getMember().hasPermission(Permission.ADMINISTRATOR) && !event.getAuthor().getName().equalsIgnoreCase("reminator392")) {
-                channel.sendMessage("Tu n'as pas la permission pour faire cette commande.").queue();
-                return;
-            }
-        }
+    public String getShortDescription() {
+        return "Permet d'envoyer les détails du prochain cours automatiquement.";
+    }
 
-        if (args.size() == 0) {
-            channel.sendMessage("Commande mal utilisée, voir `edt!help ecoute-edt`.").queue();
+    @Override
+    public void execute(CommandEvent event, User author, MessageChannel channel, Arguments arguments) {
+
+        if (!event.getMember().hasPermission(Permission.ADMINISTRATOR) && !author.getName().equalsIgnoreCase("reminator392")) {
+            channel.sendMessage("Tu n'as pas la permission pour faire cette commande.").queue();
             return;
         }
+
+        String anneeString = arguments.get(this.annee);
+
         int annee;
-        switch (args.get(0)) {
+        switch (anneeString) {
             case "1A", "1" -> annee = 1;
             case "2A", "2" -> annee = 2;
             case "3A", "3" -> annee = 3;
@@ -69,7 +70,7 @@ public class EcouteEdtCommand implements Command {
                 return;
             }
             default -> {
-                channel.sendMessage(args.get(0) + " n'est pas un paramètre valide.").queue();
+                channel.sendMessage(anneeString + " n'est pas un paramètre valide.").queue();
                 return;
             }
         }

@@ -5,9 +5,16 @@ import reminator.EdtBot.edt.gestionEdt.GestionEdt1A;
 import reminator.EdtBot.edt.gestionEdt.GestionEdt2A;
 import reminator.EdtBot.edt.gestionEdt.GestionEdt3A;
 
+import java.util.Comparator;
 import java.util.TreeSet;
 
 public class Day extends TreeSet<Stack> {
+
+    private int day;
+
+    public Day(int day) {
+        this.day = day;
+    }
 
     public void addCourse(Cours course, GestionEdt gestionEdt) {
 
@@ -35,5 +42,14 @@ public class Day extends TreeSet<Stack> {
 
     public void removeCourse(Cours course) {
         this.remove(course);
+    }
+
+    public int getDay() {
+        return day;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
     }
 }
