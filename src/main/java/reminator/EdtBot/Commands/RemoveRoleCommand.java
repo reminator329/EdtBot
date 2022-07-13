@@ -78,7 +78,7 @@ public class RemoveRoleCommand implements Command {
 
             members.forEach(m -> {
                 guild.removeRoleFromMember(m, role).queue();
-                channel.sendMessage("Le rôle " + role.getAsMention() + " a été retiré pour " + m.getAsMention() + " (" + m.getNickname() + ").").queue();
+                channel.sendMessage("Le rôle " + role.getAsMention() + " a été retiré pour " + m.getAsMention() + " (" + m.getUser().getName() + ").").queue();
             });
         } else {
             channel.sendMessage("Ceci n'est pas un rôle valide.").queue();
